@@ -1,5 +1,5 @@
 ﻿/* License: NCSA Open Source License
- * 
+ *
  * Copyright: SPT
  * AUTHORS:
  * Basuro
@@ -12,11 +12,36 @@ namespace CWX_SPT_Launcher_Backend.Patcher;
 public class PatchInfo
 {
     public const string BYBA = "BYBA";
-    public byte[] OriginalChecksum { get; set; }
-    public int OriginalLength { get; set; }
-    public byte[] PatchedChecksum { get; set; }
-    public int PatchedLength { get; set; }
-    public PatchItem[] Items { get; set; }
+
+    public byte[] OriginalChecksum
+    {
+        get;
+        set;
+    }
+
+    public int OriginalLength
+    {
+        get;
+        set;
+    }
+
+    public byte[] PatchedChecksum
+    {
+        get;
+        set;
+    }
+
+    public int PatchedLength
+    {
+        get;
+        set;
+    }
+
+    public PatchItem[] Items
+    {
+        get;
+        set;
+    }
 
     public static PatchInfo FromBytes(byte[] bytes)
     {
@@ -25,10 +50,10 @@ public class PatchInfo
             throw new Exception("Input data too short, cannot be a valid patch");
         }
 
-        PatchInfo pi = new PatchInfo();
+        var pi = new PatchInfo();
 
-        using (MemoryStream ms = new MemoryStream(bytes))
-        using (BinaryReader br = new BinaryReader(ms))
+        using (var ms = new MemoryStream(bytes))
+        using (var br = new BinaryReader(ms))
         {
             byte[] buf = null;
 
@@ -53,13 +78,14 @@ public class PatchInfo
             pi.PatchedLength = br.ReadInt32();
             pi.PatchedChecksum = br.ReadBytes(32);
 
-            int itemCount = br.ReadInt32();
+            var itemCount = br.ReadInt32();
 
             List<PatchItem> items = new List<PatchItem>();
-            for (int i = 0; i < itemCount; i++)
+            for (var i = 0; i < itemCount; i++)
             {
                 items.Add(PatchItem.FromReader(br));
             }
+
             pi.Items = items.ToArray();
         }
 
@@ -70,17 +96,17 @@ public class PatchInfo
     {
         byte[] data;
 
-        using (MemoryStream ms = new MemoryStream())
+        using (var ms = new MemoryStream())
         {
-            using (BinaryWriter bw = new BinaryWriter(ms, Encoding.ASCII, true))
+            using (var bw = new BinaryWriter(ms, Encoding.ASCII, true))
             {
                 // identifier "BYBA" // 4B
-                byte[] byba = Encoding.ASCII.GetBytes(BYBA);
+                var byba = Encoding.ASCII.GetBytes(BYBA);
                 bw.Write(byba, 0, byba.Length);
 
                 // version "1.0" // 2B
-                bw.Write((byte)1);
-                bw.Write((byte)0);
+                bw.Write((byte) 1);
+                bw.Write((byte) 0);
 
                 // original len // 4B
                 bw.Write(OriginalLength);
@@ -98,7 +124,7 @@ public class PatchInfo
                 bw.Write(Items.Length);
 
                 // data
-                foreach (PatchItem pi in Items)
+                foreach (var pi in Items)
                 {
                     pi.ToWriter(bw);
                 }
@@ -106,7 +132,7 @@ public class PatchInfo
 
             data = new byte[ms.Length];
             ms.Seek(0, SeekOrigin.Begin);
-            ms.Read(data, 0, (int)ms.Length);
+            ms.Read(data, 0, (int) ms.Length);
         }
 
         return data;

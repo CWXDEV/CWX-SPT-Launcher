@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
-using CWX_SPT_Frontend.Helpers;
+using CWX_SPT_Launcher_Backend.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
@@ -10,20 +10,15 @@ using MudBlazor.Services;
 namespace CWX_SPT_Frontend;
 
 /// <summary>
-/// Interaction logic for MainWindow.xaml
+///     Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class MainWindow : Window
+public partial class MainWindow
 {
     private static Window WindowMain;
-    private SettingsHelper _settings;
+    private readonly SettingsHelper _settings;
 
     public MainWindow()
     {
-        _settings = SettingsHelper.Instance;
-
-        InitializeComponent();
-        CustomizeComponent();
-
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddWpfBlazorWebView();
         serviceCollection.AddBlazorWebViewDeveloperTools();
@@ -35,11 +30,20 @@ public partial class MainWindow : Window
             config.SnackbarConfiguration.ShowTransitionDuration = 100;
             config.SnackbarConfiguration.HideTransitionDuration = 100;
         });
-        
-        Resources.Add("services", serviceCollection.BuildServiceProvider());
+        serviceCollection.AddSingleton<PatchHelper>();
+        serviceCollection.AddSingleton<ServerHelper>();
+        serviceCollection.AddSingleton<SettingsHelper>();
 
-        IntPtr hWnd = new WindowInteropHelper(this).EnsureHandle();
-        bool value = true;
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+        Resources.Add("services", serviceProvider);
+
+        _settings = serviceProvider.GetRequiredService<SettingsHelper>();
+
+        InitializeComponent();
+        CustomizeComponent();
+
+        var hWnd = new WindowInteropHelper(this).EnsureHandle();
+        var value = true;
         DwmSetWindowAttribute(
             hWnd,
             DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE,
@@ -93,6 +97,6 @@ public partial class MainWindow : Window
 
     private enum DWMWINDOWATTRIBUTE
     {
-        DWMWA_USE_IMMERSIVE_DARK_MODE = 20,
+        DWMWA_USE_IMMERSIVE_DARK_MODE = 20
     }
 }

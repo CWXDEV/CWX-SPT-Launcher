@@ -1,4 +1,6 @@
-﻿<MudItem sm="12">
+﻿@inject SettingsHelper SettingsHelper
+
+<MudItem sm="12">
     <MudPaper Class="pa-5 ml-1 gap-2 d-flex flex-column card-overflow" Elevation="3">
         <MudContainer Class="pa-0">
             <a class="d-flex justify-center align-center cursor-pointer setting-on-hover py-2 pl-5" @onclick="SetDebugUser">
@@ -27,8 +29,8 @@
     private void SetDebugUser()
     {
         debugUserSwitch = !debugUserSwitch;
-        SettingsHelper.Instance.SetDebugUser(debugUserSwitch);
-        
+        SettingsHelper.SetDebugUser(debugUserSwitch);
+
         // clean up later
         if (!debugUserSwitch)
         {
@@ -45,6 +47,6 @@
         }
 
         debugTitleSwitch = !debugTitleSwitch;
-        SettingsHelper.Instance.SetDebugTitle(debugTitleSwitch);
+        SettingsHelper.SetDebugTitle(debugTitleSwitch);
     }
 }

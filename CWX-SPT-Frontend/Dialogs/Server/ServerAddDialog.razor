@@ -6,6 +6,7 @@
             <MudForm Model="Server" @bind-IsValid="@success" Class="gap-2 mt-3">
                 <MudTextField Immediate="true" @bind-Value="Server.Name" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense"/>
                 <MudTextField Immediate="true" @bind-Value="Server.Ip" Label="Address" Required="true" RequiredError="IP is required!" Variant="Variant.Outlined" Margin="Margin.Dense" Mask="@ipPortMask"/>
+                <MudTextField Immediate="true" @bind-Value="Server.GamePath" Label="Game Path" Required="true" RequiredError="Game Path is required!" Variant="Variant.Outlined" Margin="Margin.Dense"/>
             </MudForm>
             <MudContainer Class="mt-3 d-flex justify-end pa-0 gap-2">
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto" @onclick="Submit">Add</MudButton>
@@ -17,9 +18,13 @@
 
 @code {
     private bool success;
-    private IMask ipPortMask = RegexMask.IPv4(true);
-    public Servers Server = new Servers();
-    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+
+    private readonly IMask ipPortMask = RegexMask.IPv4(true);
+
+    public Servers Server = new();
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
 
     private void Submit()
     {

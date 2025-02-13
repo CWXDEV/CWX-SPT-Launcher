@@ -5,5 +5,11 @@ namespace CWX_SPT_Launcher_Backend.SPT.Request;
 
 public class PasswordChangeRequest : LoginRequest
 {
-    [Required] [JsonPropertyName("change")] public string Change { get; set; } = "";
+    [Required]
+    [JsonPropertyName("change")]
+    public string Change
+    {
+        get;
+        set;
+    } = "";
 }

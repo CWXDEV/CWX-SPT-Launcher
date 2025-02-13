@@ -1,36 +1,22 @@
-﻿using System.Net.Http;
-using System.Text.Json;
+﻿using System.Text.Json;
 using ComponentAce.Compression.Libs.zlib;
 using CWX_SPT_Launcher_Backend.CWX;
 using CWX_SPT_Launcher_Backend.SPT;
 using CWX_SPT_Launcher_Backend.SPT.Response;
 
-namespace CWX_SPT_Frontend.Helpers;
+namespace CWX_SPT_Launcher_Backend.Helpers;
 
 public class ServerHelper
 {
-    private static ServerHelper _instance;
-    private static readonly object Lock = new object();
-    public List<ServerProfile> ProfileList = [];
-    public Dictionary<string, string> ProfileTypes = new Dictionary<string, string>();
+    private HttpClient? _netClient;
+    public Servers? ConnectedServer;
     public Dictionary<string, SPTMod> ModList = [];
-    public Servers ConnectedServer;
-    private HttpClient _netClient;
-
-    public static ServerHelper Instance
-    {
-        get
-        {
-            lock (Lock)
-            {
-                return _instance ??= new ServerHelper();
-            }
-        }
-    }
+    public List<ServerProfile> ProfileList = [];
+    public Dictionary<string, string> ProfileTypes = new();
 
     public async Task<bool> GetAsync<T>(string url, CancellationToken token)
     {
-        var task = await _netClient.GetAsync(url, token);
+        var task = await _netClient?.GetAsync(url, token);
         var result = JsonSerializer.Deserialize<T>(SimpleZlib.Decompress(await task.Content.ReadAsByteArrayAsync(token)));
 
         switch (result)
@@ -54,7 +40,7 @@ public class ServerHelper
     public async Task<bool> PutAsync<T, U>(string url, U request, CancellationToken token)
     {
         var content = new ByteArrayContent(SimpleZlib.CompressToBytes(JsonSerializer.Serialize(request), zlibConst.Z_BEST_COMPRESSION));
-        var task = await _netClient.PutAsync(url, content, token);
+        var task = await _netClient?.PutAsync(url, content, token);
         var result = JsonSerializer.Deserialize<T>(SimpleZlib.Decompress(await task.Content.ReadAsByteArrayAsync(token)));
 
         switch (result)

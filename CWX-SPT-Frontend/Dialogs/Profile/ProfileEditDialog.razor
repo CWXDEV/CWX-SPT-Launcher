@@ -1,4 +1,5 @@
 ﻿@inject ISnackbar Snackbar
+@inject ServerHelper ServerHelper
 
 <MudDialog>
     <DialogContent>
@@ -21,10 +22,17 @@
 
 @code {
     private bool success;
-    [Parameter] public ServerProfile Profile { get; set; }
-    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
-    private PasswordChangeRequest request { get; } = new PasswordChangeRequest();
+
+    [Parameter]
+    public ServerProfile Profile { get; set; }
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    private PasswordChangeRequest request { get; } = new();
+
     private CancellationTokenSource token { get; set; }
+
     private bool UserCancel { get; set; }
 
     protected override void OnInitialized()
@@ -33,19 +41,19 @@
         base.OnInitialized();
     }
 
-    private async void Submit()
+    private async Task Submit()
     {
         try
         {
             token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            var result = await ServerHelper.Instance.PutAsync<PasswordChangeResponse, PasswordChangeRequest>("/launcher/v2/passwordChange", request, token.Token);
-            
+            var result = await ServerHelper.PutAsync<PasswordChangeResponse, PasswordChangeRequest>("/launcher/v2/passwordChange", request, token.Token);
+
             if (!result)
             {
                 AbortOrFail();
                 return;
             }
-            
+
             token?.Dispose();
         }
         catch (TaskCanceledException e) when (token is { IsCancellationRequested: true })
@@ -53,12 +61,12 @@
             AbortOrFail();
             return;
         }
-        
+
         StateHasChanged();
         Snackbar.Add("Password Changed!", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
     }
-    
+
     private void AbortOrFail()
     {
         if (!UserCancel)
@@ -68,11 +76,12 @@
 
         MudDialog.Cancel();
     }
-    
+
     private void UserCancelled()
     {
         UserCancel = true;
         token?.Cancel();
         MudDialog.Cancel();
     }
+
 }

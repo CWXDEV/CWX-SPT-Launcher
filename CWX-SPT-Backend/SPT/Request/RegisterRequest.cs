@@ -5,5 +5,11 @@ namespace CWX_SPT_Launcher_Backend.SPT.Request;
 
 public class RegisterRequest : LoginRequest
 {
-    [Required] [JsonPropertyName("edition")] public string Edition { get; set; } = "";
+    [Required]
+    [JsonPropertyName("edition")]
+    public string Edition
+    {
+        get;
+        set;
+    } = "";
 }

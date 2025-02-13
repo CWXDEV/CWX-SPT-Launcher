@@ -1,4 +1,6 @@
-﻿@inject ISnackbar Snackbar
+﻿@using CWX_SPT_Launcher_Backend.Helpers
+@inject ISnackbar Snackbar
+@inject ServerHelper ServerHelper
 
 <MudDialog>
     <DialogContent>
@@ -15,10 +17,9 @@
 </MudDialog>
 
 @code {
-    private ServerHelper serverHelper = ServerHelper.Instance;
     private string TaskText = "";
     [Parameter] public Servers Server { get; set; }
-    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
     private CancellationTokenSource token { get; set; }
     private bool UserCancel { get; set; }
 
@@ -32,12 +33,11 @@
     {
         try
         {
-            serverHelper.SetupHttpClient(Server);
+            ServerHelper.SetupHttpClient(Server);
             await CallServer(ERequestTask.Ping, "Checking connection to server");
             await CallServer(ERequestTask.Profiles, "Getting profiles from server", "Error getting profiles from server!");
             await CallServer(ERequestTask.Types, "Getting profile creation data from server", "Error getting profile creation data!");
             await CallServer(ERequestTask.Mods, "Getting active mod list from server", "Error getting mod list from server!");
-
         }
         catch (TaskCanceledException e) when (token is { IsCancellationRequested: true })
         {
@@ -54,10 +54,10 @@
             AbortOrFail();
             return;
         }
-        
+
         Submit();
     }
-    
+
     private async Task CallServer(ERequestTask option, string taskText = "", string failString = "")
     {
         token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
@@ -67,10 +67,10 @@
 
         var result = option switch
         {
-            ERequestTask.Ping => await serverHelper.GetAsync<PingResponse>("/launcher/v2/ping", token.Token),
-            ERequestTask.Profiles => await serverHelper.GetAsync<ProfilesResponse>("/launcher/v2/profiles", token.Token),
-            ERequestTask.Types => await serverHelper.GetAsync<TypesResponse>("/launcher/v2/types", token.Token),
-            ERequestTask.Mods => await serverHelper.GetAsync<ModsResponse>("/launcher/v2/mods", token.Token),
+            ERequestTask.Ping => await ServerHelper.GetAsync<PingResponse>("/launcher/v2/ping", token.Token),
+            ERequestTask.Profiles => await ServerHelper.GetAsync<ProfilesResponse>("/launcher/v2/profiles", token.Token),
+            ERequestTask.Types => await ServerHelper.GetAsync<TypesResponse>("/launcher/v2/types", token.Token),
+            ERequestTask.Mods => await ServerHelper.GetAsync<ModsResponse>("/launcher/v2/mods", token.Token),
             _ => false
         };
 
@@ -79,6 +79,7 @@
             AbortOrFail(failString);
             return;
         }
+
         token?.Dispose();
     }
 
@@ -89,7 +90,7 @@
             Snackbar.Add(message, Severity.Error);
         }
 
-        ServerHelper.Instance.LogoutAndDispose();
+        ServerHelper.LogoutAndDispose();
         token?.Cancel();
         MudDialog.Cancel();
     }
@@ -106,4 +107,5 @@
         token?.Cancel();
         MudDialog.Cancel();
     }
+
 }

@@ -1,5 +1,5 @@
 ﻿/* License: NCSA Open Source License
- * 
+ *
  * Copyright: SPT
  * AUTHORS:
  * Basuro

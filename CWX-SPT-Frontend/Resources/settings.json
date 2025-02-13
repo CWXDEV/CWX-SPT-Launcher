@@ -13,19 +13,14 @@
     "MinimizeOnLaunch": false,
     "AlwaysTop": true,
     "UseProfileColors": true,
-    "AdvancedUser": false,
-    "SptPath": "C:\\SPT\\spt390"
+    "AdvancedUser": false
   },
   "Servers": [
     {
       "Ip": "127.0.0.1:6969",
       "Name": "LocalHost",
-      "ServerId": "1721162719"
-    },
-    {
-      "Ip": "111.111.111.111:11111",
-      "Name": "qwe",
-      "ServerId": "1721162722"
+      "ServerId": "1721162719",
+      "GamePath": "D:\\SPT\\dev"
     }
   ],
   "DebugSettings": {

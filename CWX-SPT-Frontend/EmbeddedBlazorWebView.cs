@@ -1,12 +1,22 @@
-﻿using Microsoft.AspNetCore.Components.WebView.Wpf;
+﻿using CWX_SPT_Launcher_Backend.CWX;
+using Microsoft.AspNetCore.Components.WebView.Wpf;
 using Microsoft.Extensions.FileProviders;
 
 namespace CWX_SPT_Frontend;
 
 public class EmbeddedBlazorWebView : BlazorWebView
 {
-    public bool UseEmbeddedResources { get; init; }
-    public IFileProvider EmbeddedFilesProvider { get; set; }
+    public bool UseEmbeddedResources
+    {
+        get;
+        init;
+    }
+
+    public IFileProvider EmbeddedFilesProvider
+    {
+        get;
+        set;
+    }
 
     public override IFileProvider CreateFileProvider(string contentRootDir)
     {

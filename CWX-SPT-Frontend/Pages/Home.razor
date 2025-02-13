@@ -1,6 +1,7 @@
 ﻿@page "/"
 
 @inject IDialogService DialogService
+@inject SettingsHelper _settingsHelper
 
 <MudContainer Class="px-8 my-8" MaxWidth="MaxWidth.Large">
     <MudContainer Class="mt-n6 mb-3 pa-0 d-flex justify-space-between">
@@ -24,17 +25,23 @@
 </MudContainer>
 
 @code {
-    private List<Servers> ServerList = SettingsHelper.Instance.GetSettings().Servers;
+    private List<Servers> ServerList;
+
+    protected override void OnInitialized()
+    {
+        ServerList = _settingsHelper.GetSettings().Servers;
+        base.OnInitialized();
+    }
 
     private async Task RunAddTask()
     {
-        var dialog = await DialogService.ShowAsync<ServerAddDialog>("ServerAddDialog", SettingsHelper.Instance.DialogOptions);
+        var dialog = await DialogService.ShowAsync<ServerAddDialog>("ServerAddDialog", _settingsHelper.DialogOptions);
         var result = await dialog.Result;
 
         if (result is { Canceled: false })
         {
             ServerList.Add(result.Data as Servers);
-            SettingsHelper.Instance.SetServerSettings(ServerList);
+            _settingsHelper.SetServerSettings(ServerList);
         }
     }
 }

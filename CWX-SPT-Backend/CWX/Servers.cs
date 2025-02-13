@@ -4,7 +4,29 @@ namespace CWX_SPT_Launcher_Backend.CWX;
 
 public class Servers
 {
-    [Required] public string Ip { get; set; }
-    public string Name { get; set; }
-    public string ServerId { get; set; }
+    [Required]
+    public string Ip
+    {
+        get;
+        set;
+    }
+
+    [Required]
+    public string GamePath
+    {
+        get;
+        set;
+    }
+
+    public string Name
+    {
+        get;
+        set;
+    }
+
+    public string ServerId
+    {
+        get;
+        set;
+    }
 }

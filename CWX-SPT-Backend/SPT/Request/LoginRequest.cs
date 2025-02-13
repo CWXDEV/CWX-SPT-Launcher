@@ -5,7 +5,19 @@ namespace CWX_SPT_Launcher_Backend.SPT.Request;
 
 public class LoginRequest
 {
-    [Required] [JsonPropertyName("username")] public string Username { get; set; } = "";
+    [Required]
+    [JsonPropertyName("username")]
+    public string Username
+    {
+        get;
+        set;
+    } = "";
 
-    [Required] [JsonPropertyName("password")] public string Password { get; set; } = "";
+    [Required]
+    [JsonPropertyName("password")]
+    public string Password
+    {
+        get;
+        set;
+    } = "";
 }

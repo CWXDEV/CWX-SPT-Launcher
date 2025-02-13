@@ -1,5 +1,7 @@
 ﻿@page "/Profiles"
 @inject IDialogService DialogService
+@inject ServerHelper ServerHelper
+@inject SettingsHelper SettingsHelper
 
 <MudContainer Class="px-8 my-8" MaxWidth="MaxWidth.Large">
     <MudContainer Class="mt-n6 mb-3 pa-0 d-flex justify-start gap-2">
@@ -9,7 +11,7 @@
     <MudGrid>
         @foreach (var profile in ProfilesList)
         {
-            <ProfileCardComponent Profile="@profile" @bind-ProfileList="ProfilesList" />
+            <ProfileCardComponent Profile="@profile" @bind-ProfileList="ProfilesList"/>
         }
         @if (ProfilesList.Count == 0 && IsConnected)
         {
@@ -28,28 +30,34 @@
 
 @code {
 
-    public List<ServerProfile> ProfilesList { get; set; } = ServerHelper.Instance.ProfileList;
-    private bool IsConnected { get; } = ServerHelper.Instance.ConnectedServer != null;
+    public List<ServerProfile> ProfilesList { get; set; }
+    private bool IsConnected { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ProfilesList = ServerHelper.ProfileList;
+        IsConnected = ServerHelper.ConnectedServer is not null;
+        base.OnInitialized();
+    }
 
     private async Task RunAddTask()
     {
-        var dialog = await DialogService.ShowAsync<ProfileAddDialog>("ProfileAddDialog", SettingsHelper.Instance.DialogOptions);
+        var dialog = await DialogService.ShowAsync<ProfileAddDialog>("ProfileAddDialog", SettingsHelper.DialogOptions);
         var result = await dialog.Result;
 
         if (result is { Canceled: false })
         {
-            ProfilesList = ServerHelper.Instance.ProfileList;
+            ProfilesList = ServerHelper.ProfileList;
         }
     }
 
     private async Task RunLoginTask()
     {
-        var dialog = await DialogService.ShowAsync<ProfileLoginDialog>("ProfileLoginDialog", SettingsHelper.Instance.DialogOptions);
+        var dialog = await DialogService.ShowAsync<ProfileLoginDialog>("ProfileLoginDialog", SettingsHelper.DialogOptions);
         var result = await dialog.Result;
 
         if (result is { Canceled: false })
         {
-            
         }
     }
 }

@@ -1,19 +1,15 @@
-﻿using System.IO;
-using System.Text.Json;
+﻿using System.Text.Json;
 using CWX_SPT_Launcher_Backend.CWX;
 using MudBlazor;
 
-namespace CWX_SPT_Frontend.Helpers;
+namespace CWX_SPT_Launcher_Backend.Helpers;
 
 public class SettingsHelper
 {
-    private static SettingsHelper _instance;
-    private static readonly object Lock = new object();
-    private Settings _settings;
     private static readonly string AppPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "CWX-SPT-Launcher\\Resources");
 
-    public readonly DialogOptions DialogOptions = new DialogOptions
+    public readonly DialogOptions DialogOptions = new()
     {
         Position = DialogPosition.Center,
         MaxWidth = MaxWidth.ExtraSmall,
@@ -24,20 +20,11 @@ public class SettingsHelper
         BackgroundClass = "dialog-backdrop-class"
     };
 
-    private SettingsHelper()
+    private Settings? _settings;
+
+    public SettingsHelper()
     {
         LoadSettingsFromFile();
-    }
-
-    public static SettingsHelper Instance
-    {
-        get
-        {
-            lock (Lock)
-            {
-                return _instance ??= new SettingsHelper();
-            }
-        }
     }
 
     private void LoadSettingsFromFile()
@@ -47,6 +34,7 @@ public class SettingsHelper
         {
             SaveDefaults();
         }
+
         // if not save
         _settings = JsonSerializer.Deserialize<Settings>(
             File.ReadAllText(Path.Combine(AppPath, "settings.json")));
@@ -104,18 +92,12 @@ public class SettingsHelper
     {
         _settings.AppSettings.AlwaysTop = alwaysOnTop;
         SaveSettings();
-        MainWindow.ChangeTopMostSetting(alwaysOnTop);
+        // mainWindow.ChangeTopMostSetting(alwaysOnTop);
     }
 
     public void SetAdvancedUser(bool advancedUser)
     {
         _settings.AppSettings.AdvancedUser = advancedUser;
-        SaveSettings();
-    }
-
-    public void SetSptPath(string path)
-    {
-        _settings.AppSettings.SptPath = path;
         SaveSettings();
     }
 
@@ -166,8 +148,7 @@ public class SettingsHelper
                 MinimizeOnLaunch = false,
                 AlwaysTop = false,
                 UseProfileColors = true,
-                AdvancedUser = false,
-                SptPath = @"C:\\SPT\\spt310"
+                AdvancedUser = false
             },
             Servers =
             [
@@ -175,10 +156,11 @@ public class SettingsHelper
                 {
                     Ip = "127.0.0.1:6969",
                     Name = "LocalHost",
-                    ServerId = "1721162719"
+                    ServerId = "1721162719",
+                    GamePath = "D:\\SPT\\dev"
                 }
             ],
-            DebugSettings = new DebugSettings()
+            DebugSettings = new DebugSettings
             {
                 DebugLocation = false,
                 DebugUser = false

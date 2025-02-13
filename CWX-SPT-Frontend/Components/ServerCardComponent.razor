@@ -1,6 +1,8 @@
 ﻿@inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject NavigationManager NavMan
+@inject ServerHelper ServerHelper
+@inject SettingsHelper SettingsHelper
 
 <MudItem md="4">
     <MudPaper Elevation="2" Class="pa-4 d-flex flex-column flex-none gap-2 card-overflow">
@@ -9,6 +11,9 @@
         <MudDivider DividerType="DividerType.Middle"/>
         <MudText Class="mb-n3 no-pointers no-select" Typo="Typo.caption">Address:</MudText>
         <MudText Typo="Typo.body1">@Server.Ip</MudText>
+        <MudDivider DividerType="DividerType.Middle"/>
+        <MudText Class="mb-n3 no-pointers no-select" Typo="Typo.caption">Game Path:</MudText>
+        <MudText Typo="Typo.body1">@Server.GamePath</MudText>
         <MudContainer Class="pa-0 d-flex mt-2">
             <MudTooltip Text="@(IsConnectedServer ? "Connected" : "Disconnected")" Arrow="true" Placement="Placement.Right">
                 <MudIcon Icon="@Icons.Material.Filled.Circle" Color="@(IsConnectedServer ? Color.Success : Color.Error)"/>
@@ -24,28 +29,34 @@
 </MudItem>
 
 @code {
-    [Parameter] public Servers Server { get; set; }
-    [Parameter] public List<Servers> ServerList { get; set; }
-    [Parameter] public EventCallback<List<Servers>> ServerListChanged { get; set; }
+    [Parameter]
+    public Servers Server { get; set; }
+
+    [Parameter]
+    public List<Servers> ServerList { get; set; }
+
+    [Parameter]
+    public EventCallback<List<Servers>> ServerListChanged { get; set; }
+
     private bool IsConnectedServer { get; set; }
 
     protected override void OnInitialized()
     {
-        IsConnectedServer = ServerHelper.Instance.ConnectedServer?.ServerId == Server.ServerId;
+        IsConnectedServer = ServerHelper.ConnectedServer?.ServerId == Server.ServerId;
         base.OnInitialized();
     }
 
     private async Task RunEditTask()
     {
-        if (ServerHelper.Instance.ConnectedServer?.ServerId == Server.ServerId)
+        if (ServerHelper.ConnectedServer?.ServerId == Server.ServerId)
         {
-            ServerHelper.Instance.LogoutAndDispose();
+            ServerHelper.LogoutAndDispose();
             IsConnectedServer = false;
         }
 
         var param = new DialogParameters { { "Server", Server } };
 
-        var dialog = await DialogService.ShowAsync<ServerEditDialog>("ServerEditDialog", param, SettingsHelper.Instance.DialogOptions);
+        var dialog = await DialogService.ShowAsync<ServerEditDialog>("ServerEditDialog", param, SettingsHelper.DialogOptions);
         var result = await dialog.Result;
 
         if (result is { Canceled: false })
@@ -58,51 +69,52 @@
                 serverToChange.Ip = Server.Ip;
             }
 
-            SettingsHelper.Instance.SetServerSettings(ServerList);
+            SettingsHelper.SetServerSettings(ServerList);
             await ServerListChanged.InvokeAsync(ServerList);
         }
     }
 
     private async Task RunLoginTask()
     {
-        if (ServerHelper.Instance.ConnectedServer != null)
+        if (ServerHelper.ConnectedServer != null)
         {
-            if (ServerHelper.Instance.ConnectedServer.ServerId == Server.ServerId)
+            if (ServerHelper.ConnectedServer.ServerId == Server.ServerId)
             {
-                ServerHelper.Instance.LogoutAndDispose();
+                ServerHelper.LogoutAndDispose();
                 IsConnectedServer = false;
                 return;
             }
-            
-            ServerHelper.Instance.LogoutAndDispose();
+
+            ServerHelper.LogoutAndDispose();
             IsConnectedServer = false;
         }
-        
+
         var param = new DialogParameters { { "Server", Server } };
 
-        var dialog = await DialogService.ShowAsync<ServerLoginDialog>("ServerLoginDialog", param, SettingsHelper.Instance.DialogOptions);
+        var dialog = await DialogService.ShowAsync<ServerLoginDialog>("ServerLoginDialog", param, SettingsHelper.DialogOptions);
         var result = await dialog.Result;
 
         if (result is { Canceled: false })
         {
-            ServerHelper.Instance.Login(Server);
-            if (ServerHelper.Instance.ConnectedServer != null)
+            ServerHelper.Login(Server);
+            if (ServerHelper.ConnectedServer != null)
             {
-                IsConnectedServer = ServerHelper.Instance.ConnectedServer.ServerId == Server.ServerId;
+                IsConnectedServer = ServerHelper.ConnectedServer.ServerId == Server.ServerId;
             }
+
             NavMan.NavigateTo("/Profiles");
         }
     }
 
     private async Task RunDeleteTask()
     {
-        if (ServerHelper.Instance.ConnectedServer != null)
+        if (ServerHelper.ConnectedServer != null)
         {
-            ServerHelper.Instance.LogoutAndDispose();
+            ServerHelper.LogoutAndDispose();
             IsConnectedServer = false;
         }
 
-        var dialog = await DialogService.ShowAsync<ServerRemoveDialog>("ServerRemoveDialog", SettingsHelper.Instance.DialogOptions);
+        var dialog = await DialogService.ShowAsync<ServerRemoveDialog>("ServerRemoveDialog", SettingsHelper.DialogOptions);
         var result = await dialog.Result;
 
         if (result is { Canceled: false })
@@ -110,7 +122,8 @@
             ServerList.Remove(Server);
             await ServerListChanged.InvokeAsync(ServerList);
 
-            SettingsHelper.Instance.SetServerSettings(ServerList);
+            SettingsHelper.SetServerSettings(ServerList);
         }
     }
+
 }

@@ -1,5 +1,5 @@
 ﻿/* License: NCSA Open Source License
- * 
+ *
  * Copyright: SPT
  * AUTHORS:
  * Basuro
@@ -10,13 +10,13 @@ using System.Security.Cryptography;
 using CWX_SPT_Launcher_Backend.Patcher;
 using CWX_SPT_Launcher_Backend.Patcher.Enums;
 
-namespace CWX_SPT_Frontend.Helpers;
+namespace CWX_SPT_Launcher_Backend.Helpers;
 
-public static class PatchHelper
+public class PatchHelper
 {
-    private static DiffResult Diff(byte[] original, byte[] patched)
+    private DiffResult Diff(byte[] original, byte[] patched)
     {
-        PatchInfo pi = new PatchInfo
+        var pi = new PatchInfo
         {
             OriginalLength = original.Length,
             PatchedLength = patched.Length,
@@ -24,18 +24,18 @@ public static class PatchHelper
             PatchedChecksum = SHA256.HashData(patched)
         };
 
-        if ((pi.OriginalLength == pi.PatchedLength) && ArraysMatch(pi.OriginalChecksum, pi.PatchedChecksum))
+        if (pi.OriginalLength == pi.PatchedLength && ArraysMatch(pi.OriginalChecksum, pi.PatchedChecksum))
         {
             return new DiffResult(EDiffResultType.FilesMatch, null!);
         }
 
-        int minLength = Math.Min(pi.OriginalLength, pi.PatchedLength);
+        var minLength = Math.Min(pi.OriginalLength, pi.PatchedLength);
 
         List<PatchItem> items = [];
         List<byte> currentData = null;
-        int diffOffsetStart = 0;
+        var diffOffsetStart = 0;
 
-        for (int i = 0; i < minLength; i++)
+        for (var i = 0; i < minLength; i++)
         {
             if (original[i] != patched[i])
             {
@@ -51,7 +51,11 @@ public static class PatchHelper
             {
                 if (currentData != null)
                 {
-                    items.Add(new PatchItem { Offset = diffOffsetStart, Data = currentData.ToArray() });
+                    items.Add(new PatchItem
+                    {
+                        Offset = diffOffsetStart,
+                        Data = currentData.ToArray()
+                    });
                 }
 
                 currentData = null;
@@ -61,14 +65,22 @@ public static class PatchHelper
 
         if (currentData != null)
         {
-            items.Add(new PatchItem { Offset = diffOffsetStart, Data = currentData.ToArray() });
+            items.Add(new PatchItem
+            {
+                Offset = diffOffsetStart,
+                Data = currentData.ToArray()
+            });
         }
 
         if (pi.PatchedLength > pi.OriginalLength)
         {
-            byte[] buf = new byte[pi.PatchedLength - pi.OriginalLength];
+            var buf = new byte[pi.PatchedLength - pi.OriginalLength];
             Array.Copy(patched, pi.OriginalLength, buf, 0, buf.Length);
-            items.Add(new PatchItem { Offset = pi.OriginalLength, Data = buf });
+            items.Add(new PatchItem
+            {
+                Offset = pi.OriginalLength,
+                Data = buf
+            });
         }
 
         pi.Items = items.ToArray();
@@ -76,7 +88,7 @@ public static class PatchHelper
         return new DiffResult(EDiffResultType.Success, pi);
     }
 
-    public static DiffResult Diff(string originalFile, string patchedFile)
+    public DiffResult Diff(string originalFile, string patchedFile)
     {
         if (string.IsNullOrWhiteSpace(originalFile))
         {
@@ -108,7 +120,7 @@ public static class PatchHelper
         {
             return new DiffResult(EDiffResultType.OriginalFileReadFailed, null!);
         }
-        
+
         byte[] patchedData;
 
         try
@@ -123,7 +135,7 @@ public static class PatchHelper
         return Diff(originalData, patchedData);
     }
 
-    public static PatchResult Patch(byte[] input, PatchInfo pi)
+    public PatchResult Patch(byte[] input, PatchInfo pi)
     {
         var inputHash = SHA256.HashData(input);
 
@@ -142,28 +154,30 @@ public static class PatchHelper
             return new PatchResult(EPatchResultType.InputLengthMismatch, null!);
         }
 
-        byte[] patchedData = new byte[pi.PatchedLength];
+        var patchedData = new byte[pi.PatchedLength];
         long minLen = Math.Min(pi.OriginalLength, pi.PatchedLength);
         Array.Copy(input, patchedData, minLen);
 
-        foreach (PatchItem itm in pi.Items)
+        foreach (var itm in pi.Items)
         {
             Array.Copy(itm.Data, 0, patchedData, itm.Offset, itm.Data.Length);
         }
 
         var patchedHash = SHA256.HashData(patchedData);
 
-        return !ArraysMatch(patchedHash, pi.PatchedChecksum) ? new PatchResult(EPatchResultType.OutputChecksumMismatch, null!) : new PatchResult(EPatchResultType.Success, patchedData);
+        return !ArraysMatch(patchedHash, pi.PatchedChecksum)
+            ? new PatchResult(EPatchResultType.OutputChecksumMismatch, null!)
+            : new PatchResult(EPatchResultType.Success, patchedData);
     }
 
-    private static bool ArraysMatch(byte[] a, byte[] b)
+    private bool ArraysMatch(byte[] a, byte[] b)
     {
         if (a.Length != b.Length)
         {
             return false;
         }
 
-        for (int i = 0; i < a.Length; i++)
+        for (var i = 0; i < a.Length; i++)
         {
             if (a[i] != b[i])
             {
