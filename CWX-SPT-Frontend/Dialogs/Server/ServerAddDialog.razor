@@ -1,4 +1,5 @@
-﻿@inject ISnackbar Snackbar
+﻿@using Microsoft.Win32
+@inject ISnackbar Snackbar
 
 <MudDialog>
     <DialogContent>
@@ -6,10 +7,13 @@
             <MudForm Model="Server" @bind-IsValid="@success" Class="gap-2 mt-3">
                 <MudTextField Immediate="true" @bind-Value="Server.Name" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense"/>
                 <MudTextField Immediate="true" @bind-Value="Server.Ip" Label="Address" Required="true" RequiredError="IP is required!" Variant="Variant.Outlined" Margin="Margin.Dense" Mask="@ipPortMask"/>
-                <MudTextField Immediate="true" @bind-Value="Server.GamePath" Label="Game Path" Required="true" RequiredError="Game Path is required!" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                <div class="d-flex gap-2 justify-center align-center">
+                    <MudTextField Immediate="true" @bind-Value="Server.GamePath" Label="Game Path" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                    <MudFab Class="mt-1" StartIcon="@Icons.Material.Filled.Folder" Color="Color.Primary" @onclick="DirectoryPicker" Size="Size.Small" />
+                </div>
             </MudForm>
             <MudContainer Class="mt-3 d-flex justify-end pa-0 gap-2">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto" @onclick="Submit">Add</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success || !pathChosen)" Class="ml-auto" @onclick="Submit">Add</MudButton>
                 <MudButton Variant="Variant.Filled" Color="Color.Default" @onclick="Cancel">Cancel</MudButton>
             </MudContainer>
         </MudContainer>
@@ -18,6 +22,7 @@
 
 @code {
     private bool success;
+    private bool pathChosen;
 
     private readonly IMask ipPortMask = RegexMask.IPv4(true);
 
@@ -36,5 +41,18 @@
     private void Cancel()
     {
         MudDialog.Cancel();
+    }
+
+    private void DirectoryPicker()
+    {
+        var folder = new OpenFolderDialog
+        {
+            Multiselect = false
+        };
+
+        folder.ShowDialog();
+
+        Server.GamePath = folder.FolderName;
+        pathChosen = true;
     }
 }

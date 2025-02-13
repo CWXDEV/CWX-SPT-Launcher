@@ -15,28 +15,35 @@
         <MudText Class="mb-n3 no-pointers no-select" Typo="Typo.caption">Game Path:</MudText>
         <MudText Typo="Typo.body1">@Server.GamePath</MudText>
         <MudContainer Class="pa-0 d-flex mt-2">
-            <MudTooltip Text="@(IsConnectedServer ? "Connected" : "Disconnected")" Arrow="true" Placement="Placement.Right">
-                <MudIcon Icon="@Icons.Material.Filled.Circle" Color="@(IsConnectedServer ? Color.Success : Color.Error)"/>
+            <MudTooltip Text="@(IsConnectedServer ? "Connected" : "Disconnected")" Arrow="true"
+                        Placement="Placement.Bottom">
+                <MudIcon Icon="@Icons.Material.Filled.Circle"
+                         Color="@(IsConnectedServer ? Color.Success : Color.Error)"/>
             </MudTooltip>
             <MudSpacer/>
-            <MudTooltip Text="@(!IsConnectedServer ? "Login" : "Logout")" Arrow="true" Placement="Placement.Left">
-                <MudIconButton Class="mr-1 mb-n2" Color="Color.Default" Icon="@(!IsConnectedServer ? Icons.Material.Filled.Login : Icons.Material.Filled.Logout)" Size="Size.Small" @onclick="RunLoginTask"/>
+            <MudTooltip Text="@(!IsConnectedServer ? "Login to server" : "Logout of server")" Arrow="true" Placement="Placement.Bottom">
+                <MudIconButton Class="mr-1 mb-n2" Color="Color.Default"
+                               Icon="@(!IsConnectedServer ? Icons.Material.Filled.Login : Icons.Material.Filled.Logout)"
+                               Size="Size.Small" @onclick="RunLoginTask"/>
             </MudTooltip>
-            <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Build" Size="Size.Small" @onclick="RunEditTask"/>
-            <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" @onclick="RunDeleteTask"/>
+            <MudTooltip Text="Edit server" Arrow="true" Placement="Placement.Bottom">
+                <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Build" Size="Size.Small"
+                               @onclick="RunEditTask"/>
+            </MudTooltip>
+            <MudTooltip Text="Delete server" Arrow="true" Placement="Placement.Bottom">
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="Size.Small"
+                               @onclick="RunDeleteTask"/>
+            </MudTooltip>
         </MudContainer>
     </MudPaper>
 </MudItem>
 
 @code {
-    [Parameter]
-    public Servers Server { get; set; }
+    [Parameter] public Servers Server { get; set; }
 
-    [Parameter]
-    public List<Servers> ServerList { get; set; }
+    [Parameter] public List<Servers> ServerList { get; set; }
 
-    [Parameter]
-    public EventCallback<List<Servers>> ServerListChanged { get; set; }
+    [Parameter] public EventCallback<List<Servers>> ServerListChanged { get; set; }
 
     private bool IsConnectedServer { get; set; }
 

@@ -5,25 +5,36 @@
 
 <MudContainer Class="px-8 my-8" MaxWidth="MaxWidth.Large">
     <MudContainer Class="mt-n6 mb-3 pa-0 d-flex justify-start gap-2">
-        <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.PersonAdd" Size="Size.Large" @onclick="RunAddTask" Variant="Variant.Outlined" Disabled="@(!IsConnected)">Create New Profile</MudButton>
-        <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.Login" Size="Size.Large" @onclick="RunLoginTask" Variant="Variant.Outlined" Disabled="@(!IsConnected)">Login with details</MudButton>
+        <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.PersonAdd" Size="Size.Large"
+                   @onclick="RunAddTask" Variant="Variant.Outlined" Disabled="@(!IsConnected)">Create New Profile
+        </MudButton>
+        <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.Login" Size="Size.Large"
+                   @onclick="RunLoginTask" Variant="Variant.Outlined" Disabled="@(!IsConnected)">Login with details
+        </MudButton>
     </MudContainer>
     <MudGrid>
         @foreach (var profile in ProfilesList)
         {
             <ProfileCardComponent Profile="@profile" @bind-ProfileList="ProfilesList"/>
         }
-        @if (ProfilesList.Count == 0 && IsConnected)
+
+        @switch (ProfilesList.Count)
         {
-            <MudItem sm="12">
-                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">The server you are connected too, does not show profiles, please use the above "Login with details" button.</MudAlert>
-            </MudItem>
-        }
-        else if (ProfilesList.Count == 0 && !IsConnected)
-        {
-            <MudItem sm="12">
-                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">Please connect to a Server first!</MudAlert>
-            </MudItem>
+            // TODO: server might hide profiles, but an edge case might be a fresh server
+            case 0 when IsConnected:
+                <MudItem sm="12">
+                    <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">The server you are connected too, does
+                        not
+                        show profiles, please use the above "Login with details" button.
+                    </MudAlert>
+                </MudItem>
+                break;
+            case 0 when !IsConnected:
+                <MudItem sm="12">
+                    <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">Please connect to a Server first!
+                    </MudAlert>
+                </MudItem>
+                break;
         }
     </MudGrid>
 </MudContainer>
@@ -45,7 +56,7 @@
         var dialog = await DialogService.ShowAsync<ProfileAddDialog>("ProfileAddDialog", SettingsHelper.DialogOptions);
         var result = await dialog.Result;
 
-        if (result is { Canceled: false })
+        if (result?.Canceled is false)
         {
             ProfilesList = ServerHelper.ProfileList;
         }
@@ -56,8 +67,9 @@
         var dialog = await DialogService.ShowAsync<ProfileLoginDialog>("ProfileLoginDialog", SettingsHelper.DialogOptions);
         var result = await dialog.Result;
 
-        if (result is { Canceled: false })
+        if (result?.Canceled is false)
         {
         }
     }
+
 }
