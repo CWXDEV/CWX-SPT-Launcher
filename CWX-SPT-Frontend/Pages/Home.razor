@@ -38,7 +38,7 @@
         var dialog = await DialogService.ShowAsync<ServerAddDialog>("ServerAddDialog", _settingsHelper.DialogOptions);
         var result = await dialog.Result;
 
-        if (result is { Canceled: false })
+        if (result?.Canceled is false)
         {
             ServerList.Add(result.Data as Servers);
             _settingsHelper.SetServerSettings(ServerList);

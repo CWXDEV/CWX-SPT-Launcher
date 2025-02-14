@@ -33,6 +33,7 @@ public partial class MainWindow
         serviceCollection.AddSingleton<PatchHelper>();
         serviceCollection.AddSingleton<ServerHelper>();
         serviceCollection.AddSingleton<SettingsHelper>();
+        serviceCollection.AddSingleton<NavigationHelper>();
 
         var serviceProvider = serviceCollection.BuildServiceProvider();
         Resources.Add("services", serviceProvider);

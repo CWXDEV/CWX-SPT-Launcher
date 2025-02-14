@@ -1,6 +1,7 @@
 ﻿@using CWX_SPT_Launcher_Backend.Helpers
 @inject ISnackbar Snackbar
 @inject ServerHelper ServerHelper
+@inject NavigationHelper NavigationHelper
 
 <MudDialog>
     <DialogContent>
@@ -91,12 +92,14 @@
         }
 
         ServerHelper.LogoutAndDispose();
+        NavigationHelper.SetBasicPages(false);
         token?.Cancel();
         MudDialog.Cancel();
     }
 
     private void Submit()
     {
+        NavigationHelper.SetBasicPages(true);
         MudDialog.Close(DialogResult.Ok(Server));
         Snackbar.Add("Logged In. Visit Profiles Page!", Severity.Success);
     }
@@ -107,5 +110,4 @@
         token?.Cancel();
         MudDialog.Cancel();
     }
-
 }

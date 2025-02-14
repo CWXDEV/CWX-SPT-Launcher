@@ -3,6 +3,7 @@
 @inject NavigationManager NavMan
 @inject ServerHelper ServerHelper
 @inject SettingsHelper SettingsHelper
+@inject NavigationHelper NavigationHelper
 
 <MudItem md="4">
     <MudPaper Elevation="2" Class="pa-4 d-flex flex-column flex-none gap-2 card-overflow">
@@ -66,7 +67,7 @@
         var dialog = await DialogService.ShowAsync<ServerEditDialog>("ServerEditDialog", param, SettingsHelper.DialogOptions);
         var result = await dialog.Result;
 
-        if (result is { Canceled: false })
+        if (result?.Canceled is false)
         {
             var serverToChange = ServerList.FirstOrDefault(x => x.ServerId == Server.ServerId);
 
@@ -88,11 +89,13 @@
             if (ServerHelper.ConnectedServer.ServerId == Server.ServerId)
             {
                 ServerHelper.LogoutAndDispose();
+                NavigationHelper.SetBasicPages(false);
                 IsConnectedServer = false;
                 return;
             }
 
             ServerHelper.LogoutAndDispose();
+            NavigationHelper.SetBasicPages(false);
             IsConnectedServer = false;
         }
 
@@ -101,7 +104,7 @@
         var dialog = await DialogService.ShowAsync<ServerLoginDialog>("ServerLoginDialog", param, SettingsHelper.DialogOptions);
         var result = await dialog.Result;
 
-        if (result is { Canceled: false })
+        if (result?.Canceled is false)
         {
             ServerHelper.Login(Server);
             if (ServerHelper.ConnectedServer != null)
@@ -124,7 +127,7 @@
         var dialog = await DialogService.ShowAsync<ServerRemoveDialog>("ServerRemoveDialog", SettingsHelper.DialogOptions);
         var result = await dialog.Result;
 
-        if (result is { Canceled: false })
+        if (result?.Canceled is false)
         {
             ServerList.Remove(Server);
             await ServerListChanged.InvokeAsync(ServerList);
@@ -132,5 +135,4 @@
             SettingsHelper.SetServerSettings(ServerList);
         }
     }
-
 }
