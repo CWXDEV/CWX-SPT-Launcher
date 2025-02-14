@@ -1,8 +1,28 @@
 ﻿@page "/Profile"
 @inject ServerHelper ServerHelper
+@inject GameHelper GameHelper
 
-<h3>Profile</h3>
-<h3>@SelectedProfile.Username</h3>
+<MudContainer Class="px-8 my-2 pa-0" MaxWidth="MaxWidth.Large">
+    <MudContainer Class="pa-0 pb-4">
+        <ProfileStatsComponent Profile="@SelectedProfile"/>
+    </MudContainer>
+    <MudContainer Class="d-flex pa-0 pb-4">
+        <MudPaper Elevation="2" Class="pa-4 mr-4">
+            <MudImage Src="https://placehold.co/150" Elevation="25" Class="rounded-lg"
+                      FallbackSrc="https://placehold.co/150"/>
+        </MudPaper>
+        <MudPaper Elevation="2" Class="pa-4 d-flex flex-column justify-space-between mr-4">
+            <MudText Class="mb-n2 no-pointers no-select" Typo="Typo.caption">Currency:</MudText>
+            <MudText Typo="Typo.h6">₽ 1,000,000,000</MudText>
+            <MudText Typo="Typo.h6">$ 1,000,000,000</MudText>
+            <MudText Typo="Typo.h6">€ 1,000,000,000</MudText>
+            <MudText Typo="Typo.h6">GP 1,000,000,000</MudText>
+        </MudPaper>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" @onclick="StartGame"
+                   EndIcon="@Icons.Material.Filled.ArrowRight">Start Game</MudButton>
+    </MudContainer>
+
+</MudContainer>
 
 @code {
     public ServerProfile SelectedProfile { get; set; }
@@ -12,4 +32,13 @@
         SelectedProfile = ServerHelper.SelectedProfile;
         base.OnInitialized();
     }
+
+    private async Task StartGame()
+    {
+        // do checks
+        await GameHelper.LaunchGame();
+        // patch game
+        // start game
+    }
+
 }

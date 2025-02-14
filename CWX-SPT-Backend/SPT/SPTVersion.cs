@@ -9,12 +9,21 @@ public class SPTVersion
     {
         get;
         set;
-    } = "";
+    }
 
     [JsonPropertyName("eftVersion")]
     public string EftVersion
     {
         get;
         set;
-    } = "";
+    }
+
+    public SPTVersion(
+        string spt = "",
+        string eft = ""
+    )
+    {
+        SptVersion = spt;
+        EftVersion = eft;
+    }
 }
