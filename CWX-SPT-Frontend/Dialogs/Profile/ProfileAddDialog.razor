@@ -55,7 +55,7 @@
         try
         {
             token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            var result = await ServerHelper.PutAsync<RegisterResponse, RegisterRequest>("/launcher/v2/Register", Request, token.Token);
+            var result = await ServerHelper.PutAsync<RegisterResponse, RegisterRequest>(RequestUrl.Register, Request, token.Token);
             if (!result)
             {
                 AbortOrFail();

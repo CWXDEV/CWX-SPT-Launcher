@@ -39,7 +39,7 @@
         try
         {
             token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            var result = await ServerHelper.PutAsync<RemoveResponse, LoginRequest>("/launcher/v2/Remove", request, token.Token);
+            var result = await ServerHelper.PutAsync<RemoveResponse, LoginRequest>(RequestUrl.Remove, request, token.Token);
 
             if (!result)
             {

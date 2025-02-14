@@ -1,0 +1,15 @@
+﻿@page "/Profile"
+@inject ServerHelper ServerHelper
+
+<h3>Profile</h3>
+<h3>@SelectedProfile.Username</h3>
+
+@code {
+    public ServerProfile SelectedProfile { get; set; }
+
+    protected override void OnInitialized()
+    {
+        SelectedProfile = ServerHelper.SelectedProfile;
+        base.OnInitialized();
+    }
+}

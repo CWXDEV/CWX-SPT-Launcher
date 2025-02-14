@@ -46,7 +46,7 @@
         try
         {
             token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            var result = await ServerHelper.PutAsync<PasswordChangeResponse, PasswordChangeRequest>("/launcher/v2/passwordChange", request, token.Token);
+            var result = await ServerHelper.PutAsync<PasswordChangeResponse, PasswordChangeRequest>(RequestUrl.PasswordChange, request, token.Token);
 
             if (!result)
             {
@@ -56,7 +56,7 @@
 
             token?.Dispose();
         }
-        catch (TaskCanceledException e) when (token is { IsCancellationRequested: true })
+        catch (TaskCanceledException e) when (token.IsCancellationRequested)
         {
             AbortOrFail();
             return;

@@ -2,6 +2,13 @@
 
 public class NavigationHelper
 {
+    private bool _showProfilesPage;
+    public bool ShowProfilesPage
+    {
+        get => _showProfilesPage;
+        set => _showProfilesPage = value;
+    }
+
     private bool _showProfilePage;
     public bool ShowProfilePage
     {
@@ -25,8 +32,14 @@ public class NavigationHelper
 
     public void SetBasicPages(bool state)
     {
-        ShowProfilePage = state;
+        ShowProfilesPage = state;
         ShowModPage = state;
+        NotifyStateChanged();
+    }
+
+    public void SetProfilePages(bool state)
+    {
+        ShowProfilePage = state;
         NotifyStateChanged();
     }
 

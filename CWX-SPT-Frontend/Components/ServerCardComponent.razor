@@ -90,12 +90,14 @@
             {
                 ServerHelper.LogoutAndDispose();
                 NavigationHelper.SetBasicPages(false);
+                NavigationHelper.SetProfilePages(false);
                 IsConnectedServer = false;
                 return;
             }
 
             ServerHelper.LogoutAndDispose();
             NavigationHelper.SetBasicPages(false);
+            NavigationHelper.SetProfilePages(false);
             IsConnectedServer = false;
         }
 
@@ -106,7 +108,7 @@
 
         if (result?.Canceled is false)
         {
-            ServerHelper.Login(Server);
+            ServerHelper.ServerLogin(Server);
             if (ServerHelper.ConnectedServer != null)
             {
                 IsConnectedServer = ServerHelper.ConnectedServer.ServerId == Server.ServerId;

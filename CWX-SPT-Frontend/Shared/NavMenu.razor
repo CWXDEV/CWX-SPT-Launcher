@@ -2,9 +2,13 @@
 
 <MudNavMenu>
     <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.ConnectedTv" Href="/" Match="NavLinkMatch.All">Servers</MudNavLink>
-    @if (NavigationHelper.ShowProfilePage)
+    @if (NavigationHelper.ShowProfilesPage)
     {
         <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.PeopleAlt" Href="/Profiles" Match="NavLinkMatch.Prefix">Profiles</MudNavLink>
+    }
+    @if (NavigationHelper.ShowProfilePage)
+    {
+        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.Person" Href="/Profile" Match="NavLinkMatch.Prefix">Profile</MudNavLink>
     }
     @if (NavigationHelper.ShowModPage)
     {

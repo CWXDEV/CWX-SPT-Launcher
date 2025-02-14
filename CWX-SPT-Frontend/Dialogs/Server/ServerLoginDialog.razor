@@ -1,5 +1,4 @@
-﻿@using CWX_SPT_Launcher_Backend.Helpers
-@inject ISnackbar Snackbar
+﻿@inject ISnackbar Snackbar
 @inject ServerHelper ServerHelper
 @inject NavigationHelper NavigationHelper
 
@@ -40,7 +39,7 @@
             await CallServer(ERequestTask.Types, "Getting profile creation data from server", "Error getting profile creation data!");
             await CallServer(ERequestTask.Mods, "Getting active mod list from server", "Error getting mod list from server!");
         }
-        catch (TaskCanceledException e) when (token is { IsCancellationRequested: true })
+        catch (TaskCanceledException e) when (token.IsCancellationRequested)
         {
             AbortOrFail("Request Timed out!");
             return;
@@ -68,10 +67,10 @@
 
         var result = option switch
         {
-            ERequestTask.Ping => await ServerHelper.GetAsync<PingResponse>("/launcher/v2/ping", token.Token),
-            ERequestTask.Profiles => await ServerHelper.GetAsync<ProfilesResponse>("/launcher/v2/profiles", token.Token),
-            ERequestTask.Types => await ServerHelper.GetAsync<TypesResponse>("/launcher/v2/types", token.Token),
-            ERequestTask.Mods => await ServerHelper.GetAsync<ModsResponse>("/launcher/v2/mods", token.Token),
+            ERequestTask.Ping => await ServerHelper.GetAsync<PingResponse>(RequestUrl.Ping, token.Token),
+            ERequestTask.Profiles => await ServerHelper.GetAsync<ProfilesResponse>(RequestUrl.Profiles, token.Token),
+            ERequestTask.Types => await ServerHelper.GetAsync<TypesResponse>(RequestUrl.Types, token.Token),
+            ERequestTask.Mods => await ServerHelper.GetAsync<ModsResponse>(RequestUrl.Mods, token.Token),
             _ => false
         };
 
@@ -93,6 +92,7 @@
 
         ServerHelper.LogoutAndDispose();
         NavigationHelper.SetBasicPages(false);
+        NavigationHelper.SetProfilePages(false);
         token?.Cancel();
         MudDialog.Cancel();
     }

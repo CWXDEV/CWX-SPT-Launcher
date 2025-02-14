@@ -10,6 +10,7 @@ public class ServerHelper
 {
     private HttpClient? _netClient;
     public Servers? ConnectedServer;
+    public ServerProfile? SelectedProfile;
     public Dictionary<string, SPTMod> ModList = [];
     public List<ServerProfile> ProfileList = [];
     public Dictionary<string, string> ProfileTypes = new();
@@ -54,6 +55,8 @@ public class ServerHelper
             case PasswordChangeResponse casting3:
                 ProfileList = casting3.Profiles;
                 return casting3.Response;
+            case LoginResponse casting4:
+                return casting4.Response;
             default:
                 return false;
         }
@@ -69,13 +72,19 @@ public class ServerHelper
     {
         ProfileList = [];
         ModList = [];
+        SelectedProfile = null;
         ProfileTypes = new Dictionary<string, string>();
         ConnectedServer = null;
         _netClient = null;
     }
 
-    public void Login(Servers server)
+    public void ServerLogin(Servers server)
     {
         ConnectedServer = server;
+    }
+
+    public void ProfileLogin(ServerProfile profile)
+    {
+        SelectedProfile = profile;
     }
 }
