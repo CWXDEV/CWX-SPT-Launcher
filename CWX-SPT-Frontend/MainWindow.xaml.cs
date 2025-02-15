@@ -15,7 +15,7 @@ namespace CWX_SPT_Frontend;
 /// </summary>
 public partial class MainWindow
 {
-    private static Window WindowMain;
+    public static Window WindowMain;
     private readonly SettingsHelper _settings;
 
     public MainWindow()
@@ -81,11 +81,6 @@ public partial class MainWindow
             Top = _settings.GetSettings().AppSettings.StartLocation.X;
             Left = _settings.GetSettings().AppSettings.StartLocation.Y;
         }
-    }
-
-    public static void ChangeTopMostSetting(bool setting)
-    {
-        WindowMain.Topmost = setting;
     }
 
     protected override void OnClosing(CancelEventArgs e)
