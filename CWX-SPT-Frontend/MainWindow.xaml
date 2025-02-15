@@ -9,11 +9,11 @@
         Title="CWX-SPT-LAUNCHER"
         Height="550"
         Width="1070"
-        Background="Gray"
+        Background="{StaticResource WindowBackgroundBrush}"
         MinHeight="550"
         MinWidth="1070">
 
-    <cwxSptWpf:EmbeddedBlazorWebView UseEmbeddedResources="True" HostPage="index.html" Services="{DynamicResource services}">
+    <cwxSptWpf:EmbeddedBlazorWebView x:Name="BlazorWebViewControl" UseEmbeddedResources="True" HostPage="index.html" Services="{DynamicResource services}">
         <cwxSptWpf:EmbeddedBlazorWebView.RootComponents>
             <blazor:RootComponent Selector="#app" ComponentType="{x:Type cwxSptWpf:Routes}" />
         </cwxSptWpf:EmbeddedBlazorWebView.RootComponents>

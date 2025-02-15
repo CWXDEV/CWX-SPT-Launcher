@@ -36,12 +36,12 @@ public class GameHelper
     public async Task<bool> LaunchGame()
     {
         // setup directories
-        if (IsInstalledInLive())
-        {
-            return false;
-        }
-
-        SetupGameFiles();
+        // if (IsInstalledInLive())
+        // {
+        //     return false;
+        // }
+        //
+        // SetupGameFiles();
 
         // check game path
         var clientExecutable = Path.Join(_serverHelper.ConnectedServer.GamePath, "EscapeFromTarkov.exe");
@@ -58,7 +58,12 @@ public class GameHelper
 
         //start game
         var args = // $"-force-gfx-jobs native -token={account.id} -config={Json.SerializeSingleQuotes(new ClientConfig(server.backendUrl))}";
-        $"-force-gfx-jobs native -token={_serverHelper.SelectedProfile.ProfileID} -config=" + "{\"BackendUrl\":\"http://127.0.0.1:6969\",\"Version\": \"Live\",\"MatchingVersion\":\"Live\"}";
+            // -force-gfx-jobs native -token=67ae402600056a507da6991c -config={'BackendUrl':'http://127.0.0.1:6969','MatchingVersion':'live','Version':'live'}
+            // -force-gfx-jobs native -token=67ae402600056a507da6991c -config={'BackendUrl':'http://127.0.0.1:6969','Version':'live','MatchingVersion':'live'}
+
+        $"-force-gfx-jobs native -token={_serverHelper.SelectedProfile.ProfileID} -config=" + "{\'BackendUrl\':\'http://127.0.0.1:6969\',\'Version\':\'live\',\'MatchingVersion\':\'live\'}";
+
+        Console.WriteLine($"{args}");
 
         var clientProcess = new ProcessStartInfo(clientExecutable)
         {

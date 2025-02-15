@@ -1,4 +1,5 @@
-﻿using CWX_SPT_Launcher_Backend.CWX;
+﻿using System.Drawing;
+using CWX_SPT_Launcher_Backend.CWX;
 using Microsoft.AspNetCore.Components.WebView.Wpf;
 using Microsoft.Extensions.FileProviders;
 

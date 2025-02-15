@@ -6,6 +6,7 @@ using CWX_SPT_Launcher_Backend.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
+using Color = System.Drawing.Color;
 
 namespace CWX_SPT_Frontend;
 
@@ -57,6 +58,11 @@ public partial class MainWindow
 
     private void CustomizeComponent()
     {
+        BlazorWebViewControl.BlazorWebViewInitialized += (sender, args) =>
+        {
+            args.WebView.DefaultBackgroundColor = Color.FromArgb(255, 50, 51, 61);
+        };
+
         Topmost = _settings.GetSettings().AppSettings.AlwaysTop;
 
         if (_settings.GetSettings().FirstRun)
