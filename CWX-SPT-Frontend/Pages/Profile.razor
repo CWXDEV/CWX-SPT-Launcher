@@ -1,6 +1,7 @@
 ﻿@page "/Profile"
 @inject ServerHelper ServerHelper
 @inject GameHelper GameHelper
+@inject LogHelper LogHelper
 
 <MudContainer Class="px-8 my-2 pa-0" MaxWidth="MaxWidth.Large">
     <MudContainer Class="pa-0 pb-4">
@@ -30,15 +31,17 @@
     protected override void OnInitialized()
     {
         SelectedProfile = ServerHelper.SelectedProfile;
+        LogHelper.LogInfo($"Selected profile: {SelectedProfile.Username}");
         base.OnInitialized();
     }
 
     private async Task StartGame()
     {
         // do checks
+        LogHelper.LogInfo($"Launching Game");
         await GameHelper.LaunchGame();
+        LogHelper.LogInfo($"Launched Game");
         // patch game
         // start game
     }
-
 }

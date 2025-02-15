@@ -36,6 +36,7 @@ public partial class MainWindow
         serviceCollection.AddSingleton<SettingsHelper>();
         serviceCollection.AddSingleton<NavigationHelper>();
         serviceCollection.AddSingleton<GameHelper>();
+        serviceCollection.AddSingleton<LogHelper>();
 
         var serviceProvider = serviceCollection.BuildServiceProvider();
         Resources.Add("services", serviceProvider);

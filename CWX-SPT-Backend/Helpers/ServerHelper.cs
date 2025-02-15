@@ -14,9 +14,18 @@ public class ServerHelper
     public Dictionary<string, SPTMod> ModList = [];
     public List<ServerProfile> ProfileList = [];
     public Dictionary<string, string> ProfileTypes = new();
+    private readonly LogHelper _logHelper;
+
+    public ServerHelper(
+        LogHelper logHelper
+    )
+    {
+        _logHelper = logHelper;
+    }
 
     public async Task<bool> GetAsync<T>(string url, CancellationToken token)
     {
+        _logHelper.LogInfo($"GET: {url}");
         var task = await _netClient?.GetAsync(url, token);
         var result = JsonSerializer.Deserialize<T>(SimpleZlib.Decompress(await task.Content.ReadAsByteArrayAsync(token)));
 
@@ -40,6 +49,7 @@ public class ServerHelper
 
     public async Task<bool> PutAsync<T, U>(string url, U request, CancellationToken token)
     {
+        _logHelper.LogInfo($"POST: {url}");
         var content = new ByteArrayContent(SimpleZlib.CompressToBytes(JsonSerializer.Serialize(request), zlibConst.Z_BEST_COMPRESSION));
         var task = await _netClient?.PutAsync(url, content, token);
         var result = JsonSerializer.Deserialize<T>(SimpleZlib.Decompress(await task.Content.ReadAsByteArrayAsync(token)));
@@ -70,6 +80,7 @@ public class ServerHelper
 
     public void LogoutAndDispose()
     {
+        _logHelper.LogInfo($"Logged out of server {(ConnectedServer?.Ip ?? "Unknown")} and disposed");
         ProfileList = [];
         ModList = [];
         SelectedProfile = null;

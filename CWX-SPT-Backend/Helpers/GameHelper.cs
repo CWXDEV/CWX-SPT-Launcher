@@ -57,13 +57,9 @@ public class GameHelper
         // TODO: set up patching
 
         //start game
-        var args = // $"-force-gfx-jobs native -token={account.id} -config={Json.SerializeSingleQuotes(new ClientConfig(server.backendUrl))}";
-            // -force-gfx-jobs native -token=67ae402600056a507da6991c -config={'BackendUrl':'http://127.0.0.1:6969','MatchingVersion':'live','Version':'live'}
-            // -force-gfx-jobs native -token=67ae402600056a507da6991c -config={'BackendUrl':'http://127.0.0.1:6969','Version':'live','MatchingVersion':'live'}
-
-        $"-force-gfx-jobs native -token={_serverHelper.SelectedProfile.ProfileID} -config=" + "{\'BackendUrl\':\'http://127.0.0.1:6969\',\'Version\':\'live\',\'MatchingVersion\':\'live\'}";
-
-        Console.WriteLine($"{args}");
+        var args =
+        $"-force-gfx-jobs native -token={_serverHelper.SelectedProfile.ProfileID} -config=" +
+        "{\'BackendUrl\':\'" + $"{_serverHelper.ConnectedServer.Ip}" + "\',\'Version\':\'live\',\'MatchingVersion\':\'live\'}";
 
         var clientProcess = new ProcessStartInfo(clientExecutable)
         {
