@@ -75,7 +75,7 @@ public class ServerHelper
     public void SetupHttpClient(Servers server)
     {
         _netClient = new HttpClient();
-        _netClient.BaseAddress = new Uri("http://" + server.Ip);
+        _netClient.BaseAddress = new Uri("https://" + server.Ip);
     }
 
     public void LogoutAndDispose()
