@@ -59,7 +59,7 @@ public class GameHelper
         //start game
         var args =
             $"-force-gfx-jobs native -token={_serverHelper.SelectedProfile.ProfileID} -config=" + "{\'BackendUrl\':\'" + $"{_serverHelper.ConnectedServer.Ip}" + "\',\'Version\':\'live\',\'MatchingVersion\':\'live\'}";
-         $"-force-gfx-jobs native -token=67b4b04b0003dc184199f6f6 -config='BackendUrl':'https://127.0.0.1:6969','Version':'live','MatchingVersion':'live'";
+         // $"-force-gfx-jobs native -token=67b4b04b0003dc184199f6f6 -config='BackendUrl':'https://127.0.0.1:6969','Version':'live','MatchingVersion':'live'";
 
         var clientProcess = new ProcessStartInfo(clientExecutable)
         {

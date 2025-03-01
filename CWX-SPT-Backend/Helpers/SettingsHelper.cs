@@ -21,113 +21,173 @@ public class SettingsHelper
     };
 
     private Settings? _settings;
+    private Lock _lock = new Lock();
+    private LogHelper? _logHelper;
 
     public SettingsHelper()
     {
         LoadSettingsFromFile();
     }
 
+    public SettingsHelper(
+        LogHelper logHelper
+    )
+    {
+        _logHelper = logHelper;
+        LoadSettingsFromFile();
+    }
+
     private void LoadSettingsFromFile()
     {
-        // check if exists
-        if (!File.Exists(Path.Combine(AppPath, "settings.json")))
+        lock (_lock)
         {
-            SaveDefaults();
-        }
+            _logHelper.LogInfo("LoadSettingsFromFile...");
 
-        // if not save
-        _settings = JsonSerializer.Deserialize<Settings>(
-            File.ReadAllText(Path.Combine(AppPath, "settings.json")));
+            // check if exists
+            if (!File.Exists(Path.Combine(AppPath, "settings.json")))
+            {
+                SaveDefaults();
+            }
+
+            // if not save
+            _settings = JsonSerializer.Deserialize<Settings>(
+                File.ReadAllText(Path.Combine(AppPath, "settings.json")));
+        }
     }
 
     public Settings GetSettings()
     {
-        return _settings;
+        lock (_lock)
+        {
+            _logHelper.LogInfo("GetSettings...");
+            return _settings;
+        }
     }
 
     public void SaveSettings()
     {
-        File.WriteAllText(Path.Combine(AppPath, "settings.json"), JsonSerializer.Serialize(_settings));
+        lock (_lock)
+        {
+            _logHelper.LogInfo("SaveSettings...");
+            File.WriteAllText(Path.Combine(AppPath, "settings.json"), JsonSerializer.Serialize(_settings));
+        }
     }
 
     public void SetClientSizeSettings(int height, int width)
     {
-        _settings.AppSettings.StartSize.Height = height;
-        _settings.AppSettings.StartSize.Width = width;
-        SaveSettings();
+        lock (_lock)
+        {
+            _logHelper.LogInfo("SetClientSizeSettings...");
+            _settings.AppSettings.StartSize.Height = height;
+            _settings.AppSettings.StartSize.Width = width;
+            SaveSettings();
+        }
     }
 
     public void SetClientLocationSettings(int x, int y)
     {
-        _settings.AppSettings.StartLocation.X = x;
-        _settings.AppSettings.StartLocation.Y = y;
-        SaveSettings();
+        lock (_lock)
+        {
+            _logHelper.LogInfo("SetClientLocationSettings...");
+            _settings.AppSettings.StartLocation.X = x;
+            _settings.AppSettings.StartLocation.Y = y;
+            SaveSettings();
+        }
     }
 
     public void SetFirstRun(bool firstRun)
     {
-        _settings.FirstRun = firstRun;
-        SaveSettings();
+        lock (_lock)
+        {
+            _logHelper.LogInfo("SetFirstRun...");
+            _settings.FirstRun = firstRun;
+            SaveSettings();
+        }
     }
 
     public void SetServerSettings(List<Servers> servers)
     {
-        _settings.Servers = servers;
-        SaveSettings();
+        lock (_lock)
+        {
+            _logHelper.LogInfo("SetServerSettings...");
+            _settings.Servers = servers;
+            SaveSettings();
+        }
     }
 
     public void SetCloseToTray(bool closeToTray)
     {
-        _settings.AppSettings.CloseToTray = closeToTray;
-        SaveSettings();
+        lock (_lock)
+        {
+            _logHelper.LogInfo("SetCloseToTray...");
+            _settings.AppSettings.CloseToTray = closeToTray;
+            SaveSettings();
+        }
     }
 
     public void SetMinimizeOnLaunch(bool minimizeOnLaunch)
     {
-        _settings.AppSettings.MinimizeOnLaunch = minimizeOnLaunch;
-        SaveSettings();
+        lock (_lock)
+        {
+            _logHelper.LogInfo("SetMinimizeOnLaunch...");
+            _settings.AppSettings.MinimizeOnLaunch = minimizeOnLaunch;
+            SaveSettings();
+        }
     }
 
     public void SetAlwaysOnTop(bool alwaysOnTop)
     {
-        _settings.AppSettings.AlwaysTop = alwaysOnTop;
-        SaveSettings();
-        // mainWindow.ChangeTopMostSetting(alwaysOnTop);
+        lock (_lock)
+        {
+            _logHelper.LogInfo("SetAlwaysOnTop...");
+            _settings.AppSettings.AlwaysTop = alwaysOnTop;
+            SaveSettings();
+        }
     }
 
     public void SetAdvancedUser(bool advancedUser)
     {
-        _settings.AppSettings.AdvancedUser = advancedUser;
-        SaveSettings();
+        lock (_lock)
+        {
+            _logHelper.LogInfo("SetAdvancedUser...");
+            _settings.AppSettings.AdvancedUser = advancedUser;
+            SaveSettings();
+        }
     }
 
     public void SetDebugUser(bool debugUser)
     {
-        _settings.DebugSettings.DebugUser = debugUser;
-        SaveSettings();
-    }
-
-    public void SetDebugTitle(bool debug)
-    {
-        // _settings.DebugSettings.DebugLocation = debug;
-        // SaveSettings();
-        // call to Main to set title
+        lock (_lock)
+        {
+            _logHelper.LogInfo("SetDebugUser...");
+            _settings.DebugSettings.DebugUser = debugUser;
+            SaveSettings();
+        }
     }
 
     public void SetUseProfileColors(bool profileColors)
     {
-        _settings.AppSettings.UseProfileColors = profileColors;
-        SaveSettings();
+        lock (_lock)
+        {
+            _logHelper.LogInfo("SetUseProfileColors...");
+            _settings.AppSettings.UseProfileColors = profileColors;
+            SaveSettings();
+        }
     }
 
     private void SaveDefaults()
     {
-        Directory.CreateDirectory(AppPath);
-        File.WriteAllText(Path.Combine(AppPath, "settings.json"), GetDefaults());
+        lock (_lock)
+        {
+            _logHelper.LogInfo("SaveDefaults...");
+            Directory.CreateDirectory(AppPath);
+            File.WriteAllText(Path.Combine(AppPath, "settings.json"), GetDefaults());
+        }
     }
 
     private string GetDefaults()
     {
+        _logHelper.LogInfo("GetDefaults...");
         // work around not being able to read embedded json
         var settings = new Settings
         {
@@ -157,12 +217,11 @@ public class SettingsHelper
                     Ip = "127.0.0.1:6969",
                     Name = "LocalHost",
                     ServerId = "1721162719",
-                    GamePath = "D:\\SPT\\dev"
+                    GamePath = "C:\\Games\\Spt"
                 }
             ],
             DebugSettings = new DebugSettings
             {
-                DebugLocation = false,
                 DebugUser = false
             }
         };

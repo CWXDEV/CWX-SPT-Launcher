@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 using ComponentAce.Compression.Libs.zlib;
 using CWX_SPT_Launcher_Backend.CWX;
 using CWX_SPT_Launcher_Backend.SPT;
@@ -74,8 +76,18 @@ public class ServerHelper
 
     public void SetupHttpClient(Servers server)
     {
-        _netClient = new HttpClient();
+        var handler = new HttpClientHandler();
+        handler.ServerCertificateCustomValidationCallback = HandlerServerCertificateCustomValidationCallback;
+
+        _netClient = new HttpClient(handler);
+        _netClient.DefaultRequestVersion = new Version(3, 0);
+        _netClient.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
         _netClient.BaseAddress = new Uri("https://" + server.Ip);
+    }
+
+    private bool HandlerServerCertificateCustomValidationCallback(HttpRequestMessage httpRequestMessage, X509Certificate2? x509Certificate2, X509Chain? x509Chain, SslPolicyErrors sslPolicyErrors)
+    {
+        return true;
     }
 
     public void LogoutAndDispose()

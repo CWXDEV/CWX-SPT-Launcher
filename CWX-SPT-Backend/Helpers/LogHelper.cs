@@ -13,6 +13,7 @@ public class LogHelper
         lock (_lock)
         {
             Logs.Add(log);
+            Console.WriteLine(log);
             NotifyLogsChanged();
         }
     }
