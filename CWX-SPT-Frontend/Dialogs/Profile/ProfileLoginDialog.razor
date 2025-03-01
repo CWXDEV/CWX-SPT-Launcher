@@ -1,6 +1,7 @@
 ﻿@inject ISnackbar Snackbar
 @inject ServerHelper ServerHelper
 @inject NavigationHelper NavigationHelper
+@inject LogHelper LogHelper
 
 <MudDialog>
     <DialogContent>
@@ -54,6 +55,12 @@
         }
 
         base.OnInitialized();
+
+        if (!Profile.HasPassword)
+        {
+            LogHelper.LogInfo($"Profile: {Profile.Username} does not have a password, logging in without dialog");
+            RunLoginTask();
+        }
     }
 
     private async Task RunLoginTask()
