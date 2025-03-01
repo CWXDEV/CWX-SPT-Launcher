@@ -11,7 +11,8 @@
         Width="1070"
         Background="{StaticResource WindowBackgroundBrush}"
         MinHeight="550"
-        MinWidth="1070">
+        MinWidth="1070"
+        WindowState="Minimized">
 
     <cwxSptWpf:EmbeddedBlazorWebView x:Name="BlazorWebViewControl" UseEmbeddedResources="True" HostPage="index.html" Services="{DynamicResource services}">
         <cwxSptWpf:EmbeddedBlazorWebView.RootComponents>
