@@ -1,0 +1,81 @@
+﻿@inject ISnackbar Snackbar
+@inject StateManager StateManager
+@inject Logger Logger
+
+<MudDialog>
+    <DialogContent>
+        <MudContainer Class="py-4 card-overflow">
+            <MudText>Do you really want to delete this Profile? This process cannot be undone.</MudText>
+            @if (MiniProfile.HasPassword)
+            {
+                <PasswordFieldComponent @bind-Password="request.Password"/>
+            }
+            <MudContainer Class="mt-3 d-flex justify-end pa-0 gap-2">
+                <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="Submit">Delete</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Default" @onclick="Cancel">Cancel</MudButton>
+            </MudContainer>
+        </MudContainer>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [Parameter]
+    public MiniProfile MiniProfile { get; set; }
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    private LoginRequest request { get; } = new();
+    private CancellationTokenSource token { get; set; }
+    private bool UserCancel { get; } = false;
+
+    protected override void OnInitialized()
+    {
+        request.Username = MiniProfile.Username;
+        base.OnInitialized();
+    }
+
+    private async Task Submit()
+    {
+        try
+        {
+            token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            var result = await StateManager.PutAsync<RemoveResponse>(RequestUrl.Remove, request, token.Token);
+
+            if (!result)
+            {
+                AbortOrFail();
+                return;
+            }
+
+            token?.Dispose();
+        }
+        catch (TaskCanceledException e) when (token is { IsCancellationRequested: true })
+        {
+            AbortOrFail();
+            return;
+        }
+
+        StateHasChanged();
+        Logger.LogInfo($"Removed profile: {MiniProfile.Username} from server");
+        Snackbar.Add($"Removed Profile {MiniProfile.Username} from server", Severity.Success);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void AbortOrFail()
+    {
+        if (!UserCancel)
+        {
+            Logger.LogInfo($"Error deleteing profile: {MiniProfile.Username} from server");
+            Snackbar.Add($"Error deleting profile {MiniProfile.Username} from server!", Severity.Error);
+        }
+
+        MudDialog.Cancel();
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+}

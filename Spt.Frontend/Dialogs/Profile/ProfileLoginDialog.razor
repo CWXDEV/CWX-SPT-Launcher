@@ -1,0 +1,146 @@
+﻿@inject ISnackbar Snackbar
+@inject StateManager StateManager
+@inject Navigation Navigation
+@inject Logger Logger
+
+<MudDialog>
+    <DialogContent>
+        <MudContainer Class="py-4 card-overflow">
+            @if (requestInProgress)
+            {
+                <MudContainer Class="d-flex flex-column align-center gap-4">
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large"/>
+                    <MudText>@TaskText</MudText>
+                </MudContainer>
+            }
+            <MudForm Model="request" @bind-IsValid="@success" Class="gap-2 mt-3">
+                @if (MiniProfile != null)
+                {
+                    <MudTextField Immediate="true" @bind-Value="request.Username" Label="Username" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" Required="true" ReadOnly="true"/>
+                    @if (MiniProfile.HasPassword)
+                    {
+                        <PasswordFieldComponent @bind-Password="request.Password"/>
+                    }
+                }
+                else
+                {
+                    <MudTextField Immediate="true" @bind-Value="request.Username" Label="Username" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="false" Required="true"/>
+                    <PasswordFieldComponent @bind-Password="request.Password"/>
+                }
+            </MudForm>
+
+            <MudContainer Class="mt-3 d-flex justify-end pa-0 gap-2">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" @onclick="RunLoginTask">Login</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Default" @onclick="UserCancelled">Close</MudButton>
+            </MudContainer>
+        </MudContainer>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    private bool success;
+    private bool requestInProgress;
+    private string TaskText = "";
+    [Parameter]
+    public MiniProfile MiniProfile { get; set; }
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+    private LoginRequest request { get; } = new();
+    private CancellationTokenSource token { get; set; }
+    private bool UserCancel { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        if (MiniProfile == null)
+        {
+            return;
+        }
+
+        if (MiniProfile != null)
+        {
+            request.Username = MiniProfile.Username;
+        }
+
+        if (!MiniProfile.HasPassword)
+        {
+            Logger.LogInfo($"Profile: {MiniProfile.Username} does not have a password, logging in without dialog");
+            RunLoginTask();
+        }
+    }
+
+    private async Task RunLoginTask()
+    {
+        var result = false;
+        try
+        {
+            result = await CallServer("Getting profile details from server", "Failed getting profile details from server");
+        }
+        catch (TaskCanceledException e) when (token.IsCancellationRequested)
+        {
+            AbortOrFail("Request Timed out!");
+            return;
+        }
+        catch (HttpRequestException e)
+        {
+            AbortOrFail();
+            return;
+        }
+        catch (Exception e)
+        {
+            AbortOrFail();
+            return;
+        }
+
+        if (result)
+        {
+            Submit();
+        }
+    }
+
+    private async Task<bool> CallServer(string taskText = "", string failString = "")
+    {
+        token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        TaskText = taskText;
+        StateHasChanged();
+        await Task.Delay(20);
+
+        var result = await StateManager.PutAsync<LoginResponse>(RequestUrl.Login, request, token.Token);
+
+        if (!result)
+        {
+            AbortOrFail(failString);
+            return false;
+        }
+
+        token?.Dispose();
+        return true;
+    }
+
+    private void Submit()
+    {
+        Navigation.SetProfilePages(true);
+        Snackbar.Add($"Logged in to {MiniProfile?.Username}!", Severity.Success);
+        MudDialog.Close(DialogResult.Ok(MiniProfile));
+    }
+
+    private void AbortOrFail(string message = "Error connecting to server!")
+    {
+        if (!UserCancel)
+        {
+            Snackbar.Add(message, Severity.Error);
+        }
+
+        Navigation.SetProfilePages(false);
+        token?.Cancel();
+        MudDialog.Cancel();
+    }
+
+    private void UserCancelled()
+    {
+        UserCancel = true;
+        token?.Cancel();
+        MudDialog.Cancel();
+    }
+}

@@ -1,0 +1,29 @@
+﻿using System.Text.Json.Serialization;
+
+namespace Spt.Core.Spt;
+
+public class SPTVersion
+{
+    [JsonPropertyName("sptVersion")]
+    public string SptVersion
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("eftVersion")]
+    public string EftVersion
+    {
+        get;
+        set;
+    }
+
+    public SPTVersion(
+        string spt = "",
+        string eft = ""
+    )
+    {
+        SptVersion = spt;
+        EftVersion = eft;
+    }
+}

@@ -1,0 +1,85 @@
+﻿@page "/Profiles"
+@inject IDialogService DialogService
+@inject StateManager StateManager
+@inject ConfigManager Config
+
+<MudContainer Class="px-8 my-2" MaxWidth="MaxWidth.Large">
+    <MudContainer Class="pa-0 d-flex justify-start gap-2 pb-4">
+        <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.PersonAdd" Size="Size.Large"
+                   @onclick="RunAddTask" Variant="Variant.Outlined" Disabled="@(!IsConnected)">Create New Profile
+        </MudButton>
+        <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.Login" Size="Size.Large"
+                   @onclick="RunLoginTaskWithDetails" Variant="Variant.Outlined" Disabled="true">Login with details  @* @(!IsConnected) *@
+        </MudButton>
+    </MudContainer>
+    <MudGrid>
+        @foreach (var profile in ProfilesList)
+        {
+            <ProfileCardComponent MiniProfile="@profile" @bind-ProfileList="ProfilesList"/>
+        }
+
+        @switch (ProfilesList.Count)
+        {
+            // TODO: server might hide profiles, but an edge case might be a fresh server
+            case 0 when IsConnected:
+                <MudItem sm="12">
+                    <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">The server you are connected too, does
+                        not
+                        show profiles, please use the above "Login with details" button.
+                    </MudAlert>
+                </MudItem>
+                break;
+            case 0 when !IsConnected:
+                <MudItem sm="12">
+                    <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">Please connect to a Server first!
+                    </MudAlert>
+                </MudItem>
+                break;
+        }
+    </MudGrid>
+</MudContainer>
+
+@code {
+
+    public List<MiniProfile> ProfilesList { get; set; }
+    private bool IsConnected { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ProfilesList = StateManager.ProfileList;
+        IsConnected = StateManager.ConnectedServer is not null;
+        base.OnInitialized();
+    }
+
+    private async Task RunAddTask()
+    {
+        var dialog = await DialogService.ShowAsync<ProfileAddDialog>("ProfileAddDialog", Config.DialogOptions);
+        var result = await dialog.Result;
+
+        if (result?.Canceled is false)
+        {
+            ProfilesList = StateManager.ProfileList;
+        }
+    }
+
+    private async Task RunLoginTask()
+    {
+        var dialog = await DialogService.ShowAsync<ProfileLoginDialog>("ProfileLoginDialog", Config.DialogOptions);
+        var result = await dialog.Result;
+
+        if (result?.Canceled is false)
+        {
+        }
+    }
+
+    // TODO: currently does not work as intended
+    private async Task RunLoginTaskWithDetails()
+    {
+        var dialog = await DialogService.ShowAsync<ProfileLoginDialog>("ProfileLoginDialog", Config.DialogOptions);
+        var result = await dialog.Result;
+
+        if (result?.Canceled is false)
+        {
+        }
+    }
+}

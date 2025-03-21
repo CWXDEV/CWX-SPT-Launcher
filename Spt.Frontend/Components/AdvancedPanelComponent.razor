@@ -1,0 +1,24 @@
+﻿@inject ConfigManager Config
+
+<MudItem sm="12">
+    <MudPaper Class="pa-5 ml-1 gap-2 d-flex flex-column card-overflow" Elevation="3">
+        <SettingOptionComponent Switch="@advancedUserSwitch" OptionName="Advanced User" SwitchFunc="@SetAdvUser"/>
+    </MudPaper>
+</MudItem>
+
+@code
+{
+    private bool advancedUserSwitch { get; set; }
+
+    protected override void OnInitialized()
+    {
+        advancedUserSwitch = Config.GetConfig().AppSettings.AdvancedUser;
+        base.OnInitialized();
+    }
+
+    private void SetAdvUser()
+    {
+        advancedUserSwitch = !advancedUserSwitch;
+        Config.SetAdvancedUser(advancedUserSwitch);
+    }
+}

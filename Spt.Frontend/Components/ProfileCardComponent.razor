@@ -1,0 +1,166 @@
+﻿@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@inject ConfigManager Config
+@inject StateManager StateManager
+@inject Navigation Navigation
+@inject NavigationManager NavMan
+@inject Logger Logger
+
+<MudItem sm="12" md="4">
+    <MudPaper Elevation="2" Class="pa-4 d-flex flex-column flex-none gap-2 card-overflow">
+        @if (!sideIsUnknown)
+        {
+            <MudImage Src=@(ImageName()) Elevation="0" Class=@(ImageClassNames())/>
+        }
+        @if (UseProfileColors)
+        {
+            <MudPaper Elevation="0" Class=@(GlowClassNames())/>
+        }
+        <MudText Class="mb-n4 no-pointers no-select" Typo="Typo.caption">Name:</MudText>
+        <MudText Typo="Typo.h6">@MiniProfile.Username</MudText>
+        <MudDivider DividerType="DividerType.Middle"/>
+        <MudText Class="mb-n4 no-pointers no-select" Typo="Typo.caption">Level:</MudText>
+        <MudText Typo="Typo.h6">@MiniProfile.CurrentLevel</MudText>
+        <MudDivider DividerType="DividerType.Middle"/>
+        <MudText Class="mb-n4 no-pointers no-select" Typo="Typo.caption">Edition:</MudText>
+        <MudText Typo="Typo.h6">@MiniProfile.Edition</MudText>
+        <MudDivider DividerType="DividerType.Middle"/>
+        <MudText Class="mb-n3 no-pointers no-select" Typo="Typo.caption">ID:</MudText>
+        <MudText Typo="Typo.body1">@MiniProfile.ProfileID</MudText>
+        <MudContainer Class="justify-end d-flex pa-0">
+            @if (MiniProfile.HasPassword)
+            {
+                <MudTooltip Text="Password Protected" Arrow="true" Placement="Placement.Bottom">
+                    <MudIconButton Color="Color.Tertiary" Icon="@Icons.Material.Filled.Lock" Size="Size.Small"/>
+                </MudTooltip>
+                <MudSpacer/>
+            }
+            <MudTooltip Text="@(!loggedIn ? "Login to this profile" : "Logout of this profile")" Arrow="true"
+                        Placement="Placement.Bottom">
+                <MudIconButton Class="mr-1" Color="Color.Default"
+                               Icon="@(!loggedIn ? Icons.Material.Filled.Login : Icons.Material.Filled.Logout)"
+                               Size="Size.Small"
+                               @onclick="RunLoginTask"/>
+            </MudTooltip>
+
+            <MudTooltip Text="Edit this profile" Arrow="true" Placement="Placement.Bottom">
+                <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Build" Size="Size.Small"
+                               @onclick="RunEditTask"/>
+            </MudTooltip>
+
+            <MudTooltip Text="Delete this profile" Arrow="true" Placement="Placement.Bottom">
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="Size.Small"
+                               @onclick="RunDeleteTask"/>
+            </MudTooltip>
+
+        </MudContainer>
+    </MudPaper>
+</MudItem>
+
+@code {
+    [Parameter] public MiniProfile MiniProfile { get; set; }
+    [Parameter] public List<MiniProfile> ProfileList { get; set; }
+    [Parameter] public EventCallback<List<MiniProfile>> ProfileListChanged { get; set; }
+    private bool UseProfileColors { get; set; }
+    private bool sideIsUnknown { get; set; } = false;
+    private string glowClass { get; set; }
+    private string sideClass { get; set; }
+    private bool loggedIn { get; set; }
+
+    private string GlowClassNames()
+    {
+        return $"card-glow no-pointers {glowClass}";
+    }
+
+    private string ImageClassNames()
+    {
+        return $"no-pointers background-image-{(MiniProfile.Side.ToLower() != "unknown" ? MiniProfile.Side.ToLower() : "usec")}";
+    }
+
+    private string ImageName()
+    {
+        return $"side_{(MiniProfile.Side.ToLower() != "unknown" ? MiniProfile.Side.ToLower() : "usec")}.png";
+    }
+
+    protected override void OnInitialized()
+    {
+        UseProfileColors = Config.GetConfig().AppSettings.UseProfileColors;
+        loggedIn = StateManager.SelectedProfile != null;
+        if (MiniProfile.Side.ToLower() == "unknown")
+        {
+            sideIsUnknown = true;
+        }
+
+        glowClass = MiniProfile.Edition.ToLower() switch
+        {
+            "spt developer" => "glow-purple",
+            "edge of darkness" => "glow-gold",
+            "the unheard edition" => "glow-blue",
+            "standard edition" => "glow-grey",
+            _ => glowClass
+        };
+
+        base.OnInitialized();
+    }
+
+    private async Task RunLoginTask()
+    {
+        if (StateManager.SelectedProfile != null)
+        {
+            if (StateManager.SelectedProfile.ProfileID == MiniProfile.ProfileID)
+            {
+                StateManager.SelectedProfile = null;
+                Navigation.SetProfilePages(false);
+                loggedIn = false;
+                return;
+            }
+        }
+
+        var dialogParams = new DialogParameters { { "MiniProfile", MiniProfile } };
+
+        var dialog = await DialogService.ShowAsync<ProfileLoginDialog>("ProfileLoginDialog", dialogParams, Config.DialogOptions);
+        var result = await dialog.Result;
+
+        if (result?.Canceled is false)
+        {
+            StateManager.ProfileLogin(MiniProfile);
+            loggedIn = StateManager.SelectedProfile != null;
+
+            Logger.LogInfo("Navigating to /Profile");
+            NavMan.NavigateTo("/Profile");
+        }
+    }
+
+    private async Task RunDeleteTask()
+    {
+        var dialogParams = new DialogParameters { { "MiniProfile", MiniProfile } };
+
+        var dialog = await DialogService.ShowAsync<ProfileRemoveDialog>("ProfileRemoveDialog", dialogParams, Config.DialogOptions);
+        var result = await dialog.Result;
+
+        if (result?.Canceled is false)
+        {
+            ProfileList = StateManager.ProfileList;
+            await ProfileListChanged.InvokeAsync(ProfileList);
+        }
+    }
+
+    private async Task RunEditTask()
+    {
+        StateManager.SelectedProfile = null;
+        loggedIn = false;
+        Navigation.SetProfilePages(false);
+
+        var dialogParams = new DialogParameters { { "MiniProfile", MiniProfile } };
+
+        var dialog = await DialogService.ShowAsync<ProfileEditDialog>("ProfileEditDialog", dialogParams, Config.DialogOptions);
+        var result = await dialog.Result;
+
+        if (result?.Canceled is false)
+        {
+            ProfileList = StateManager.ProfileList;
+            await ProfileListChanged.InvokeAsync(ProfileList);
+        }
+    }
+
+}

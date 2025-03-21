@@ -1,0 +1,115 @@
+﻿@inject ISnackbar Snackbar
+@inject StateManager StateManager
+@inject Navigation Navigation
+
+<MudDialog>
+    <DialogContent>
+        <MudContainer Class="py-4 card-overflow">
+            <MudContainer Class="d-flex flex-column align-center gap-4">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large"/>
+                <MudText>@TaskText</MudText>
+            </MudContainer>
+            <MudContainer Class="mt-3 d-flex justify-end pa-0 gap-2">
+                <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="UserCancelled">Cancel</MudButton>
+            </MudContainer>
+        </MudContainer>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    private string TaskText = "";
+    [Parameter]
+    public Servers Server { get; set; }
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+    private CancellationTokenSource token { get; set; }
+    private bool UserCancel { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _ = StartLoginTasks();
+    }
+
+    private async Task StartLoginTasks()
+    {
+        try
+        {
+            StateManager.SetupHttpClient(Server);
+            await CallServer(RequestTask.Ping, "Checking connection to server");
+            await CallServer(RequestTask.Profiles, "Getting profiles from server", "Error getting profiles from server!");
+            await CallServer(RequestTask.Types, "Getting profile creation data from server", "Error getting profile creation data!");
+            await CallServer(RequestTask.Mods, "Getting active mod list from server", "Error getting mod list from server!");
+        }
+        catch (TaskCanceledException e) when (token.IsCancellationRequested)
+        {
+            AbortOrFail("Request Timed out!");
+            return;
+        }
+        catch (HttpRequestException e)
+        {
+            AbortOrFail();
+            return;
+        }
+        catch (Exception e)
+        {
+            AbortOrFail();
+            return;
+        }
+
+        Submit();
+    }
+
+    private async Task CallServer(RequestTask option, string taskText = "", string failString = "")
+    {
+        token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        TaskText = taskText;
+        StateHasChanged();
+        await Task.Delay(20);
+
+        var result = option switch
+        {
+            RequestTask.Ping => await StateManager.GetAsync<PingResponse>(RequestUrl.Ping, token.Token),
+            RequestTask.Profiles => await StateManager.GetAsync<ProfilesResponse>(RequestUrl.Profiles, token.Token),
+            RequestTask.Types => await StateManager.GetAsync<TypesResponse>(RequestUrl.Types, token.Token),
+            RequestTask.Mods => await StateManager.GetAsync<ModsResponse>(RequestUrl.Mods, token.Token),
+            _ => false
+        };
+
+        if (!result)
+        {
+            AbortOrFail(failString);
+            return;
+        }
+
+        token?.Dispose();
+    }
+
+    private void AbortOrFail(string message = "Error connecting to server!")
+    {
+        if (!UserCancel)
+        {
+            Snackbar.Add(message, Severity.Error);
+        }
+
+        StateManager.LogoutAndDispose();
+        Navigation.SetBasicPages(false);
+        Navigation.SetProfilePages(false);
+        token?.Cancel();
+        MudDialog.Cancel();
+    }
+
+    private void Submit()
+    {
+        Navigation.SetBasicPages(true);
+        MudDialog.Close(DialogResult.Ok(Server));
+        Snackbar.Add("Logged In. Visit Profiles Page!", Severity.Success);
+    }
+
+    private void UserCancelled()
+    {
+        UserCancel = true;
+        token?.Cancel();
+        MudDialog.Cancel();
+    }
+}

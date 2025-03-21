@@ -1,0 +1,23 @@
+﻿<Window x:Class="Spt.Frontend.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:blazor="clr-namespace:Microsoft.AspNetCore.Components.WebView.Wpf;assembly=Microsoft.AspNetCore.Components.WebView.Wpf"
+        xmlns:SptWpf="clr-namespace:Spt.Frontend"
+        mc:Ignorable="d"
+        Title="Spt-LauncherV2"
+        Height="550"
+        Width="1070"
+        Background="{StaticResource WindowBackgroundBrush}"
+        MinHeight="550"
+        MinWidth="1070"
+        WindowState="Minimized">
+
+    <SptWpf:EmbeddedBlazorWebView x:Name="BlazorWebViewControl" UseEmbeddedResources="True" HostPage="index.html" Services="{DynamicResource services}">
+        <SptWpf:EmbeddedBlazorWebView.RootComponents>
+            <blazor:RootComponent Selector="#app" ComponentType="{x:Type SptWpf:Routes}" />
+        </SptWpf:EmbeddedBlazorWebView.RootComponents>
+    </SptWpf:EmbeddedBlazorWebView>
+
+</Window>
