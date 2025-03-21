@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using Spt.Core.Eft;
 using Spt.Core.Spt;
 using Microsoft.Win32;
@@ -9,13 +10,16 @@ namespace Spt.Backend;
 public class Game
 {
     public Game(
-        StateManager stateManager
+        StateManager stateManager,
+        Logger logger
     )
     {
         _stateManager = stateManager;
+        _logger = logger;
     }
 
     private StateManager _stateManager;
+    private Logger _logger;
 
     private const string registryInstall = @"Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\EscapeFromTarkov";
     private const string registrySettings = @"Software\Battlestate Games\EscapeFromTarkov";
@@ -48,8 +52,8 @@ public class Game
 
         if (!File.Exists(clientExecutable))
         {
-            Console.WriteLine("[LaunchGame] Valid Game Path   :: FAILED");
-            Console.WriteLine($"Could not find {clientExecutable}");
+            _logger.AddLog("[LaunchGame] Valid Game Path   :: FAILED");
+            _logger.AddLog($"Could not find {clientExecutable}");
             return false;
         }
 
@@ -58,8 +62,10 @@ public class Game
 
         //start game
         var args =
-            $"-force-gfx-jobs native -token={_stateManager.SelectedProfile.ProfileID} -config=" + "{\'BackendUrl\':\'" + $"{_stateManager.ConnectedServer.Ip}" + "\',\'Version\':\'live\',\'MatchingVersion\':\'live\'}";
-         // $"-force-gfx-jobs native -token=67b4b04b0003dc184199f6f6 -config='BackendUrl':'https://127.0.0.1:6969','Version':'live','MatchingVersion':'live'";
+            $"-force-gfx-jobs native -token={_stateManager.SelectedProfile.ProfileID} -config=" +
+            $"{{'BackendUrl':'https://{_stateManager.ConnectedServer.Ip}','Version':'live','MatchingVersion':'live'}}";
+
+        _logger.AddLog(args);
 
         var clientProcess = new ProcessStartInfo(clientExecutable)
         {
@@ -71,11 +77,11 @@ public class Game
         try
         {
             Process.Start(clientProcess);
-            Console.WriteLine("[LaunchGame] Game process started");
+            _logger.AddLog("[LaunchGame] Game process started");
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            _logger.AddLog(ex.ToString());
             return false;
         }
 

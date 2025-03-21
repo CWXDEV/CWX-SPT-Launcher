@@ -6,10 +6,10 @@
 <MudContainer Class="px-8 my-2" MaxWidth="MaxWidth.Large">
     <MudContainer Class="pa-0 d-flex justify-start gap-2 pb-4">
         <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.PersonAdd" Size="Size.Large"
-                   @onclick="RunAddTask" Variant="Variant.Outlined" Disabled="@(!IsConnected)">Create New Profile
+                   @onclick="RunAddTask" Variant="Variant.Filled" Disabled="@(!IsConnected)">Create New Profile
         </MudButton>
         <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.Login" Size="Size.Large"
-                   @onclick="RunLoginTaskWithDetails" Variant="Variant.Outlined" Disabled="true">Login with details  @* @(!IsConnected) *@
+                   @onclick="RunLoginTaskWithDetails" Variant="Variant.Filled" Disabled="true">Login with details  @* @(!IsConnected) *@
         </MudButton>
     </MudContainer>
     <MudGrid>
@@ -23,7 +23,7 @@
             // TODO: server might hide profiles, but an edge case might be a fresh server
             case 0 when IsConnected:
                 <MudItem sm="12">
-                    <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">The server you are connected too, does
+                    <MudAlert Severity="Severity.Info" Variant="Variant.Filled">The server you are connected too, does
                         not
                         show profiles, please use the above "Login with details" button.
                     </MudAlert>
@@ -31,7 +31,7 @@
                 break;
             case 0 when !IsConnected:
                 <MudItem sm="12">
-                    <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">Please connect to a Server first!
+                    <MudAlert Severity="Severity.Info" Variant="Variant.Filled">Please connect to a Server first!
                     </MudAlert>
                 </MudItem>
                 break;

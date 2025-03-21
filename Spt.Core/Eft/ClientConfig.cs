@@ -13,4 +13,10 @@ public class ClientConfig
         get;
         set;
     }
+
+    public string MatchingVersion
+    {
+        get;
+        set;
+    }
 }
