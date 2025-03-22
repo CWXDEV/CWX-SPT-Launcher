@@ -1,9 +1,10 @@
-﻿@inject ISnackbar Snackbar
+﻿@using NavigationManager = Spt.Backend.NavigationManager
+@inject ISnackbar Snackbar
 @inject IDialogService DialogService
-@inject NavigationManager NavMan
+@inject Microsoft.AspNetCore.Components.NavigationManager NavMan
 @inject StateManager StateManager
 @inject ConfigManager Config
-@inject Navigation Navigation
+@inject NavigationManager NavigationManager
 
 <MudItem md="4">
     <MudPaper Elevation="2" Class="pa-4 d-flex flex-column flex-none gap-2 card-overflow">
@@ -12,9 +13,6 @@
         <MudDivider DividerType="DividerType.Middle"/>
         <MudText Class="mb-n3 no-pointers no-select" Typo="Typo.caption">Address:</MudText>
         <MudText Typo="Typo.body1">@Server.Ip</MudText>
-        <MudDivider DividerType="DividerType.Middle"/>
-        <MudText Class="mb-n3 no-pointers no-select" Typo="Typo.caption">Game Path:</MudText>
-        <MudText Typo="Typo.body1">@Server.GamePath</MudText>
         <MudContainer Class="pa-0 d-flex mt-2">
             <MudTooltip Text="@(IsConnectedServer ? "Connected" : "Disconnected")" Arrow="true"
                         Placement="Placement.Bottom">
@@ -40,11 +38,14 @@
 </MudItem>
 
 @code {
-    [Parameter] public Servers Server { get; set; }
+    [Parameter]
+    public Servers Server { get; set; }
 
-    [Parameter] public List<Servers> ServerList { get; set; }
+    [Parameter]
+    public List<Servers> ServerList { get; set; }
 
-    [Parameter] public EventCallback<List<Servers>> ServerListChanged { get; set; }
+    [Parameter]
+    public EventCallback<List<Servers>> ServerListChanged { get; set; }
 
     private bool IsConnectedServer { get; set; }
 
@@ -89,15 +90,15 @@
             if (StateManager.ConnectedServer.ServerId == Server.ServerId)
             {
                 StateManager.LogoutAndDispose();
-                Navigation.SetBasicPages(false);
-                Navigation.SetProfilePages(false);
+                NavigationManager.SetBasicPages(false);
+                NavigationManager.SetProfilePages(false);
                 IsConnectedServer = false;
                 return;
             }
 
             StateManager.LogoutAndDispose();
-            Navigation.SetBasicPages(false);
-            Navigation.SetProfilePages(false);
+            NavigationManager.SetBasicPages(false);
+            NavigationManager.SetProfilePages(false);
             IsConnectedServer = false;
         }
 

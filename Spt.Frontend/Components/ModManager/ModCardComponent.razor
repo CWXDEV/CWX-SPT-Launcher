@@ -1,0 +1,144 @@
+﻿@using SPT_Core.ModManager
+<MudItem sm="6">
+    <MudCard>
+        <MudCardHeader>
+            <CardHeaderAvatar>
+                <MudAvatar Color="Color.Secondary">@GetAvatarLetter()</MudAvatar>
+            </CardHeaderAvatar>
+            <CardHeaderContent>
+                <MudText Typo="Typo.body1">@GetModName()</MudText>
+                <MudText Typo="Typo.body2">By @GetModdersName()</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default"/>
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardMedia Image="https://forge-static.sp-tarkov.com/mods/2728.png" Height="250"/>
+        <MudCardContent>
+            <MudText Typo="Typo.body2">@GetModTeaser()</MudText>
+        </MudCardContent>
+        <MudCardActions>
+            <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Default"/>
+            <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Default"/>
+        </MudCardActions>
+    </MudCard>
+</MudItem>
+
+@code {
+
+    private Mod Mod { get; set; } = new Mod
+    {
+        Type = "mod",
+        Id = 1,
+        Attributes = new ModAttributes
+        {
+            HubId = 1,
+            ModId = 1,
+            Name = "StatTrack",
+            Slug = "StatTrack",
+            Teaser = "Ever wanted to know how many kills and headshots you have with a specific weapon? Now you can. All weapons will individually track their kills and headshots and display on the info screen for the weapon. See how many you can rack up before you die!",
+            LicenseId = 11,
+            SourceCodeLink = "https://github.com/acidphantasm/acidphantasm-stattrack",
+            Featured = true,
+            ContainsAiContent = false,
+            ContainsAds = false,
+            CreatedAt = "2024-11-26T15:10:36.000000Z",
+            UpdatedAt = "2024-11-26T15:10:36.000000Z",
+            PublishedAt = "2024-11-26T15:10:36.000000Z",
+            UserRoleId = null,
+            VirusTotalLink = "https://www.virustotal.com/gui/home/upload",
+            Downloads = 222,
+            Link = "https://github.com/acidphantasm/acidphantasm-stattrack"
+        },
+        Relationships = new Dictionary<string, List<ModRelationship>>()
+        {
+            {
+                "users", [
+                    new ModRelationship
+                    {
+                        Data = new ModData
+                        {
+                            Type = "user",
+                            Id = 48111
+                        },
+                        Links = new ModLinks
+                        {
+                            Self = "https://forge.sp-tarkov.com/user/48111/acidphantasm"
+                        }
+                    }
+                ]
+            },
+            {
+                "versions", [
+                    new ModRelationship
+                    {
+                        Data = new ModData
+                        {
+                            Type = "version",
+                            Id = 5742039
+                        },
+                        Links = new ModLinks
+                        {
+                            Self = "https://forge.sp-tarkov.com/mod/download/1887/stattrack/1.2.2"
+                        }
+                    }
+                ]
+            },
+            {
+                "license", [
+                    new ModRelationship
+                    {
+                        Data = new ModData
+                        {
+                            Type = "license",
+                            Id = 11
+                        }
+                    }
+                ]
+            }
+        },
+        Includes =
+        [
+            new Mod
+            {
+                Type = "user",
+                Id = 48111,
+                Attributes = new ModAttributes
+                {
+                    Name = "acidphantasm",
+                    CreatedAt = "2024-04-11T21:22:35.000000Z",
+                    UpdatedAt = "2025-03-22T14:15:15.000000Z"
+                },
+                Links = new ModLinks
+                {
+                    Self = "https://forge.sp-tarkov.com/user/48111/acidphantasm"
+                }
+            }
+        ],
+        Links = new ModLinks
+        {
+            Self = "https://forge.sp-tarkov.com/mod/1887/stattrack"
+        }
+    };
+
+    private char? GetAvatarLetter()
+    {
+        return Mod.Includes.FirstOrDefault(x => x.Type == "user").Attributes.Name.ToUpper()[0];
+    }
+
+    private string? GetModName()
+    {
+        return Mod.Attributes.Name.UppercaseFirst();
+    }
+
+    private string? GetModdersName()
+    {
+        return Mod.Includes.FirstOrDefault(x => x.Type == "user").Attributes.Name.UppercaseFirst();
+    }
+
+    private string? GetModTeaser()
+    {
+        return Mod.Attributes.Teaser.UppercaseFirst();
+    }
+
+}

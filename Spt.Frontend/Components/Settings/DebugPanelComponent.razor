@@ -1,0 +1,51 @@
+﻿@using NavigationManager = Spt.Backend.NavigationManager
+@inject ConfigManager Config
+@inject NavigationManager NavigationManager
+
+<MudItem sm="12">
+    <MudPaper Class="pa-5 ml-1 gap-2 d-flex flex-column card-overflow" Elevation="3">
+        <SettingOptionComponent Switch="@debugUserSwitch" OptionName="Debug Options" SwitchFunc="@SetDebugUser"/>
+        <SettingOptionComponent Switch="@showLoggingPageSwitch" Disabled="(!debugUserSwitch)" OptionName="Show Logging Page" SwitchFunc="@SetLoggingPage"/>
+    </MudPaper>
+</MudItem>
+
+@code
+{
+    private bool debugUserSwitch { get; set; }
+    private bool showLoggingPageSwitch { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var settings = Config.GetConfig();
+        debugUserSwitch = settings.DebugSettings.DebugUser;
+        showLoggingPageSwitch = settings.DebugSettings.ShowLoggingPage;
+
+        base.OnInitialized();
+    }
+
+    private void SetDebugUser()
+    {
+        debugUserSwitch = !debugUserSwitch;
+        Config.SetDebugUser(debugUserSwitch);
+
+        // clean up later
+        if (!debugUserSwitch)
+        {
+            // set all debug options to false
+            showLoggingPageSwitch = debugUserSwitch;
+            NavigationManager.SetLoggingPages(debugUserSwitch);
+            Config.SetDebugLoggingPage(debugUserSwitch);
+        }
+    }
+
+    private void SetLoggingPage()
+    {
+        if (!debugUserSwitch)
+        {
+            return;
+        }
+        showLoggingPageSwitch = !showLoggingPageSwitch;
+        NavigationManager.SetLoggingPages(showLoggingPageSwitch);
+        Config.SetDebugLoggingPage(showLoggingPageSwitch);
+    }
+}

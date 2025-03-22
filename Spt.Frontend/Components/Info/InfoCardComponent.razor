@@ -1,0 +1,23 @@
+﻿<MudItem sm="4" >
+    <MudPaper Elevation="2" Class="pa-4 d-flex flex-column flex-none gap-2 card-overflow cursor-pointer info-card-height">
+        <MudText Class="mb-n4 no-pointers no-select" Typo="Typo.caption">Name:</MudText>
+        <MudText Typo="Typo.h6">@Name</MudText>
+        <MudDivider DividerType="DividerType.Middle"/>
+        <MudText Class="mb-n3 no-pointers no-select" Typo="Typo.caption">Description:</MudText>
+        <MudText Typo="Typo.h6">@Description</MudText>
+    </MudPaper>
+</MudItem>
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+    [Parameter]
+    public string Description { get; set; }
+    [Parameter]
+    public string Link { get; set; }
+
+    private void OpenLinkViaBrowser()
+    {
+        // TODO: open browser with link that is passed in
+    }
+}

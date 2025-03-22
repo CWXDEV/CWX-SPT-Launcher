@@ -1,0 +1,174 @@
+﻿@using System.Collections.Specialized
+@using System.Windows
+@using Size = MudBlazor.Size
+@inject Logger Logger
+@inject ConfigManager ConfigManager
+@inject ISnackbar Snackbar
+
+<MudContainer Class="pa-0 pb-4 d-flex justify-start gap-2">
+    <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="LoadLiveSettings">Load Live Settings</MudButton>
+    <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="ClearGameSettings">Clear Game Settings</MudButton>
+    <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="CleanTempFiles">Clean Temp Files</MudButton>
+    <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="CopyLogs">Copy Logs</MudButton>
+</MudContainer>
+
+@code {
+
+    private async Task LoadLiveSettings()
+    {
+        Logger.AddLog("Loading Live Settings");
+        var eftSettingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Battlestate Games", "Escape From Tarkov", "Settings");
+        var sptSettingsFolder = Path.Combine(ConfigManager.GetConfig().GamePath, "user", "sptsettings");
+
+        if (!Directory.Exists(eftSettingsFolder))
+        {
+            Logger.AddLog($"Settings can not be loaded from live, path given: {eftSettingsFolder}");
+            Snackbar.Add($"Settings can not be loaded from live, path given", Severity.Error);
+            return;
+        }
+
+        try
+        {
+            Directory.CreateDirectory(sptSettingsFolder);
+
+            foreach (var path in Directory.GetDirectories(eftSettingsFolder, "*", SearchOption.AllDirectories))
+            {
+                Directory.CreateDirectory(path.Replace(eftSettingsFolder, sptSettingsFolder));
+            }
+
+            foreach (var file in Directory.GetFiles(eftSettingsFolder, "*.*", SearchOption.AllDirectories))
+            {
+                File.Copy(file, file.Replace(eftSettingsFolder, sptSettingsFolder), true);
+            }
+        }
+        catch (Exception e)
+        {
+            Logger.AddLog("Unable to load live settings");
+            Logger.AddLog(e.ToString());
+            Snackbar.Add("Loading live settings failed", Severity.Error);
+            return;
+        }
+
+        Logger.AddLog("Loaded live settings to SPTsettings folder");
+        Snackbar.Add("Loaded live settings", Severity.Success);
+    }
+
+    private async Task ClearGameSettings()
+    {
+        Logger.AddLog("clearing game settings");
+        var sptSettings = new DirectoryInfo(Path.Combine(ConfigManager.GetConfig().GamePath, "user", "sptsettings"));
+
+        try
+        {
+            sptSettings.Delete(true);
+
+            Directory.CreateDirectory(sptSettings.FullName);
+        }
+        catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
+        {
+            Logger.AddLog("Unable to clean game settings, UnauthorizedAccessException or IOException");
+            Logger.AddLog(e.ToString());
+            Snackbar.Add("Clearing game settings failed due to Unauthorized Access", Severity.Error);
+            return;
+        }
+        catch (Exception e)
+        {
+            Logger.AddLog(e.ToString());
+            Logger.AddLog("Clearing game settings failed");
+            Snackbar.Add("Clearing game settings failed", Severity.Error);
+            return;
+        }
+
+        Logger.AddLog("Cleared game settings");
+        Snackbar.Add("Cleared game settings", Severity.Success);
+    }
+
+    private async Task CleanTempFiles()
+    {
+        try
+        {
+            var rootdir = new DirectoryInfo(Path.Join(ConfigManager.GetConfig().GamePath, "user\\sptappdata"));
+            rootdir.Delete(true);
+        }
+        catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
+        {
+            Logger.AddLog("Unable to clean temp files, UnauthorizedAccessException or IOException");
+            Logger.AddLog(e.ToString());
+            Snackbar.Add("Unable to clean temp files due to Unauthorized Access", Severity.Warning);
+            return;
+        }
+        catch (Exception e)
+        {
+            Logger.AddLog("Unable to clean temp files");
+            Logger.AddLog(e.ToString());
+            Snackbar.Add("Unable to clean temp files", Severity.Error);
+            return;
+        }
+
+        Logger.AddLog($"Cleaned temp files");
+        Snackbar.Add($"Cleaned temp files", Severity.Success);
+    }
+
+    private async Task CopyLogs()
+    {
+        var filesToCopy = new List<string>();
+        var path = ConfigManager.GetConfig().GamePath;
+        var bepinPath = Path.Combine(path, "BepInEx", "LogOutput.log");
+        var serverPath = Path.Combine(path, "user", "logs", $"server-{DateTime.Now:yyyy-MM-dd}.log");
+        var launcherPath = Path.Combine(path, "user", "logs", "launcher.log");
+        var tracePath = Path.Combine(path, "Logs");
+        // var profilePath = Path.Combine(path, "user", "profiles", $"{AccountManager.SelectedAccount.id}.json")) TODO: needs to be reworked to deal with new multiprofile approach
+
+        if (File.Exists(bepinPath))
+        {
+            filesToCopy.Add(bepinPath);
+        }
+
+        if (File.Exists(serverPath))
+        {
+            filesToCopy.Add(serverPath);
+        }
+
+        if (File.Exists(launcherPath))
+        {
+            filesToCopy.Add(launcherPath);
+        }
+
+        if (Directory.Exists(tracePath))
+        {
+            var logs = Directory.GetFiles(tracePath, $"{DateTime.Now:yyyy.MM.dd}_* traces.log", SearchOption.AllDirectories);
+
+            var log = logs.Length > 0 ? logs.FirstOrDefault() : "";
+
+            if (!string.IsNullOrWhiteSpace(log))
+            {
+                filesToCopy.Add(log);
+            }
+        }
+
+        // TODO: profile - if not logged in show dialog to choose profile to copy
+
+        try
+        {
+            CopyFilePathsToClipboard(filesToCopy);
+        }
+        catch (Exception e)
+        {
+            Logger.AddLog("Unable to set clipboard with logs");
+            Logger.AddLog(e.ToString());
+            Snackbar.Add("Unable to set clipboard with logs", Severity.Error);
+            return;
+        }
+
+        Logger.AddLog($"Copied {filesToCopy.Count} log/s to clipboard");
+        Snackbar.Add($"Copied {filesToCopy.Count} log{(filesToCopy.Count > 1 ? "s" : "")} to clipboard", Severity.Success);
+    }
+
+    private void CopyFilePathsToClipboard(List<string> filePaths)
+    {
+        var collection = new StringCollection();
+        collection.AddRange(filePaths.ToArray());
+        Clipboard.Clear();
+        Clipboard.SetFileDropList(collection);
+    }
+}
