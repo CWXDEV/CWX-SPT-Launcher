@@ -1,6 +1,7 @@
-﻿@inject ISnackbar Snackbar
+﻿@using NavigationManager = Spt.Backend.NavigationManager
+@inject ISnackbar Snackbar
 @inject StateManager StateManager
-@inject Navigation Navigation
+@inject NavigationManager NavigationManager
 @inject Logger Logger
 
 <MudDialog>
@@ -120,7 +121,7 @@
 
     private void Submit()
     {
-        Navigation.SetProfilePages(true);
+        NavigationManager.SetProfilePages(true);
         Snackbar.Add($"Logged in to {MiniProfile?.Username}!", Severity.Success);
         MudDialog.Close(DialogResult.Ok(MiniProfile));
     }
@@ -132,7 +133,7 @@
             Snackbar.Add(message, Severity.Error);
         }
 
-        Navigation.SetProfilePages(false);
+        NavigationManager.SetProfilePages(false);
         token?.Cancel();
         MudDialog.Cancel();
     }

@@ -1,6 +1,7 @@
-﻿@inject ISnackbar Snackbar
+﻿@using NavigationManager = Spt.Backend.NavigationManager
+@inject ISnackbar Snackbar
 @inject StateManager StateManager
-@inject Navigation Navigation
+@inject NavigationManager NavigationManager
 
 <MudDialog>
     <DialogContent>
@@ -93,15 +94,15 @@
         }
 
         StateManager.LogoutAndDispose();
-        Navigation.SetBasicPages(false);
-        Navigation.SetProfilePages(false);
+        NavigationManager.SetBasicPages(false);
+        NavigationManager.SetProfilePages(false);
         token?.Cancel();
         MudDialog.Cancel();
     }
 
     private void Submit()
     {
-        Navigation.SetBasicPages(true);
+        NavigationManager.SetBasicPages(true);
         MudDialog.Close(DialogResult.Ok(Server));
         Snackbar.Add("Logged In. Visit Profiles Page!", Severity.Success);
     }

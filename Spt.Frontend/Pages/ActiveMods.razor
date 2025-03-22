@@ -1,4 +1,4 @@
-﻿@page "/Mods"
+﻿@page "/ActiveMods"
 
 @inject StateManager StateManager
 
@@ -11,7 +11,7 @@
         {
             @foreach (var mod in mods)
             {
-                <ModCardComponent Mod="@mod"/>
+                <ActiveModComponent Mod="@mod"/>
             }
         }
         else if (mods.Count == 0 && !IsConnected)

@@ -14,4 +14,10 @@ public class DebugSettings
         get;
         set;
     }
+
+    public bool ShowLoggingPage
+    {
+        get;
+        set;
+    }
 }

@@ -11,13 +11,6 @@ public class Servers
         set;
     }
 
-    [Required]
-    public string GamePath
-    {
-        get;
-        set;
-    }
-
     public string Name
     {
         get;

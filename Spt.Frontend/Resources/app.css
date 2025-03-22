@@ -76,6 +76,10 @@
     opacity: 0.2;
 }
 
+.info-card-height {
+    height: 100%
+}
+
 .glow-purple {
     background: radial-gradient(circle at 50% 50%, rgba(76, 0, 255, 1), rgba(76, 0, 255, 0));
 }

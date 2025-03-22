@@ -37,7 +37,7 @@ public partial class MainWindow
         serviceCollection.AddSingleton<Patcher>();
         serviceCollection.AddSingleton<StateManager>();
         serviceCollection.AddSingleton<ConfigManager>();
-        serviceCollection.AddSingleton<Navigation>();
+        serviceCollection.AddSingleton<NavigationManager>();
         serviceCollection.AddSingleton<Game>();
         serviceCollection.AddSingleton<Logger>();
 
