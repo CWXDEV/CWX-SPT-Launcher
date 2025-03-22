@@ -1,8 +1,21 @@
 ﻿namespace Spt.Backend;
 
-public class Navigation
+public class NavigationManager
 {
+    public NavigationManager(
+        ConfigManager configManager
+    )
+    {
+        if (configManager.GetConfig().DebugSettings.DebugUser &&
+            configManager.GetConfig().DebugSettings.ShowLoggingPage
+        )
+        {
+            SetLoggingPages(true);
+        }
+    }
+
     private bool _showProfilesPage;
+
     public bool ShowProfilesPage
     {
         get => _showProfilesPage;
@@ -10,6 +23,7 @@ public class Navigation
     }
 
     private bool _showProfilePage;
+
     public bool ShowProfilePage
     {
         get => _showProfilePage;
@@ -17,17 +31,19 @@ public class Navigation
     }
 
     private bool _showModPage;
+
     public bool ShowModPage
     {
         get => _showModPage;
         set => _showModPage = value;
     }
 
-    private bool _showAdminPage;
-    public bool ShowAdminPage
+    private bool _showLoggingPage;
+
+    public bool ShowLoggingPage
     {
-        get => _showAdminPage;
-        set => _showAdminPage = value;
+        get => _showLoggingPage;
+        set => _showLoggingPage = value;
     }
 
     public void SetBasicPages(bool state)
@@ -43,9 +59,9 @@ public class Navigation
         NotifyStateChanged();
     }
 
-    public void SetAdminPages(bool state)
+    public void SetLoggingPages(bool state)
     {
-        ShowAdminPage = state;
+        ShowLoggingPage = state;
         NotifyStateChanged();
     }
 

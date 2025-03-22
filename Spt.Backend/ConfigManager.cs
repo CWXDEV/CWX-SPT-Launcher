@@ -175,6 +175,16 @@ public class ConfigManager
         }
     }
 
+    public void SetDebugLoggingPage(bool access)
+    {
+        lock (_lock)
+        {
+            _logger.LogInfo("SetDebugLoggingPage...");
+            _settings.DebugSettings.ShowLoggingPage = access;
+            SaveConfig();
+        }
+    }
+
     private void SaveDefaults()
     {
         lock (_lock)
@@ -192,6 +202,7 @@ public class ConfigManager
         var settings = new Settings()
         {
             FirstRun = true,
+            GamePath = Environment.CurrentDirectory,
             AppSettings = new AppSettings
             {
                 StartLocation = new StartLocation
@@ -216,8 +227,7 @@ public class ConfigManager
                 {
                     Ip = "127.0.0.1:6969",
                     Name = "LocalHost",
-                    ServerId = "1721162719",
-                    GamePath = "C:\\Games\\Spt"
+                    ServerId = "1721162719"
                 }
             ],
             DebugSettings = new DebugSettings
