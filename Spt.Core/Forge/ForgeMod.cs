@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Spt.Core.ModManager;
+namespace Spt.Core.Forge;
 
-public record Mod
+public record ForgeMod
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
@@ -17,7 +17,7 @@ public record Mod
     public Dictionary<string, List<ModRelationship>>? Relationships { get; set; }
 
     [JsonPropertyName("includes")]
-    public List<Mod>? Includes { get; set; }
+    public List<ForgeMod>? Includes { get; set; }
 
     [JsonPropertyName("links")]
     public ModLinks? Links { get; set; }

@@ -1,30 +1,59 @@
 ﻿<MudItem sm="6">
-    <MudCard Class="">
-        <MudCardHeader>
-            <CardHeaderAvatar>
-                <MudAvatar Color="Color.Secondary">@GetAvatarLetter()</MudAvatar>
-            </CardHeaderAvatar>
-            <CardHeaderContent>
-                <MudText Typo="Typo.body1">@GetModName()</MudText>
-                <MudText Typo="Typo.body2">By @GetModdersName()</MudText>
-            </CardHeaderContent>
-            <CardHeaderActions>
-                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default"/>
-            </CardHeaderActions>
-        </MudCardHeader>
-        <MudCardContent>
-            <MudText Typo="Typo.body2">@GetModTeaser()</MudText>
-        </MudCardContent>
-        <MudCardActions>
-            <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Default"/>
-            <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Default"/>
-        </MudCardActions>
-    </MudCard>
+    @if (IsSkeleton)
+    {
+        <MudCard Class="">
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <MudSkeleton SkeletonType="SkeletonType.Circle" Height="40px" Width="40px"/>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudSkeleton Width="40%"/>
+                    <MudSkeleton Width="60%"/>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <MudSkeleton SkeletonType="SkeletonType.Circle" Height="30px" Width="30px" Class="ml-2 mb-2"/>
+                </CardHeaderActions>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="150px" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudSkeleton SkeletonType="SkeletonType.Circle" Height="30px" Width="30px" Class="ml-2 mb-2"/>
+                <MudSkeleton SkeletonType="SkeletonType.Circle" Height="30px" Width="30px" Class="ml-3 mb-2"/>
+            </MudCardActions>
+        </MudCard>
+    }
+    else
+    {
+        <MudCard Class="">
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <MudAvatar Color="Color.Secondary">@GetAvatarLetter()</MudAvatar>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.body1">@GetModName()</MudText>
+                    <MudText Typo="Typo.body2">By @GetModdersName()</MudText>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default"/>
+                </CardHeaderActions>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudText Typo="Typo.body2">@GetModTeaser()</MudText>
+            </MudCardContent>
+            <MudCardActions>
+                <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Default"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Default"/>
+            </MudCardActions>
+        </MudCard>
+    }
 </MudItem>
 
 @code {
+    [Parameter] public bool IsSkeleton { get; set; }
 
-    private Mod Mod { get; set; } = new Mod
+    [Parameter]
+    public ForgeMod ForgeMod { get; set; } = new ForgeMod
     {
         Type = "mod",
         Id = 1,
@@ -97,7 +126,7 @@
         },
         Includes =
         [
-            new Mod
+            new ForgeMod
             {
                 Type = "user",
                 Id = 48111,
@@ -121,22 +150,22 @@
 
     private char? GetAvatarLetter()
     {
-        return Mod.Includes.FirstOrDefault(x => x.Type == "user").Attributes.Name.ToUpper()[0];
+        return ForgeMod.Includes.FirstOrDefault(x => x.Type == "user").Attributes.Name.ToUpper()[0];
     }
 
     private string? GetModName()
     {
-        return Mod.Attributes.Name.UppercaseFirst();
+        return ForgeMod.Attributes.Name.UppercaseFirst();
     }
 
     private string? GetModdersName()
     {
-        return Mod.Includes.FirstOrDefault(x => x.Type == "user").Attributes.Name.UppercaseFirst();
+        return ForgeMod.Includes.FirstOrDefault(x => x.Type == "user").Attributes.Name.UppercaseFirst();
     }
 
     private string? GetModTeaser()
     {
-        return Mod.Attributes.Teaser.UppercaseFirst();
+        return ForgeMod.Attributes.Teaser.UppercaseFirst();
     }
 
 }

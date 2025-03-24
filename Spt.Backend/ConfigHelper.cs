@@ -4,7 +4,7 @@ using MudBlazor;
 
 namespace Spt.Backend;
 
-public class ConfigManager
+public class ConfigHelper
 {
     private static readonly string AppPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "CWX-SPT-Launcher\\Resources");
@@ -22,18 +22,18 @@ public class ConfigManager
 
     private Settings? _settings;
     private Lock _lock = new Lock();
-    private Logger? _logger;
+    private LogHelper? _logHelper;
 
-    public ConfigManager()
+    public ConfigHelper()
     {
         LoadSettingsFromFile();
     }
 
-    public ConfigManager(
-        Logger logger
+    public ConfigHelper(
+        LogHelper logHelper
     )
     {
-        _logger = logger;
+        _logHelper = logHelper;
         LoadSettingsFromFile();
     }
 
@@ -41,7 +41,7 @@ public class ConfigManager
     {
         lock (_lock)
         {
-            _logger.LogInfo("LoadSettingsFromFile...");
+            _logHelper.LogInfo("LoadSettingsFromFile...");
 
             // check if exists
             if (!File.Exists(Path.Combine(AppPath, "settings.json")))
@@ -59,7 +59,7 @@ public class ConfigManager
     {
         lock (_lock)
         {
-            _logger.LogInfo("GetConfig...");
+            _logHelper.LogInfo("GetConfig...");
             return _settings;
         }
     }
@@ -68,7 +68,7 @@ public class ConfigManager
     {
         lock (_lock)
         {
-            _logger.LogInfo("SaveConfig...");
+            _logHelper.LogInfo("SaveConfig...");
             File.WriteAllText(Path.Combine(AppPath, "settings.json"), JsonSerializer.Serialize(_settings));
         }
     }
@@ -77,7 +77,7 @@ public class ConfigManager
     {
         lock (_lock)
         {
-            _logger.LogInfo("SetClientSize...");
+            _logHelper.LogInfo("SetClientSize...");
             _settings.AppSettings.StartSize.Height = height;
             _settings.AppSettings.StartSize.Width = width;
             SaveConfig();
@@ -88,7 +88,7 @@ public class ConfigManager
     {
         lock (_lock)
         {
-            _logger.LogInfo("SetClientLocation...");
+            _logHelper.LogInfo("SetClientLocation...");
             _settings.AppSettings.StartLocation.X = x;
             _settings.AppSettings.StartLocation.Y = y;
             SaveConfig();
@@ -99,7 +99,7 @@ public class ConfigManager
     {
         lock (_lock)
         {
-            _logger.LogInfo("SetFirstRun...");
+            _logHelper.LogInfo("SetFirstRun...");
             _settings.FirstRun = firstRun;
             SaveConfig();
         }
@@ -109,7 +109,7 @@ public class ConfigManager
     {
         lock (_lock)
         {
-            _logger.LogInfo("SetServers...");
+            _logHelper.LogInfo("SetServers...");
             _settings.Servers = servers;
             SaveConfig();
         }
@@ -119,7 +119,7 @@ public class ConfigManager
     {
         lock (_lock)
         {
-            _logger.LogInfo("SetCloseToTray...");
+            _logHelper.LogInfo("SetCloseToTray...");
             _settings.AppSettings.CloseToTray = closeToTray;
             SaveConfig();
         }
@@ -129,7 +129,7 @@ public class ConfigManager
     {
         lock (_lock)
         {
-            _logger.LogInfo("SetMinimizeOnLaunch...");
+            _logHelper.LogInfo("SetMinimizeOnLaunch...");
             _settings.AppSettings.MinimizeOnLaunch = minimizeOnLaunch;
             SaveConfig();
         }
@@ -139,7 +139,7 @@ public class ConfigManager
     {
         lock (_lock)
         {
-            _logger.LogInfo("SetAlwaysOnTop...");
+            _logHelper.LogInfo("SetAlwaysOnTop...");
             _settings.AppSettings.AlwaysTop = alwaysOnTop;
             SaveConfig();
         }
@@ -149,7 +149,7 @@ public class ConfigManager
     {
         lock (_lock)
         {
-            _logger.LogInfo("SetAdvancedUser...");
+            _logHelper.LogInfo("SetAdvancedUser...");
             _settings.AppSettings.AdvancedUser = advancedUser;
             SaveConfig();
         }
@@ -159,7 +159,7 @@ public class ConfigManager
     {
         lock (_lock)
         {
-            _logger.LogInfo("SetDebugUser...");
+            _logHelper.LogInfo("SetDebugUser...");
             _settings.DebugSettings.DebugUser = debugUser;
             SaveConfig();
         }
@@ -169,7 +169,7 @@ public class ConfigManager
     {
         lock (_lock)
         {
-            _logger.LogInfo("SetUseProfileColors...");
+            _logHelper.LogInfo("SetUseProfileColors...");
             _settings.AppSettings.UseProfileColors = profileColors;
             SaveConfig();
         }
@@ -179,7 +179,7 @@ public class ConfigManager
     {
         lock (_lock)
         {
-            _logger.LogInfo("SetDebugLoggingPage...");
+            _logHelper.LogInfo("SetDebugLoggingPage...");
             _settings.DebugSettings.ShowLoggingPage = access;
             SaveConfig();
         }
@@ -189,7 +189,7 @@ public class ConfigManager
     {
         lock (_lock)
         {
-            _logger.LogInfo("SaveDefaults...");
+            _logHelper.LogInfo("SaveDefaults...");
             Directory.CreateDirectory(AppPath);
             File.WriteAllText(Path.Combine(AppPath, "settings.json"), GetDefaults());
         }
@@ -197,7 +197,7 @@ public class ConfigManager
 
     private string GetDefaults()
     {
-        _logger.LogInfo("GetDefaults...");
+        _logHelper.LogInfo("GetDefaults...");
         // work around not being able to read embedded json
         var settings = new Settings()
         {

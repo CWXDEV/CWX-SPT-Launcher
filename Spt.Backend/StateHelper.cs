@@ -8,7 +8,7 @@ using Spt.Core.Responses;
 
 namespace Spt.Backend;
 
-public class StateManager
+public class StateHelper
 {
     private HttpClient? _netClient;
     public Servers? ConnectedServer;
@@ -16,18 +16,18 @@ public class StateManager
     public Dictionary<string, SPTMod> ModList = [];
     public List<MiniProfile> ProfileList = [];
     public Dictionary<string, string> ProfileTypes = new();
-    private readonly Logger _logger;
+    private readonly LogHelper _logHelper;
 
-    public StateManager(
-        Logger logger
+    public StateHelper(
+        LogHelper logHelper
     )
     {
-        _logger = logger;
+        _logHelper = logHelper;
     }
 
     public async Task<bool> GetAsync<T>(string url, CancellationToken token)
     {
-        _logger.LogInfo($"GET: {url}");
+        _logHelper.LogInfo($"GET: {url}");
         var task = await _netClient?.GetAsync(url, token);
         var result = JsonSerializer.Deserialize<T>(SimpleZlib.Decompress(await task.Content.ReadAsByteArrayAsync(token)));
 
@@ -51,7 +51,7 @@ public class StateManager
 
     public async Task<bool> PutAsync<T>(string url, object request, CancellationToken token)
     {
-        _logger.LogInfo($"POST: {url}");
+        _logHelper.LogInfo($"Put: {url}");
         var content = new ByteArrayContent(SimpleZlib.CompressToBytes(JsonSerializer.Serialize(request), zlibConst.Z_BEST_COMPRESSION));
         var task = await _netClient?.PutAsync(url, content, token);
         var result = JsonSerializer.Deserialize<T>(SimpleZlib.Decompress(await task.Content.ReadAsByteArrayAsync(token)));
@@ -97,7 +97,7 @@ public class StateManager
 
     public void LogoutAndDispose()
     {
-        _logger.LogInfo($"Logged out of server {(ConnectedServer?.Ip ?? "Unknown")} and disposed");
+        _logHelper.LogInfo($"Logged out of server {(ConnectedServer?.Ip ?? "Unknown")} and disposed");
         ProfileList = [];
         ModList = [];
         SelectedProfile = null;

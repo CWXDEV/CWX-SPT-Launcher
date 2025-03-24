@@ -7,22 +7,22 @@ using Microsoft.Win32;
 
 namespace Spt.Backend;
 
-public class Game
+public class GameHelper
 {
-    public Game(
-        StateManager stateManager,
-        Logger logger,
-        ConfigManager configManager
+    public GameHelper(
+        StateHelper stateHelper,
+        LogHelper logHelper,
+        ConfigHelper configHelper
     )
     {
-        _stateManager = stateManager;
-        _logger = logger;
-        _configManager = configManager;
+        _stateHelper = stateHelper;
+        _logHelper = logHelper;
+        _configHelper = configHelper;
     }
 
-    private StateManager _stateManager;
-    private Logger _logger;
-    private ConfigManager _configManager;
+    private StateHelper _stateHelper;
+    private LogHelper _logHelper;
+    private ConfigHelper _configHelper;
 
     private const string registryInstall = @"Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\EscapeFromTarkov";
     private const string registrySettings = @"Software\Battlestate Games\EscapeFromTarkov";
@@ -51,12 +51,12 @@ public class Game
         // SetupGameFiles();
 
         // check game path
-        var clientExecutable = Path.Join(_configManager.GetConfig().GamePath, "EscapeFromTarkov.exe");
+        var clientExecutable = Path.Join(_configHelper.GetConfig().GamePath, "EscapeFromTarkov.exe");
 
         if (!File.Exists(clientExecutable))
         {
-            _logger.AddLog("[LaunchGame] Valid Game Path   :: FAILED");
-            _logger.AddLog($"Could not find {clientExecutable}");
+            _logHelper.AddLog("[LaunchGame] Valid Game Path   :: FAILED");
+            _logHelper.AddLog($"Could not find {clientExecutable}");
             return false;
         }
 
@@ -65,26 +65,26 @@ public class Game
 
         //start game
         var args =
-            $"-force-gfx-jobs native -token={_stateManager.SelectedProfile.ProfileID} -config=" +
-            $"{{'BackendUrl':'https://{_stateManager.ConnectedServer.Ip}','Version':'live','MatchingVersion':'live'}}";
+            $"-force-gfx-jobs native -token={_stateHelper.SelectedProfile.ProfileID} -config=" +
+            $"{{'BackendUrl':'https://{_stateHelper.ConnectedServer.Ip}','Version':'live','MatchingVersion':'live'}}";
 
-        _logger.AddLog(args);
+        _logHelper.AddLog(args);
 
         var clientProcess = new ProcessStartInfo(clientExecutable)
         {
             Arguments = args,
             UseShellExecute = false,
-            WorkingDirectory = _configManager.GetConfig().GamePath,
+            WorkingDirectory = _configHelper.GetConfig().GamePath,
         };
 
         try
         {
             Process.Start(clientProcess);
-            _logger.AddLog("[LaunchGame] Game process started");
+            _logHelper.AddLog("[LaunchGame] Game process started");
         }
         catch (Exception ex)
         {
-            _logger.AddLog(ex.ToString());
+            _logHelper.AddLog(ex.ToString());
             return false;
         }
 
@@ -100,24 +100,24 @@ public class Game
             FileInfo[] files =
             [
                 // SPT files
-                new FileInfo(Path.Combine(_configManager.GetConfig().GamePath, "SPT.Launcher.exe")),
-                new FileInfo(Path.Combine(_configManager.GetConfig().GamePath, "SPT.Server.exe")),
+                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, "SPT.Launcher.exe")),
+                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, "SPT.Server.exe")),
 
                 // bepinex files
-                new FileInfo(Path.Combine(_configManager.GetConfig().GamePath, @"doorstep_config.ini")),
-                new FileInfo(Path.Combine(_configManager.GetConfig().GamePath, @"winhttp.dll")),
+                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"doorstep_config.ini")),
+                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"winhttp.dll")),
 
                 // licenses
-                new FileInfo(Path.Combine(_configManager.GetConfig().GamePath, @"LICENSE-BEPINEX.txt")),
-                new FileInfo(Path.Combine(_configManager.GetConfig().GamePath, @"LICENSE-ConfigurationManager.txt")),
-                new FileInfo(Path.Combine(_configManager.GetConfig().GamePath, @"LICENSE-Launcher.txt")),
-                new FileInfo(Path.Combine(_configManager.GetConfig().GamePath, @"LICENSE-Modules.txt")),
-                new FileInfo(Path.Combine(_configManager.GetConfig().GamePath, @"LICENSE-Server.txt"))
+                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"LICENSE-BEPINEX.txt")),
+                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"LICENSE-ConfigurationManager.txt")),
+                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"LICENSE-Launcher.txt")),
+                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"LICENSE-Modules.txt")),
+                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"LICENSE-Server.txt"))
             ];
             DirectoryInfo[] directories =
             [
-                new DirectoryInfo(Path.Combine(_configManager.GetConfig().GamePath, @"SPT_Data")),
-                new DirectoryInfo(Path.Combine(_configManager.GetConfig().GamePath, @"BepInEx"))
+                new DirectoryInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"SPT_Data")),
+                new DirectoryInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"BepInEx"))
             ];
 
             foreach (var file in files)
@@ -188,7 +188,7 @@ public class Game
     private string GetFileForCleanup(string fileName)
     {
         //!_excludeFromCleanup.Contains(fileName) ? Path.Combine(gamePath, fileName) : null
-        return Path.Join(_configManager.GetConfig().GamePath, fileName);
+        return Path.Join(_configHelper.GetConfig().GamePath, fileName);
     }
 
     /// <summary>
@@ -197,7 +197,7 @@ public class Game
     /// <returns>returns true if the temp folder was cleaned succefully or doesn't exist. returns false if something went wrong.</returns>
     public bool CleanTempFiles()
     {
-        var rootdir = new DirectoryInfo(Path.Join(_configManager.GetConfig().GamePath, "user\\sptappdata"));
+        var rootdir = new DirectoryInfo(Path.Join(_configHelper.GetConfig().GamePath, "user\\sptappdata"));
 
         return !rootdir.Exists || RemoveFilesRecurse(rootdir);
     }

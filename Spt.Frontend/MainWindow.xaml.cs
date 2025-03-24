@@ -18,7 +18,7 @@ namespace Spt.Frontend;
 public partial class MainWindow
 {
     public static Window WindowMain;
-    private readonly ConfigManager _config;
+    private readonly ConfigHelper _config;
     private readonly MediaColor _titleBarColor = MediaColor.FromArgb(255, 39, 39, 47);
 
     public MainWindow()
@@ -34,17 +34,18 @@ public partial class MainWindow
             config.SnackbarConfiguration.ShowTransitionDuration = 100;
             config.SnackbarConfiguration.HideTransitionDuration = 100;
         });
-        serviceCollection.AddSingleton<Patcher>();
-        serviceCollection.AddSingleton<StateManager>();
-        serviceCollection.AddSingleton<ConfigManager>();
-        serviceCollection.AddSingleton<NavigationManager>();
-        serviceCollection.AddSingleton<Game>();
-        serviceCollection.AddSingleton<Logger>();
+        serviceCollection.AddSingleton<PatchHelper>();
+        serviceCollection.AddSingleton<StateHelper>();
+        serviceCollection.AddSingleton<ConfigHelper>();
+        serviceCollection.AddSingleton<NavigationHelper>();
+        serviceCollection.AddSingleton<ForgeHelper>();
+        serviceCollection.AddSingleton<GameHelper>();
+        serviceCollection.AddSingleton<LogHelper>();
 
         var serviceProvider = serviceCollection.BuildServiceProvider();
         Resources.Add("services", serviceProvider);
 
-        _config = serviceProvider.GetRequiredService<ConfigManager>();
+        _config = serviceProvider.GetRequiredService<ConfigHelper>();
 
         InitializeComponent();
         CustomizeComponent();

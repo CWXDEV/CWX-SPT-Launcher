@@ -1,4 +1,4 @@
-﻿@inject ISnackbar Snackbar
+﻿@inject ISnackbar _snackbar
 
 <MudDialog>
     <DialogContent>
@@ -17,7 +17,7 @@
 
     private void Submit()
     {
-        Snackbar.Add("Removed!");
+        _snackbar.Add("Removed!");
         MudDialog.Close(DialogResult.Ok(true));
     }
 

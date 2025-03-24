@@ -1,10 +1,9 @@
-﻿@using NavigationManager = Spt.Backend.NavigationManager
-@inject ISnackbar Snackbar
-@inject IDialogService DialogService
-@inject Microsoft.AspNetCore.Components.NavigationManager NavMan
-@inject StateManager StateManager
-@inject ConfigManager Config
-@inject NavigationManager NavigationManager
+﻿@inject ISnackbar _snackbar
+@inject IDialogService _dialogService
+@inject NavigationManager _navman
+@inject StateHelper _stateHelper
+@inject ConfigHelper _configHelper
+@inject NavigationHelper _navigationHelper
 
 <MudItem md="4">
     <MudCard>
@@ -80,21 +79,21 @@
 
     protected override void OnInitialized()
     {
-        IsConnectedServer = StateManager.ConnectedServer?.ServerId == Server.ServerId;
+        IsConnectedServer = _stateHelper.ConnectedServer?.ServerId == Server.ServerId;
         base.OnInitialized();
     }
 
     private async Task RunEditTask()
     {
-        if (StateManager.ConnectedServer?.ServerId == Server.ServerId)
+        if (_stateHelper.ConnectedServer?.ServerId == Server.ServerId)
         {
-            StateManager.LogoutAndDispose();
+            _stateHelper.LogoutAndDispose();
             IsConnectedServer = false;
         }
 
         var param = new DialogParameters { { "Server", Server } };
 
-        var dialog = await DialogService.ShowAsync<ServerEditDialog>("ServerEditDialog", param, Config.DialogOptions);
+        var dialog = await _dialogService.ShowAsync<ServerEditDialog>("ServerEditDialog", param, _configHelper.DialogOptions);
         var result = await dialog.Result;
 
         if (result?.Canceled is false)
@@ -107,56 +106,56 @@
                 serverToChange.Ip = Server.Ip;
             }
 
-            Config.SetServers(ServerList);
+            _configHelper.SetServers(ServerList);
             await ServerListChanged.InvokeAsync(ServerList);
         }
     }
 
     private async Task RunLoginTask()
     {
-        if (StateManager.ConnectedServer != null)
+        if (_stateHelper.ConnectedServer != null)
         {
-            if (StateManager.ConnectedServer.ServerId == Server.ServerId)
+            if (_stateHelper.ConnectedServer.ServerId == Server.ServerId)
             {
-                StateManager.LogoutAndDispose();
-                NavigationManager.SetBasicPages(false);
-                NavigationManager.SetProfilePages(false);
+                _stateHelper.LogoutAndDispose();
+                _navigationHelper.SetBasicPages(false);
+                _navigationHelper.SetProfilePages(false);
                 IsConnectedServer = false;
                 return;
             }
 
-            StateManager.LogoutAndDispose();
-            NavigationManager.SetBasicPages(false);
-            NavigationManager.SetProfilePages(false);
+            _stateHelper.LogoutAndDispose();
+            _navigationHelper.SetBasicPages(false);
+            _navigationHelper.SetProfilePages(false);
             IsConnectedServer = false;
         }
 
         var param = new DialogParameters { { "Server", Server } };
 
-        var dialog = await DialogService.ShowAsync<ServerLoginDialog>("ServerLoginDialog", param, Config.DialogOptions);
+        var dialog = await _dialogService.ShowAsync<ServerLoginDialog>("ServerLoginDialog", param, _configHelper.DialogOptions);
         var result = await dialog.Result;
 
         if (result?.Canceled is false)
         {
-            StateManager.ServerLogin(Server);
-            if (StateManager.ConnectedServer != null)
+            _stateHelper.ServerLogin(Server);
+            if (_stateHelper.ConnectedServer != null)
             {
-                IsConnectedServer = StateManager.ConnectedServer.ServerId == Server.ServerId;
+                IsConnectedServer = _stateHelper.ConnectedServer.ServerId == Server.ServerId;
             }
 
-            NavMan.NavigateTo("/Profiles");
+            _navman.NavigateTo("/Profiles");
         }
     }
 
     private async Task RunDeleteTask()
     {
-        if (StateManager.ConnectedServer != null)
+        if (_stateHelper.ConnectedServer != null)
         {
-            StateManager.LogoutAndDispose();
+            _stateHelper.LogoutAndDispose();
             IsConnectedServer = false;
         }
 
-        var dialog = await DialogService.ShowAsync<ServerRemoveDialog>("ServerRemoveDialog", Config.DialogOptions);
+        var dialog = await _dialogService.ShowAsync<ServerRemoveDialog>("ServerRemoveDialog", _configHelper.DialogOptions);
         var result = await dialog.Result;
 
         if (result?.Canceled is false)
@@ -164,7 +163,7 @@
             ServerList.Remove(Server);
             await ServerListChanged.InvokeAsync(ServerList);
 
-            Config.SetServers(ServerList);
+            _configHelper.SetServers(ServerList);
         }
     }
 

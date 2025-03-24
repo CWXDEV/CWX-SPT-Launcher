@@ -1,0 +1,47 @@
+﻿@page "/ForgePage"
+@inject ForgeHelper _forgeHelper
+
+<MudContainer Class="px-8 my-2 pa-0" MaxWidth="MaxWidth.Large">
+    <SearchComponent/>
+
+    @if (!ModsLoaded)
+    {
+        <MudGrid>
+            <ModCardComponent IsSkeleton="true"/>
+            <ModCardComponent IsSkeleton="true"/>
+            <ModCardComponent IsSkeleton="true"/>
+            <ModCardComponent IsSkeleton="true"/>
+            <ModCardComponent IsSkeleton="true"/>
+            <ModCardComponent IsSkeleton="true"/>
+            <ModCardComponent IsSkeleton="true"/>
+        </MudGrid>
+    }
+    else
+    {
+        <MudGrid>
+            <ModCardComponent/>
+            <ModCardComponent/>
+            <ModCardComponent/>
+            <ModCardComponent/>
+            <ModCardComponent/>
+            <ModCardComponent/>
+            <ModCardComponent/>
+        </MudGrid>
+    }
+</MudContainer>
+
+@code {
+    private bool ModsLoaded { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadMods();
+    }
+
+    private async Task LoadMods()
+    {
+        // check the cache and then call the server if refresh timer is up
+    }
+
+}

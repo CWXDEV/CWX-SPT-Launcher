@@ -1,8 +1,7 @@
-﻿@using NavigationManager = Spt.Backend.NavigationManager
-@inject ISnackbar Snackbar
-@inject StateManager StateManager
-@inject NavigationManager NavigationManager
-@inject Logger Logger
+﻿@inject ISnackbar _snackbar
+@inject StateHelper _stateHelper
+@inject NavigationHelper _navigationHelper
+@inject LogHelper _logHelper
 
 <MudDialog>
     <DialogContent>
@@ -66,7 +65,7 @@
 
         if (!MiniProfile.HasPassword)
         {
-            Logger.LogInfo($"Profile: {MiniProfile.Username} does not have a password, logging in without dialog");
+            _logHelper.LogInfo($"Profile: {MiniProfile.Username} does not have a password, logging in without dialog");
             RunLoginTask();
         }
     }
@@ -107,7 +106,7 @@
         StateHasChanged();
         await Task.Delay(20);
 
-        var result = await StateManager.PutAsync<LoginResponse>(RequestUrl.Login, request, token.Token);
+        var result = await _stateHelper.PutAsync<LoginResponse>(RequestUrl.Login, request, token.Token);
 
         if (!result)
         {
@@ -121,8 +120,8 @@
 
     private void Submit()
     {
-        NavigationManager.SetProfilePages(true);
-        Snackbar.Add($"Logged in to {MiniProfile?.Username}!", Severity.Success);
+        _navigationHelper.SetProfilePages(true);
+        _snackbar.Add($"Logged in to {MiniProfile?.Username}!", Severity.Success);
         MudDialog.Close(DialogResult.Ok(MiniProfile));
     }
 
@@ -130,10 +129,10 @@
     {
         if (!UserCancel)
         {
-            Snackbar.Add(message, Severity.Error);
+            _snackbar.Add(message, Severity.Error);
         }
 
-        NavigationManager.SetProfilePages(false);
+        _navigationHelper.SetProfilePages(false);
         token?.Cancel();
         MudDialog.Cancel();
     }

@@ -1,6 +1,6 @@
-﻿@inject ISnackbar Snackbar
-@inject StateManager StateManager
-@inject Logger Logger
+﻿@inject ISnackbar _snackbar
+@inject StateHelper _stateHelper
+@inject LogHelper _logHelper
 
 <MudDialog>
     <DialogContent>
@@ -40,7 +40,7 @@
         try
         {
             token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            var result = await StateManager.PutAsync<RemoveResponse>(RequestUrl.Remove, request, token.Token);
+            var result = await _stateHelper.PutAsync<RemoveResponse>(RequestUrl.Remove, request, token.Token);
 
             if (!result)
             {
@@ -57,8 +57,8 @@
         }
 
         StateHasChanged();
-        Logger.LogInfo($"Removed profile: {MiniProfile.Username} from server");
-        Snackbar.Add($"Removed Profile {MiniProfile.Username} from server", Severity.Success);
+        _logHelper.LogInfo($"Removed profile: {MiniProfile.Username} from server");
+        _snackbar.Add($"Removed Profile {MiniProfile.Username} from server", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
     }
 
@@ -66,8 +66,8 @@
     {
         if (!UserCancel)
         {
-            Logger.LogInfo($"Error deleteing profile: {MiniProfile.Username} from server");
-            Snackbar.Add($"Error deleting profile {MiniProfile.Username} from server!", Severity.Error);
+            _logHelper.LogInfo($"Error deleteing profile: {MiniProfile.Username} from server");
+            _snackbar.Add($"Error deleting profile {MiniProfile.Username} from server!", Severity.Error);
         }
 
         MudDialog.Cancel();

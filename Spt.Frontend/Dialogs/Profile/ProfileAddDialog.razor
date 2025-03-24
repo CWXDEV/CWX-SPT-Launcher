@@ -1,5 +1,5 @@
-﻿@inject ISnackbar Snackbar
-@inject StateManager StateManager
+﻿@inject ISnackbar _snackbar
+@inject StateHelper _stateHelper
 
 <MudDialog>
     <DialogContent>
@@ -42,11 +42,11 @@
 
     private bool UserCancel { get; set; }
 
-    private string tooltipText => StateManager.ProfileTypes.GetValueOrDefault(Request.Edition, "");
+    private string tooltipText => _stateHelper.ProfileTypes.GetValueOrDefault(Request.Edition, "");
 
     protected override void OnInitialized()
     {
-        serverEditions = StateManager.ProfileTypes.Keys.ToList();
+        serverEditions = _stateHelper.ProfileTypes.Keys.ToList();
         base.OnInitialized();
     }
 
@@ -55,7 +55,7 @@
         try
         {
             token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            var result = await StateManager.PutAsync<RegisterResponse>(RequestUrl.Register, Request, token.Token);
+            var result = await _stateHelper.PutAsync<RegisterResponse>(RequestUrl.Register, Request, token.Token);
             if (!result)
             {
                 AbortOrFail();
@@ -71,7 +71,7 @@
         }
 
         StateHasChanged();
-        Snackbar.Add("Added Profile!", Severity.Success);
+        _snackbar.Add("Added Profile!", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
     }
 
@@ -79,7 +79,7 @@
     {
         if (!UserCancel)
         {
-            Snackbar.Add("Unable to Add profile!", Severity.Error);
+            _snackbar.Add("Unable to Add profile!", Severity.Error);
         }
 
         MudDialog.Cancel();

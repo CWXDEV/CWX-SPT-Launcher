@@ -1,9 +1,9 @@
-﻿@page "/Admin"
-@inject Logger Logger
+﻿@page "/AdminPage"
+@inject LogHelper _logHelper
 
 <MudContainer Class="px-8 my-2 pa-0" MaxWidth="MaxWidth.Large">
     <MudChat ChatPosition="ChatBubblePosition.Start">
-        @foreach (var log in Logger.GetLogs())
+        @foreach (var log in _logHelper.GetLogs())
         {
             <MudChatBubble>
                 @log
@@ -16,12 +16,12 @@
 {
     protected override void OnInitialized()
     {
-        Logger.OnLogsChanged += StateHasChanged;
+        _logHelper.OnLogsChanged += StateHasChanged;
         base.OnInitialized();
     }
 
     private void Dispose()
     {
-        Logger.OnLogsChanged -= StateHasChanged;
+        _logHelper.OnLogsChanged -= StateHasChanged;
     }
 }

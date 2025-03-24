@@ -1,4 +1,4 @@
-﻿@inject IJSRuntime JSRuntime
+﻿@inject IJSRuntime _jsRuntime
 
 <MudContainer Class="d-flex flex-column px-0 mb-4">
     <MudGrid>
@@ -6,14 +6,14 @@
             <MudTextField @bind-Value="Search" Label="Search" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" Clearable="true" Immediate="true" />
         </MudItem>
         <MudItem sm="3">
-            <MudSelect @bind-Value="SortValue" Label="Sort" Variant="Variant.Outlined" Dense="true" AdornmentIcon="@Icons.Material.Filled.Sort" AdornmentColor="Color.Primary" Clearable="true">
+            <MudSelect @bind-Value="SortValue" Label="Sort" Variant="Variant.Outlined" Dense="true" AdornmentIcon="@Icons.Material.Filled.Sort" AdornmentColor="Color.Primary">
                 <MudSelectItem Value="@("Newest")">Newest</MudSelectItem>
                 <MudSelectItem Value="@("Recently Updated")">Recently Updated</MudSelectItem>
                 <MudSelectItem Value="@("Most Downloaded")">Most Downloaded</MudSelectItem>
             </MudSelect>
         </MudItem>
         <MudItem sm="3">
-            <MudSelect @bind-Value="FilterValue" Label="Featured" Variant="Variant.Outlined" Dense="true" AdornmentIcon="@Icons.Material.Filled.FilterAlt" AdornmentColor="Color.Primary" Clearable="true">
+            <MudSelect @bind-Value="FilterValue" Label="Featured" Variant="Variant.Outlined" Dense="true" AdornmentIcon="@Icons.Material.Filled.FilterAlt" AdornmentColor="Color.Primary">
                 <MudSelectItem Value="@("Include")">Include</MudSelectItem>
                 <MudSelectItem Value="@("Exclude")">Exclude</MudSelectItem>
                 <MudSelectItem Value="@("Only")">Only</MudSelectItem>
@@ -32,7 +32,7 @@
 
     private async Task ScrollToTop()
     {
-        await JSRuntime.InvokeVoidAsync("scrollToTopSmooth");
+        await _jsRuntime.InvokeVoidAsync("scrollToTopSmooth");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -41,7 +41,7 @@
         {
             // TODO: Move to JS file
             // Register JavaScript function
-            await JSRuntime.InvokeVoidAsync("eval", @"
+            await _jsRuntime.InvokeVoidAsync("eval", @"
                 window.scrollToTopSmooth = function() {
                     window.scrollTo({
                         top: 0,

@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Spt.Core.ModManager;
+namespace Spt.Core.Forge;
 
-public class ModVersions
+public class ModUsers
 {
     [JsonPropertyName("data")]
     public ModData Data { get; set; }

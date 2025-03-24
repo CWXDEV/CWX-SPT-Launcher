@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Spt.Core.ModManager;
+namespace Spt.Core.Forge;
 
 public class ModRelationship
 {

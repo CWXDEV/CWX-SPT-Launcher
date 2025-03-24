@@ -1,5 +1,4 @@
-﻿@using Microsoft.Win32
-@inject ISnackbar Snackbar
+﻿@inject ISnackbar _snackbar
 
 <MudDialog>
     <DialogContent>
@@ -35,7 +34,7 @@
 
     private void Submit()
     {
-        Snackbar.Add("Edited Server!", Severity.Success);
+        _snackbar.Add("Edited Server!", Severity.Success);
         MudDialog.Close(DialogResult.Ok(Server));
     }
 

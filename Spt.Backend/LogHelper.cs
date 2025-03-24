@@ -1,6 +1,6 @@
 ﻿namespace Spt.Backend;
 
-public class Logger
+public class LogHelper
 {
     public List<string> Logs = new List<string>();
     private Lock _lock = new Lock();

@@ -1,6 +1,5 @@
-﻿@using NavigationManager = Spt.Backend.NavigationManager
-@inject ConfigManager Config
-@inject NavigationManager NavigationManager
+﻿@inject ConfigHelper _configHelper
+@inject NavigationHelper _navigationHelper
 
 <MudItem sm="12">
     <MudPaper Class="pa-5 ml-1 gap-2 d-flex flex-column card-overflow" Elevation="3">
@@ -16,7 +15,7 @@
 
     protected override void OnInitialized()
     {
-        var settings = Config.GetConfig();
+        var settings = _configHelper.GetConfig();
         debugUserSwitch = settings.DebugSettings.DebugUser;
         showLoggingPageSwitch = settings.DebugSettings.ShowLoggingPage;
 
@@ -26,15 +25,15 @@
     private void SetDebugUser()
     {
         debugUserSwitch = !debugUserSwitch;
-        Config.SetDebugUser(debugUserSwitch);
+        _configHelper.SetDebugUser(debugUserSwitch);
 
         // clean up later
         if (!debugUserSwitch)
         {
             // set all debug options to false
             showLoggingPageSwitch = debugUserSwitch;
-            NavigationManager.SetLoggingPages(debugUserSwitch);
-            Config.SetDebugLoggingPage(debugUserSwitch);
+            _navigationHelper.SetLoggingPages(debugUserSwitch);
+            _configHelper.SetDebugLoggingPage(debugUserSwitch);
         }
     }
 
@@ -45,7 +44,7 @@
             return;
         }
         showLoggingPageSwitch = !showLoggingPageSwitch;
-        NavigationManager.SetLoggingPages(showLoggingPageSwitch);
-        Config.SetDebugLoggingPage(showLoggingPageSwitch);
+        _navigationHelper.SetLoggingPages(showLoggingPageSwitch);
+        _configHelper.SetDebugLoggingPage(showLoggingPageSwitch);
     }
 }

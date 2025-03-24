@@ -1,42 +1,41 @@
-﻿@using NavigationManager = Spt.Backend.NavigationManager
-@inject NavigationManager NavigationManager
+﻿@inject NavigationHelper NavigationHelper
 
 <MudNavMenu>
-    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.ConnectedTv" Match="NavLinkMatch.All" Href="/">Servers</MudNavLink>
-    @if (NavigationManager.ShowProfilesPage)
+    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.ConnectedTv" Match="NavLinkMatch.All" Href="/">Home</MudNavLink>
+    @if (NavigationHelper.ShowProfilesPage)
     {
-        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.PeopleAlt" Match="NavLinkMatch.All" Href="/Profiles">Profiles</MudNavLink>
+        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.PeopleAlt" Match="NavLinkMatch.All" Href="/ProfilesPage">Profiles</MudNavLink>
     }
-    @if (NavigationManager.ShowProfilePage)
+    @if (NavigationHelper.ShowProfilePage)
     {
-        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.Person" Match="NavLinkMatch.All" Href="/Profile">Profile</MudNavLink>
+        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.Person" Match="NavLinkMatch.All" Href="/ProfilePage">Profile</MudNavLink>
     }
-    @if (NavigationManager.ShowModPage)
+    @if (NavigationHelper.ShowModPage)
     {
-        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.FolderOpen" Match="NavLinkMatch.All" Href="/ActiveMods">Mods</MudNavLink>
+        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.FolderOpen" Match="NavLinkMatch.All" Href="/ActiveModsPage">Mods</MudNavLink>
     }
 </MudNavMenu>
 <MudSpacer/>
 <MudNavMenu>
-    @if (NavigationManager.ShowLoggingPage)
+    @if (NavigationHelper.ShowLoggingPage)
     {
-        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.AdminPanelSettings" Match="NavLinkMatch.All" Href="/Admin">Admin</MudNavLink>
+        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.AdminPanelSettings" Match="NavLinkMatch.All" Href="/AdminPage">Admin</MudNavLink>
     }
-    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.FolderZip" Match="NavLinkMatch.All" Href="/ModManager">Mod Manager</MudNavLink>
-    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.Settings" Match="NavLinkMatch.All" Href="/Settings">Settings</MudNavLink>
-    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.Info" Match="NavLinkMatch.All" Href="/Info">Info</MudNavLink>
+    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.FolderZip" Match="NavLinkMatch.All" Href="/ForgePage">Forge Manager</MudNavLink>
+    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.Settings" Match="NavLinkMatch.All" Href="/SettingsPage">Settings</MudNavLink>
+    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.Info" Match="NavLinkMatch.All" Href="/InfoPagePage">Info</MudNavLink>
 </MudNavMenu>
 
 @code
 {
     protected override void OnInitialized()
     {
-        NavigationManager.OnStateChanged += StateHasChanged;
+        NavigationHelper.OnStateChanged += StateHasChanged;
         base.OnInitialized();
     }
 
     public void Dispose()
     {
-        NavigationManager.OnStateChanged -= StateHasChanged;
+        NavigationHelper.OnStateChanged -= StateHasChanged;
     }
 }

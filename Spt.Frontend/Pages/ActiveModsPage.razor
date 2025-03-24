@@ -1,6 +1,6 @@
-﻿@page "/ActiveMods"
+﻿@page "/ActiveModsPage"
 
-@inject StateManager StateManager
+@inject StateHelper _stateHelper
 
 <MudContainer Class="px-8 my-2" MaxWidth="MaxWidth.Large">
     <MudContainer Class="d-flex justify-center pb-4">
@@ -35,8 +35,8 @@
 
     protected override void OnInitialized()
     {
-        IsConnected = StateManager.ConnectedServer is not null;
-        mods = StateManager.ModList.Values.ToList();
+        IsConnected = _stateHelper.ConnectedServer is not null;
+        mods = _stateHelper.ModList.Values.ToList();
         base.OnInitialized();
     }
 

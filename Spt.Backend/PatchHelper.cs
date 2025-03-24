@@ -12,7 +12,7 @@ using Spt.Core.Patching;
 
 namespace Spt.Backend;
 
-public class Patcher
+public class PatchHelper
 {
     private DiffResult Diff(byte[] original, byte[] patched)
     {

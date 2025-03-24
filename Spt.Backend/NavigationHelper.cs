@@ -1,13 +1,13 @@
 ﻿namespace Spt.Backend;
 
-public class NavigationManager
+public class NavigationHelper
 {
-    public NavigationManager(
-        ConfigManager configManager
+    public NavigationHelper(
+        ConfigHelper configHelper
     )
     {
-        if (configManager.GetConfig().DebugSettings.DebugUser &&
-            configManager.GetConfig().DebugSettings.ShowLoggingPage
+        if (configHelper.GetConfig().DebugSettings.DebugUser &&
+            configHelper.GetConfig().DebugSettings.ShowLoggingPage
         )
         {
             SetLoggingPages(true);

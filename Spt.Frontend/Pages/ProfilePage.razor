@@ -1,7 +1,7 @@
-﻿@page "/Profile"
-@inject StateManager StateManager
-@inject Game Game
-@inject Logger Logger
+﻿@page "/ProfilePage"
+@inject StateHelper _stateHelper
+@inject GameHelper _gameHelper
+@inject LogHelper _logHelper
 
 <MudContainer Class="px-8 my-2 pa-0" MaxWidth="MaxWidth.Large">
     <MudContainer Class="pa-0 pb-4">
@@ -33,17 +33,17 @@
 
     protected override void OnInitialized()
     {
-        SelectedMiniProfile = StateManager.SelectedProfile;
-        Logger.LogInfo($"Selected profile: {SelectedMiniProfile.Username}");
+        SelectedMiniProfile = _stateHelper.SelectedProfile;
+        _logHelper.LogInfo($"Selected profile: {SelectedMiniProfile.Username}");
         base.OnInitialized();
     }
 
     private async Task StartGame()
     {
         // do checks
-        Logger.LogInfo($"Launching Game");
-        await Game.LaunchGame();
-        Logger.LogInfo($"Launched Game");
+        _logHelper.LogInfo($"Launching Game");
+        await _gameHelper.LaunchGame();
+        _logHelper.LogInfo($"Launched Game");
         // patch game
         // start game
     }

@@ -1,7 +1,7 @@
-﻿@page "/Profiles"
-@inject IDialogService DialogService
-@inject StateManager StateManager
-@inject ConfigManager Config
+﻿@page "/ProfilesPage"
+@inject IDialogService _dialogService
+@inject StateHelper _stateHelper
+@inject ConfigHelper _configHelper
 
 <MudContainer Class="px-8 my-2" MaxWidth="MaxWidth.Large">
     <MudContainer Class="pa-0 d-flex justify-start gap-2 pb-4">
@@ -46,25 +46,25 @@
 
     protected override void OnInitialized()
     {
-        ProfilesList = StateManager.ProfileList;
-        IsConnected = StateManager.ConnectedServer is not null;
+        ProfilesList = _stateHelper.ProfileList;
+        IsConnected = _stateHelper.ConnectedServer is not null;
         base.OnInitialized();
     }
 
     private async Task RunAddTask()
     {
-        var dialog = await DialogService.ShowAsync<ProfileAddDialog>("ProfileAddDialog", Config.DialogOptions);
+        var dialog = await _dialogService.ShowAsync<ProfileAddDialog>("ProfileAddDialog", _configHelper.DialogOptions);
         var result = await dialog.Result;
 
         if (result?.Canceled is false)
         {
-            ProfilesList = StateManager.ProfileList;
+            ProfilesList = _stateHelper.ProfileList;
         }
     }
 
     private async Task RunLoginTask()
     {
-        var dialog = await DialogService.ShowAsync<ProfileLoginDialog>("ProfileLoginDialog", Config.DialogOptions);
+        var dialog = await _dialogService.ShowAsync<ProfileLoginDialog>("ProfileLoginDialog", _configHelper.DialogOptions);
         var result = await dialog.Result;
 
         if (result?.Canceled is false)
@@ -75,7 +75,7 @@
     // TODO: currently does not work as intended
     private async Task RunLoginTaskWithDetails()
     {
-        var dialog = await DialogService.ShowAsync<ProfileLoginDialog>("ProfileLoginDialog", Config.DialogOptions);
+        var dialog = await _dialogService.ShowAsync<ProfileLoginDialog>("ProfileLoginDialog", _configHelper.DialogOptions);
         var result = await dialog.Result;
 
         if (result?.Canceled is false)
