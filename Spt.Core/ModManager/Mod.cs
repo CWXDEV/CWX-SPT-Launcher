@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SPT_Core.ModManager;
+namespace Spt.Core.ModManager;
 
 public record Mod
 {

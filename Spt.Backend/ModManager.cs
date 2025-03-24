@@ -1,4 +1,4 @@
-﻿using SPT_Core.ModManager;
+﻿using Spt.Core.ModManager;
 
 namespace Spt.Backend;
 
