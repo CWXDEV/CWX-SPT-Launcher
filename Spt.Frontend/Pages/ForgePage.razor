@@ -1,10 +1,60 @@
 ﻿@page "/ForgePage"
+
+@inject ISnackbar _snackbar
+@inject IDialogService _dialogService
 @inject ForgeHelper _forgeHelper
+@inject ConfigHelper _configHelper
+@inject LogHelper _logHelper
 
 <MudContainer Class="px-8 my-2 pa-0" MaxWidth="MaxWidth.Large">
-    <SearchComponent/>
+    @if (_netAvailable && _apiKeyAvailable)
+    {
+        <SearchComponent/>
+    }
 
-    @if (!ModsLoaded)
+    @if (!_netAvailable)
+    {
+        <MudItem sm="12">
+            <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">No Internet access found, please fix and refresh!</MudAlert>
+        </MudItem>
+        <MudItem sm="12" Class="mt-4 d-flex justify-center align-center">
+            <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Refresh" Label="Refresh" @onclick="CheckInternetAccess"/>
+        </MudItem>
+    }
+    else if (!_apiKeyAvailable)
+    {
+        <MudItem sm="12">
+            <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Dense="true">No API Key found, please follow the instructions below to be able to use Forge!</MudAlert>
+        </MudItem>
+        <MudItem sm="12" Class="my-2 pa-2">
+            <MudText Class="mb-1">To use Forge via the launcher you must:</MudText>
+            <MudText>1. Have an account on the Forge.</MudText>
+            <MudText>2. Login and generate an Api Key for you to use.</MudText>
+            <MudText Class="mt-1">Below are two paths on how to generate that key.</MudText>
+        </MudItem>
+        <MudExpansionPanels MultiExpansion="true">
+            <MudExpansionPanel Text="Email and password login">
+                <MudText>If you have a Email and password login we are able to get a key automatically,</MudText>
+                <MudText>This requires you to login via the button below.</MudText>
+                <MudAlert Dense="true" Severity="Severity.Info" Variant="Variant.Outlined" Class="my-2">None of your login details will be saved!</MudAlert>
+                <MudItem sm="12" Class="mt-4 d-flex justify-start">
+                    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Login" Label="Login" @onclick="StartForgeLoginTask"/>
+                </MudItem>
+            </MudExpansionPanel>
+            <MudExpansionPanel Text="Discord login">
+                <MudText>If you have a Discord login we are NOT able to get a key automatically,</MudText>
+                <MudText>This requires you to login via the Forge.</MudText>
+                <MudText Class="mt-2">1. Start by logging into <MudLink Href="https://forge.sp-tarkov.com">The Forge</MudLink>.</MudText>
+                <MudText>2. Click your icon top right and select API Tokens.</MudText>
+                <MudText>3. Under "Token Name" put "SPT Launcher Key" and click create.</MudText>
+                <MudText>4. Click the button below to save this Token and test it. if it worked you'll be moved to the Forge Section.</MudText>
+                <MudItem sm="12" Class="mt-4 d-flex justify-start">
+                    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Login" Label="Login" @onclick="StartForgeLoginTask" Disabled="true"/>
+                </MudItem>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+    }
+    else if (!_modsLoaded)
     {
         <MudGrid>
             <ModCardComponent IsSkeleton="true"/>
@@ -16,7 +66,7 @@
             <ModCardComponent IsSkeleton="true"/>
         </MudGrid>
     }
-    else
+    else if (_modsLoaded)
     {
         <MudGrid>
             <ModCardComponent/>
@@ -31,12 +81,25 @@
 </MudContainer>
 
 @code {
-    private bool ModsLoaded { get; set; }
+    private bool _netAvailable { get; set; }
+    private bool _modsLoaded { get; set; }
+    private bool _apiKeyAvailable { get; set; }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        LoadMods();
+        _netAvailable = _forgeHelper.IsInternetAccessAvailable();
+        _apiKeyAvailable = _forgeHelper.GetApiKey();
+
+        if (_netAvailable)
+        {
+            LoadMods();
+        }
+    }
+
+    private async Task CheckInternetAccess()
+    {
+        _netAvailable = _forgeHelper.IsInternetAccessAvailable();
     }
 
     private async Task LoadMods()
@@ -44,4 +107,29 @@
         // check the cache and then call the server if refresh timer is up
     }
 
+    private async Task StartForgeLoginTask()
+    {
+        var dialog = await _dialogService.ShowAsync<ForgeLoginDialog>("ForgeLoginDialog", _configHelper.DialogOptions);
+        var result = await dialog.Result;
+
+        if (result?.Canceled is false)
+        {
+            _apiKeyAvailable = true;
+            _logHelper.LogInfo("Saved Apikey");
+        }
+    }
+
+    // TODO: see if Fridge is up for adding a apikey check endpoint
+    // like ping/pong with validation
+    private async Task StartForgeDiscordTask()
+    {
+        var dialog = await _dialogService.ShowAsync<ForgeDiscordDialog>("ForgeDiscordDialog", _configHelper.DialogOptions);
+        var result = await dialog.Result;
+
+        if (result?.Canceled is false)
+        {
+            _apiKeyAvailable = true;
+            _logHelper.LogInfo("Saved Apikey");
+        }
+    }
 }

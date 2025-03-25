@@ -185,6 +185,16 @@ public class ConfigHelper
         }
     }
 
+    public void SetApiKey(string apiKey)
+    {
+        lock (_lock)
+        {
+            _logHelper.LogInfo("SetApiKey...");
+            _settings.ApiKey = apiKey;
+            SaveConfig();
+        }
+    }
+
     private void SaveDefaults()
     {
         lock (_lock)
@@ -233,7 +243,8 @@ public class ConfigHelper
             DebugSettings = new DebugSettings
             {
                 DebugUser = false
-            }
+            },
+            ApiKey = ""
         };
 
         return JsonSerializer.Serialize(settings);

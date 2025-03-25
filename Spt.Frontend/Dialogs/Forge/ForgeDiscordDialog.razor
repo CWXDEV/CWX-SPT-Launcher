@@ -1,6 +1,5 @@
 ﻿@inject ISnackbar _snackbar
-@inject StateHelper _stateHelper
-@inject NavigationHelper _navigationHelper
+@inject ForgeHelper _forge
 @inject LogHelper _logHelper
 
 <MudDialog>
@@ -16,19 +15,7 @@
             else
             {
                 <MudForm Model="request" @bind-IsValid="@success" Class="gap-2 mt-3">
-                    @if (MiniProfile != null)
-                    {
-                        <MudTextField Immediate="true" @bind-Value="request.Username" Label="Username" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" Required="true" ReadOnly="true"/>
-                        @if (MiniProfile.HasPassword)
-                        {
-                            <PasswordFieldComponent @bind-Password="request.Password"/>
-                        }
-                    }
-                    else
-                    {
-                        <MudTextField Immediate="true" @bind-Value="request.Username" Label="Username" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="false" Required="true"/>
-                        <PasswordFieldComponent @bind-Password="request.Password"/>
-                    }
+                    <MudTextField Immediate="true" @bind-Value="request.Email" Label="Token" Variant="Variant.Outlined" Margin="Margin.Dense" Required="true"/>
                 </MudForm>
             }
 
@@ -44,34 +31,12 @@
     private bool success;
     private bool requestInProgress;
     private string TaskText = "";
-    [Parameter]
-    public MiniProfile MiniProfile { get; set; }
-    [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; }
-    private LoginRequest request { get; } = new();
+
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
+
+    private ForgeLoginRequest request { get; } = new();
     private CancellationTokenSource token { get; set; }
     private bool UserCancel { get; set; }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-
-        if (MiniProfile == null)
-        {
-            return;
-        }
-
-        if (MiniProfile != null)
-        {
-            request.Username = MiniProfile.Username;
-        }
-
-        if (!MiniProfile.HasPassword)
-        {
-            _logHelper.LogInfo($"Profile: {MiniProfile.Username} does not have a password, logging in without dialog");
-            RunLoginTask();
-        }
-    }
 
     private async Task RunLoginTask()
     {
@@ -79,7 +44,7 @@
         requestInProgress = true;
         try
         {
-            result = await CallServer("Getting profile details from server", "Failed getting profile details from server");
+            result = await CallForge("Trying to login", "Failed to login");
         }
         catch (TaskCanceledException e) when (token.IsCancellationRequested)
         {
@@ -104,14 +69,14 @@
         }
     }
 
-    private async Task<bool> CallServer(string taskText = "", string failString = "")
+    private async Task<bool> CallForge(string taskText = "", string failString = "")
     {
         token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         TaskText = taskText;
         StateHasChanged();
         await Task.Delay(20);
 
-        var result = await _stateHelper.PutAsync<LoginResponse>(RequestUrl.Login, request, token.Token);
+        var result = await _forge.LoginToForge(RequestUrl.ForgeLogin, request, token.Token);
 
         if (!result)
         {
@@ -125,9 +90,8 @@
 
     private void Submit()
     {
-        _navigationHelper.SetProfilePages(true);
-        _snackbar.Add($"Logged in to {MiniProfile?.Username}!", Severity.Success);
-        MudDialog.Close(DialogResult.Ok(MiniProfile));
+        _snackbar.Add($"Logged in to {request.Email}!", Severity.Success);
+        MudDialog.Close();
     }
 
     private void AbortOrFail(string message = "Error connecting to server!")
@@ -137,7 +101,6 @@
             _snackbar.Add(message, Severity.Error);
         }
 
-        _navigationHelper.SetProfilePages(false);
         token?.Cancel();
         MudDialog.Cancel();
         requestInProgress = false;

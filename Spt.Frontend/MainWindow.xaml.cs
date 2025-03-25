@@ -19,6 +19,7 @@ public partial class MainWindow
 {
     public static Window WindowMain;
     private readonly ConfigHelper _config;
+    private readonly ForgeHelper _forge;
     private readonly MediaColor _titleBarColor = MediaColor.FromArgb(255, 39, 39, 47);
 
     public MainWindow()
@@ -46,6 +47,8 @@ public partial class MainWindow
         Resources.Add("services", serviceProvider);
 
         _config = serviceProvider.GetRequiredService<ConfigHelper>();
+        _forge = serviceProvider.GetRequiredService<ForgeHelper>();
+        _forge.IsInternetAccessAvailable();
 
         InitializeComponent();
         CustomizeComponent();

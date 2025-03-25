@@ -10,7 +10,7 @@ public class ForgeLoginResponse
     public string? Message { get; set; }
 
     [JsonPropertyName("status")]
-    public string? Status { get; set; }
+    public int? Status { get; set; }
 
     [JsonPropertyName("data")]
     public ForgeResponseData? Data { get; set; }

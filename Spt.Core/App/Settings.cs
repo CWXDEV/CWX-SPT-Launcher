@@ -34,4 +34,10 @@ public class Settings
         get;
         set;
     }
+
+    public string ApiKey
+    {
+        get;
+        set;
+    }
 }

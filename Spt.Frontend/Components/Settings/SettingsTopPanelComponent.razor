@@ -3,6 +3,7 @@
 @using Size = MudBlazor.Size
 @inject LogHelper _logHelper
 @inject ConfigHelper _configHelper
+@inject ForgeHelper _forge
 @inject ISnackbar _snackbar
 
 <MudContainer Class="pa-0 pb-4 d-flex justify-start gap-2">
@@ -10,6 +11,7 @@
     <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="ClearGameSettings">Clear Game Settings</MudButton>
     <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="CleanTempFiles">Clean Temp Files</MudButton>
     <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="CopyLogs">Copy Logs</MudButton>
+    <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="ClearApiKey">Clear ApiKey</MudButton>
 </MudContainer>
 
 @code {
@@ -170,5 +172,10 @@
         collection.AddRange(filePaths.ToArray());
         Clipboard.Clear();
         Clipboard.SetFileDropList(collection);
+    }
+
+    private async Task ClearApiKey()
+    {
+        _forge.ClearApiKey();
     }
 }
