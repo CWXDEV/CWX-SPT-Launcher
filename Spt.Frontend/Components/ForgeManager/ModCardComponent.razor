@@ -1,0 +1,77 @@
+﻿<MudItem sm="6">
+    @if (IsSkeleton)
+    {
+        <MudCard Class="info-card-height">
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    @* Randomise colour *@
+                    <MudSkeleton SkeletonType="SkeletonType.Circle" Height="40px" Width="40px"/>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudSkeleton Width="40%"/>
+                    <MudSkeleton Width="60%"/>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <MudSkeleton SkeletonType="SkeletonType.Circle" Height="30px" Width="30px" Class="ml-2 mb-2"/>
+                </CardHeaderActions>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="150px" />
+            </MudCardContent>
+            <MudCardActions>
+                <MudSkeleton SkeletonType="SkeletonType.Circle" Height="30px" Width="30px" Class="ml-2 mb-2"/>
+                <MudSkeleton SkeletonType="SkeletonType.Circle" Height="30px" Width="30px" Class="ml-3 mb-2"/>
+            </MudCardActions>
+        </MudCard>
+    }
+    else
+    {
+        <MudCard Class="info-card-height">
+            <MudCardHeader>
+                <CardHeaderAvatar>
+                    <MudAvatar Color="Color.Secondary">@GetAvatarLetter()</MudAvatar>
+                </CardHeaderAvatar>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.body1">@GetModName()</MudText>
+                    <MudText Typo="Typo.body2">By @GetModdersName()</MudText>
+                </CardHeaderContent>
+                <CardHeaderActions>
+                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default"/>
+                </CardHeaderActions>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudText Typo="Typo.body2">@GetModTeaser()</MudText>
+            </MudCardContent>
+            <MudCardActions>
+                <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Default"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Default"/>
+            </MudCardActions>
+        </MudCard>
+    }
+</MudItem>
+
+@code {
+    [Parameter] public bool IsSkeleton { get; set; }
+
+    [Parameter] public ForgeMod ForgeMod { get; set; }
+
+    private char? GetAvatarLetter()
+    {
+        return ForgeMod.Includes.FirstOrDefault(x => x.Type == "user").Attributes.Name.ToUpper()[0];
+    }
+
+    private string? GetModName()
+    {
+        return ForgeMod.Attributes.Name.UppercaseFirst();
+    }
+
+    private string? GetModdersName()
+    {
+        return ForgeMod.Includes.FirstOrDefault(x => x.Type == "user").Attributes.Name.UppercaseFirst();
+    }
+
+    private string? GetModTeaser()
+    {
+        return ForgeMod.Attributes.Teaser.UppercaseFirst();
+    }
+}

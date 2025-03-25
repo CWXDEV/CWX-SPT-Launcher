@@ -14,7 +14,7 @@ public record ForgeMod
     public ModAttributes? Attributes { get; set; }
 
     [JsonPropertyName("relationships")]
-    public Dictionary<string, List<ModRelationship>>? Relationships { get; set; }
+    public Dictionary<string, object>? Relationships { get; set; }
 
     [JsonPropertyName("includes")]
     public List<ForgeMod>? Includes { get; set; }

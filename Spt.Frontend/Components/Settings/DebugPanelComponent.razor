@@ -22,7 +22,7 @@
         base.OnInitialized();
     }
 
-    private void SetDebugUser()
+    private async Task SetDebugUser()
     {
         debugUserSwitch = !debugUserSwitch;
         _configHelper.SetDebugUser(debugUserSwitch);
@@ -37,7 +37,7 @@
         }
     }
 
-    private void SetLoggingPage()
+    private async Task SetLoggingPage()
     {
         if (!debugUserSwitch)
         {

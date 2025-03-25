@@ -27,26 +27,26 @@
         base.OnInitialized();
     }
 
-    private void SetCloseToTray()
+    private async Task SetCloseToTray()
     {
         closeToTraySwitch = !closeToTraySwitch;
         _ConfigHelper.SetCloseToTray(closeToTraySwitch);
     }
 
-    private void SetMinimizeOnLaunch()
+    private async Task SetMinimizeOnLaunch()
     {
         minimizeOnLaunchSwitch = !minimizeOnLaunchSwitch;
         _ConfigHelper.SetMinimizeOnLaunch(minimizeOnLaunchSwitch);
     }
 
-    private void SetAlwaysOnTop()
+    private async Task SetAlwaysOnTop()
     {
         alwaysOnTopSwitch = !alwaysOnTopSwitch;
         MainWindow.WindowMain.Topmost = alwaysOnTopSwitch;
         _ConfigHelper.SetAlwaysOnTop(alwaysOnTopSwitch);
     }
 
-    private void SetUseProfileColors()
+    private async Task SetUseProfileColors()
     {
         useProfileColors = !useProfileColors;
         _ConfigHelper.SetUseProfileColors(useProfileColors);

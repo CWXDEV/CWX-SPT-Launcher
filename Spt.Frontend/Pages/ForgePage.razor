@@ -9,7 +9,8 @@
 <MudContainer Class="px-8 my-2 pa-0" MaxWidth="MaxWidth.Large">
     @if (_netAvailable && _apiKeyAvailable)
     {
-        <SearchComponent/>
+        <SearchComponent @bind-Search="Search" @bind-FilterValue="FilterValue" @bind-SortValue="SortValue" SearchFunc="@SearchForMod"/>
+        <MudPagination Rectangular="true" Variant="Variant.Text" Count="6" SelectedChanged="UpdatePagination" Class="mt-2" />
     }
 
     @if (!_netAvailable)
@@ -44,7 +45,10 @@
             <MudExpansionPanel Text="Discord login">
                 <MudText>If you have a Discord login we are NOT able to get a key automatically,</MudText>
                 <MudText>This requires you to login via the Forge.</MudText>
-                <MudText Class="mt-2">1. Start by logging into <MudLink Href="https://forge.sp-tarkov.com">The Forge</MudLink>.</MudText>
+                <MudText Class="mt-2">1. Start by logging into
+                    <MudLink Href="https://forge.sp-tarkov.com">The Forge</MudLink>
+                    .
+                </MudText>
                 <MudText>2. Click your icon top right and select API Tokens.</MudText>
                 <MudText>3. Under "Token Name" put "SPT Launcher Key" and click create.</MudText>
                 <MudText>4. Click the button below to save this Token and test it. if it worked you'll be moved to the Forge Section.</MudText>
@@ -60,22 +64,24 @@
             <ModCardComponent IsSkeleton="true"/>
             <ModCardComponent IsSkeleton="true"/>
             <ModCardComponent IsSkeleton="true"/>
-            <ModCardComponent IsSkeleton="true"/>
-            <ModCardComponent IsSkeleton="true"/>
-            <ModCardComponent IsSkeleton="true"/>
-            <ModCardComponent IsSkeleton="true"/>
         </MudGrid>
     }
-    else if (_modsLoaded)
+    else if (_modsLoaded && Search.Length >= 3)
     {
         <MudGrid>
-            <ModCardComponent/>
-            <ModCardComponent/>
-            <ModCardComponent/>
-            <ModCardComponent/>
-            <ModCardComponent/>
-            <ModCardComponent/>
-            <ModCardComponent/>
+            @foreach (var filteredMod in _filteredMods)
+            {
+                <ModCardComponent ForgeMod="@filteredMod"/>
+            }
+        </MudGrid>
+    }
+    else if (_modsLoaded && Search.Length < 3)
+    {
+        <MudGrid>
+            @foreach (var mod in _mods)
+            {
+                <ModCardComponent ForgeMod="@mod"/>
+            }
         </MudGrid>
     }
 </MudContainer>
@@ -84,6 +90,14 @@
     private bool _netAvailable { get; set; }
     private bool _modsLoaded { get; set; }
     private bool _apiKeyAvailable { get; set; }
+    private List<ForgeMod> _mods { get; set; }
+    private List<ForgeMod> _filteredMods { get; set; } = new List<ForgeMod>();
+
+    // search functionality
+    public string Search { get; set; } = "";
+    public string SortValue { get; set; } = "Newest";
+    public string FilterValue { get; set; } = "Include";
+    private bool RequestInProgress { get; set; }
 
     protected override void OnInitialized()
     {
@@ -91,20 +105,15 @@
         _netAvailable = _forgeHelper.IsInternetAccessAvailable();
         _apiKeyAvailable = _forgeHelper.GetApiKey();
 
-        if (_netAvailable)
+        if (_netAvailable && _apiKeyAvailable)
         {
-            LoadMods();
+            LoadMods("");
         }
     }
 
     private async Task CheckInternetAccess()
     {
         _netAvailable = _forgeHelper.IsInternetAccessAvailable();
-    }
-
-    private async Task LoadMods()
-    {
-        // check the cache and then call the server if refresh timer is up
     }
 
     private async Task StartForgeLoginTask()
@@ -130,6 +139,77 @@
         {
             _apiKeyAvailable = true;
             _logHelper.LogInfo("Saved Apikey");
+        }
+    }
+
+    private async Task LoadMods(string modName = "", bool? includeFeatured = null)
+    {
+        // check the cache and then call the server if refresh timer is up
+        _mods = _forgeHelper.GetCachedMods();
+        if (_mods == null
+            || !_mods.Any()
+            || !_mods.Any(c => c.Attributes.Name.ToLower().Contains(modName.ToLower())))
+        {
+            try
+            {
+                var token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                await _forgeHelper.GetModsFromForge(RequestUrl.ForgeMods, modName, token.Token, includeFeatured);
+            }
+            catch (Exception e)
+            {
+                _logHelper.AddLog("Exception thrown from ForgeHelper.GetMods");
+                _logHelper.AddLog(e.ToString());
+                return;
+            }
+        }
+
+        _mods = _forgeHelper.GetCachedMods();
+        _modsLoaded = _mods is not null;
+        StateHasChanged();
+    }
+
+    private async Task SearchForMod()
+    {
+        if (Search.Length < 3)
+        {
+            return;
+        }
+
+        if (RequestInProgress)
+        {
+            return;
+        }
+
+        if (_mods == null || !_mods.Any() || !_mods.Any(c => c.Attributes.Name.ToLower().Contains(Search.ToLower())))
+        {
+            await LoadMods(Search);
+        }
+
+        var mods = _forgeHelper.GetCachedMods();
+
+        if (mods == null)
+        {
+            _logHelper.AddLog($"search: {Search} - include: {FilterValue} - sort: {SortValue} - came back null from Forge");
+            return;
+        }
+        _filteredMods = mods
+            .Where(x => x.Attributes.Name.ToLower().Contains(Search.ToLower()))
+            .ToList();
+        StateHasChanged();
+    }
+
+    public async Task UpdatePagination(int page)
+    {
+        try
+        {
+            Console.WriteLine($"pagination page: {page}");
+            var token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            await _forgeHelper.GetModsFromPagination("https://forge.sp-tarkov.com/api/v0/mods?page=2", token.Token);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 }

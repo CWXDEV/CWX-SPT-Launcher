@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Spt.Core.Forge;
 using Spt.Core.Spt;
 
 namespace Spt.Core.Responses;
@@ -6,7 +7,7 @@ namespace Spt.Core.Responses;
 public class ForgeModsResponse
 {
     [JsonPropertyName("data")]
-    public ForgeResponseData? Data { get; set; }
+    public List<ForgeMod>? Data { get; set; }
 
     [JsonPropertyName("links")]
     public object? Links { get; set; }

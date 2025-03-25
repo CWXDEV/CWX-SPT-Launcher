@@ -16,7 +16,7 @@
         base.OnInitialized();
     }
 
-    private void SetAdvUser()
+    private async Task SetAdvUser()
     {
         advancedUserSwitch = !advancedUserSwitch;
         _configHelper.SetAdvancedUser(advancedUserSwitch);

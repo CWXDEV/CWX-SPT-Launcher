@@ -15,5 +15,5 @@
     [Parameter] public bool AddDiv { get; set; }
     [Parameter] public bool Switch { get; set; }
     [Parameter] public string OptionName { get; set; }
-    [Parameter] public Action SwitchFunc { get; set; }
+    [Parameter] public Func<Task> SwitchFunc { get; set; }
 }
