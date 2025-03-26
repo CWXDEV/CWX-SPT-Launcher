@@ -76,16 +76,17 @@
         StateHasChanged();
         await Task.Delay(20);
 
-        var result = await _forge.LoginToForge(RequestUrl.ForgeLogin, request, token.Token);
+        throw new NotImplementedException();
+        // var result = await _forge.LoginToForge("https://forge.sp-tarkov.com/api/login", request, token.Token);
 
-        if (!result)
-        {
-            AbortOrFail(failString);
-            return false;
-        }
-
-        token?.Dispose();
-        return true;
+        // if (!result)
+        // {
+        //     AbortOrFail(failString);
+        //     return false;
+        // }
+        //
+        // token?.Dispose();
+        // return true;
     }
 
     private void Submit()

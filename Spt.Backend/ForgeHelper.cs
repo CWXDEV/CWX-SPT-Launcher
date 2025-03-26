@@ -11,17 +11,13 @@ namespace Spt.Backend;
 
 public class ForgeHelper
 {
-    private int _refreshInterval = 60 * 10; // 10 mins
     private bool _internetAccess = false;
-    private string? _forgeAddress = "https://forge.sp-tarkov.com/api";
     private string? _forgeToken;
 
     private LogHelper _logHelper;
     private ConfigHelper _configHelper;
 
     private HttpClient? _httpClient;
-    private DateTime _lastRefreshTime;
-    private Dictionary<string, ForgeMod> _modCache = new();
 
     public ForgeHelper
     (
@@ -33,35 +29,34 @@ public class ForgeHelper
         _configHelper = configHelper;
 
         _httpClient = new HttpClient();
-        _httpClient.BaseAddress = new Uri(_forgeAddress);
-
         _forgeToken = _configHelper.GetConfig().ApiKey;
     }
 
-    public async Task<bool> GetModsFromPagination(string url, CancellationToken token, bool? includeFeatured = null)
+    private NameValueCollection GetParamsCollection(string search, string sort, bool? featured)
     {
-        _logHelper.LogInfo($"forge GetModsFromPagination: {url}");
+        NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+        queryString.Add("include", "users,versions,license");
+        queryString.Add("filter[name]", $"*{search}*");
+        if (featured is not null)
+        {
+            queryString.Add("filter[featured]", featured.ToString());
+        }
+        queryString.Add("sort", sort);
+        return queryString;
+    }
+
+    public async Task<ForgeModsResponse> GetModsFromForge(CancellationToken token, string search = "", string sort = "-featured,name", int page = 1, string? includeFeatured = null)
+    {
+        _logHelper.LogInfo($"forge GetModsFromForge");
 
         if (string.IsNullOrWhiteSpace(_configHelper.GetConfig().ApiKey))
         {
             _logHelper.LogInfo("GetMods - API Key is missing.");
-            return false;
+            return null;
         }
 
-        if (string.IsNullOrWhiteSpace(url))
-        {
-            _logHelper.LogError($"forge GetModsFromPagination: url is null or empty");
-            return false;
-        }
-        NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
-        queryString.Add("include", "users,versions,license");
-        queryString.Add("filter[name]", $"**");
-        if (includeFeatured is not null)
-        {
-            queryString.Add("filter[featured]", includeFeatured.ToString());
-        }
-        queryString.Add("sort", "-featured,name");
-        var message = new HttpRequestMessage(HttpMethod.Get, url)
+        var paramsToUse = GetParamsCollection(search, sort, ConvertFeaturedToBool(includeFeatured));
+        var message = new HttpRequestMessage(HttpMethod.Get, $"https://forge.sp-tarkov.com/api/v0/mods?page={page}&{paramsToUse.ToString()}")
         {
             Content = new StringContent("", Encoding.UTF8, "application/json")
         };
@@ -70,76 +65,13 @@ public class ForgeHelper
         message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _forgeToken);
 
         var task = await _httpClient?.SendAsync(message, token);
-        var result = JsonSerializer.Deserialize<ForgeModsResponse>(await task.Content.ReadAsStringAsync(token));
-
-        Console.WriteLine(result.ToString());
-
-        return true;
+        return JsonSerializer.Deserialize<ForgeModsResponse>(await task.Content.ReadAsStringAsync(token));
     }
 
-    public async Task<bool> GetModsFromForge(string url, string request, CancellationToken token, bool? includeFeatured = null)
+    public async Task<bool> LogoutOfForge(CancellationToken token)
     {
-        _logHelper.LogInfo($"forge GetMods: {url}");
-
-        if (string.IsNullOrWhiteSpace(_configHelper.GetConfig().ApiKey))
-        {
-            _logHelper.LogInfo("GetMods - API Key is missing.");
-            return false;
-        }
-
-        var content = new StringContent("", Encoding.UTF8, "application/json");
-        NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
-        queryString.Add("include", "users,versions,license");
-        queryString.Add("filter[name]", $"*{request}*");
-        if (includeFeatured is not null)
-        {
-            queryString.Add("filter[featured]", includeFeatured.ToString());
-        }
-        queryString.Add("sort", "-featured,name");
-
-        var message = new HttpRequestMessage(HttpMethod.Get, $"{url}?{queryString.ToString()}")
-        {
-            Content = content
-        };
-
-        message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _forgeToken);
-
-        var task = await _httpClient?.SendAsync(message, token);
-        var result = JsonSerializer.Deserialize<ForgeModsResponse>(await task.Content.ReadAsStringAsync(token));
-
-        if (result == null || result.Data == null)
-        {
-            _logHelper.LogInfo($"forge GetMods result is null");
-            return false;
-        }
-
-        if (!result.Data.Any())
-        {
-            _logHelper.LogInfo($"forge GetMods returned no results.");
-            return false;
-        }
-
-        if (result.Data.Any())
-        {
-            _logHelper.LogInfo($"forge GetMods returned results.");
-            foreach (var mod in result.Data)
-            {
-                _modCache.TryAdd(mod.Attributes.Name, mod);
-            }
-
-            _lastRefreshTime = DateTime.Now;
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public async Task<bool> LogoutOfForge(string url, CancellationToken token)
-    {
-        _logHelper.LogInfo($"Forge LogoutOfForge: {url}");
-        var task = await _httpClient?.DeleteAsync(url, token);
+        _logHelper.LogInfo($"Forge LogoutOfForge");
+        var task = await _httpClient?.DeleteAsync("https://forge.sp-tarkov.com/api/logout", token);
         var result = JsonSerializer.Deserialize<ForgeLoginResponse>(await task.Content.ReadAsByteArrayAsync(token));
 
         if (result is null)
@@ -171,12 +103,12 @@ public class ForgeHelper
         return false;
     }
 
-    public async Task<bool> LoginToForge(string url, object request, CancellationToken token)
+    public async Task<bool> LoginToForge(object request, CancellationToken token)
     {
-        _logHelper.LogInfo($"Forge LoginToForge: {url}");
+        _logHelper.LogInfo($"Forge LoginToForge");
         var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
-        var message = new HttpRequestMessage(HttpMethod.Post, url)
+        var message = new HttpRequestMessage(HttpMethod.Post, "https://forge.sp-tarkov.com/api/login")
         {
             Content = content
         };
@@ -215,7 +147,6 @@ public class ForgeHelper
             _logHelper.AddLog($"Forge LoginToForge Authenticated");
             _forgeToken = result.Data.Token;
             _configHelper.SetApiKey(_forgeToken);
-            _lastRefreshTime = DateTime.Now;
             return true;
         }
 
@@ -252,28 +183,18 @@ public class ForgeHelper
         _configHelper.SetApiKey(_forgeToken);
     }
 
-    public ForgeMod? GetMod(string modId)
+    private bool? ConvertFeaturedToBool(string selected)
     {
-        return new ForgeMod();
-    }
-
-    public List<ForgeMod> GetMods()
-    {
-        // request for mods
-        // newest
-        // featured included
-
-        return new List<ForgeMod>();
-    }
-
-    public List<ForgeMod> GetCachedMods()
-    {
-        // this should only clear and "refresh" the cache after 10 mins
-        if (_lastRefreshTime < DateTime.Now - TimeSpan.FromSeconds(_refreshInterval))
+        switch (selected.ToLower())
         {
-            _modCache.Clear();
+            case "include":
+                return null;
+            case "exclude":
+                return false;
+            case "only":
+                return true;
+            default:
+                return null;
         }
-
-        return _modCache.Values.ToList();
     }
 }
