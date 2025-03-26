@@ -176,6 +176,19 @@
 
     private async Task ClearApiKey()
     {
+        // logout from forge first as the apikey is required
+        try
+        {
+            var token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            await _forge.LogoutOfForge(token.Token);
+        }
+        catch (Exception e)
+        {
+            _logHelper.AddLog("Exception thrown from SettingsTopPanelComponent.ClearApiKey");
+            _logHelper.AddLog(e.ToString());
+            return;
+        }
+
         _forge.ClearApiKey();
     }
 }
