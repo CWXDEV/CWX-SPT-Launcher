@@ -13,14 +13,12 @@ public record ModAttributes
     [JsonPropertyName("name")]
     public string? Name { get; set; }
 
-    // Not really needed
     [JsonPropertyName("slug")]
     public string? Slug { get; set; }
 
     [JsonPropertyName("teaser")]
     public string? Teaser { get; set; }
 
-    // No idea what that is
     [JsonPropertyName("license_id")]
     public int? LicenseId { get; set; }
 

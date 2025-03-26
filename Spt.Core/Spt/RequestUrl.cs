@@ -12,9 +12,4 @@ public record RequestUrl
     public const string Mods = "/launcher/v2/mods";
     public const string Profiles = "/launcher/v2/profiles";
     public const string Profile = "/launcher/v2/profile";
-
-    public const string ForgeLogin = "/api/login";
-    public const string ForgeLogout = "/api/logout";
-    public const string ForgeMods = "/api/v0/mods";
-    public const string ForgeUsers = "/api/v0/users";
 }
