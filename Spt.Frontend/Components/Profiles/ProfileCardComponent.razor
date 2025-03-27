@@ -93,11 +93,13 @@
 
         glowClass = MiniProfile.Edition.ToLower() switch
         {
-            "spt developer" => "glow-purple",
-            "edge of darkness" => "glow-gold",
+            "spt developer" => "glow-green",
+            "spt easy start" => "glow-red",
+            "spt zero to hero" => "glow-purple",
             "the unheard edition" => "glow-blue",
+            "edge of darkness" => "glow-gold",
             "standard edition" => "glow-grey",
-            _ => glowClass
+            _ => "glow-grey"
         };
 
         base.OnInitialized();
