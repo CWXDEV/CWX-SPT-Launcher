@@ -27,6 +27,9 @@ window.scrollToTopSmooth = function() {
 // Function to show/hide the button based on scroll position
 window.toggleScrollButton = function() {
     var scrollButton = document.getElementById('scrollTopBtn');
+    if (!scrollButton) {
+        console.log('ScrollButton was null');
+    }
     if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
         scrollButton.style.display = 'flex';
     } else {
