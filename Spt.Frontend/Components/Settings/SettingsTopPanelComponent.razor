@@ -3,7 +3,7 @@
 @using Size = MudBlazor.Size
 @inject LogHelper _logHelper
 @inject ConfigHelper _configHelper
-@inject ForgeHelper _forge
+@inject HttpHelper _httpHelper
 @inject ISnackbar _snackbar
 
 <MudContainer Class="pa-0 pb-4 d-flex justify-start gap-2">
@@ -176,11 +176,11 @@
 
     private async Task ClearApiKey()
     {
-        // logout from forge first as the apikey is required
+        ForgeLogoutResponse? result = null;
         try
         {
             var token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            await _forge.LogoutOfForge(token.Token);
+            result = await _httpHelper.ForgeLogout(token.Token);
         }
         catch (Exception e)
         {
@@ -189,6 +189,29 @@
             return;
         }
 
-        _forge.ClearApiKey();
+        if (result is null)
+        {
+            _logHelper.LogInfo($"Forge ForgeLogout result is null");
+            return;
+        }
+
+        if (result.Message == ForgeResponseMessage.Unauthenticated)
+        {
+            _logHelper.AddLog($"Forge ForgeLogout failed to authenticate");
+            return;
+        }
+
+        if (result.Message == ForgeResponseMessage.InvalidCredentials)
+        {
+            _logHelper.AddLog($"Forge ForgeLogout failed to invalid-credentials");
+            return;
+        }
+
+        if (result.Message == ForgeResponseMessage.Success)
+        {
+            _logHelper.AddLog($"Forge ForgeLogout Successful");
+            _httpHelper.ClearApiKey();
+            return;
+        }
     }
 }

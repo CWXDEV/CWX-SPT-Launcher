@@ -1,5 +1,5 @@
 ﻿@inject ISnackbar _snackbar
-@inject ForgeHelper _forge
+@inject HttpHelper _httpHelper
 @inject LogHelper _logHelper
 
 <MudDialog>
@@ -32,9 +32,8 @@
     private bool success;
     private bool requestInProgress;
     private string TaskText = "";
-
-    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
-
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
     private ForgeLoginRequest request { get; } = new();
     private CancellationTokenSource token { get; set; }
     private bool UserCancel { get; set; }
@@ -72,21 +71,56 @@
 
     private async Task<bool> CallForge(string taskText = "", string failString = "")
     {
-        token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-        TaskText = taskText;
-        StateHasChanged();
-        await Task.Delay(20);
-
-        var result = await _forge.LoginToForge(request, token.Token);
-
-        if (!result)
+        try
         {
-            AbortOrFail(failString);
+            token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            TaskText = taskText;
+            StateHasChanged();
+            await Task.Delay(20);
+
+            var result = await _httpHelper.ForgeLogin(request, token.Token);
+
+            if (result is null)
+            {
+                _logHelper.AddLog($"Forge ForgeLogin result is null");
+                return false;
+            }
+
+            if (result.Message == ForgeResponseMessage.Unauthenticated)
+            {
+                _logHelper.AddLog($"Forge ForgeLogin failed to authenticate");
+                return false;
+            }
+
+            if (result.Message == ForgeResponseMessage.InvalidEmail)
+            {
+                _logHelper.AddLog($"Forge ForgeLogin failed due to invalid email");
+                return false;
+            }
+
+            if (result.Message == ForgeResponseMessage.InvalidCredentials)
+            {
+                _logHelper.AddLog($"Forge ForgeLogin failed to invalid credentials");
+                return false;
+            }
+
+            if (result.Message == ForgeResponseMessage.Authenticated)
+            {
+                _logHelper.AddLog($"Forge ForgeLogin Authenticated");
+                _httpHelper.SetApiKey(result.Data.Token);
+                token?.Dispose();
+                return true;
+            }
+
+            token?.Dispose();
+            _logHelper.AddLog($"Forge ForgeLogin ?? {result.Message}");
             return false;
         }
-
-        token?.Dispose();
-        return true;
+        catch (Exception e)
+        {
+            AbortOrFail();
+            return false;
+        }
     }
 
     private void Submit()

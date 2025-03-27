@@ -12,4 +12,6 @@ public record RequestUrl
     public const string Mods = "/launcher/v2/mods";
     public const string Profiles = "/launcher/v2/profiles";
     public const string Profile = "/launcher/v2/profile";
+
+    public const string ForgeMods = "/api/v0/mods";
 }

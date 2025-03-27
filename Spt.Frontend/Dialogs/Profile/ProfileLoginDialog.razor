@@ -2,6 +2,7 @@
 @inject StateHelper _stateHelper
 @inject NavigationHelper _navigationHelper
 @inject LogHelper _logHelper
+@inject HttpHelper _httpHelper
 
 <MudDialog>
     <DialogContent>
@@ -106,21 +107,30 @@
 
     private async Task<bool> CallServer(string taskText = "", string failString = "")
     {
-        token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-        TaskText = taskText;
-        StateHasChanged();
-        await Task.Delay(20);
-
-        var result = await _stateHelper.PutAsync<LoginResponse>(RequestUrl.Login, request, token.Token);
-
-        if (!result)
+        try
         {
-            AbortOrFail(failString);
+            token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            TaskText = taskText;
+            StateHasChanged();
+            await Task.Delay(20);
+
+            var returnResult = await _httpHelper.GameServerPut<LoginResponse>(RequestUrl.Login, request, token.Token);
+            var result = returnResult.Response;
+
+            if (!result)
+            {
+                AbortOrFail(failString);
+                return false;
+            }
+
+            token?.Dispose();
+            return true;
+        }
+        catch (Exception e)
+        {
+            AbortOrFail();
             return false;
         }
-
-        token?.Dispose();
-        return true;
     }
 
     private void Submit()

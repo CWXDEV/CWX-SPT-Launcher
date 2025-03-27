@@ -35,7 +35,7 @@
 
     protected override void OnInitialized()
     {
-        IsConnected = _stateHelper.ConnectedServer is not null;
+        IsConnected = _stateHelper.SelectedServer is not null;
         mods = _stateHelper.ModList.Values.ToList();
         base.OnInitialized();
     }

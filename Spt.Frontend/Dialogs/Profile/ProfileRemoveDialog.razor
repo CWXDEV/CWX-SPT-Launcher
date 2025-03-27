@@ -1,33 +1,46 @@
 ﻿@inject ISnackbar _snackbar
 @inject StateHelper _stateHelper
+@inject HttpHelper _httpHelper
 @inject LogHelper _logHelper
 
 <MudDialog>
     <DialogContent>
         <MudContainer Class="py-4 card-overflow">
+        @if (requestInProgress)
+        {
+            <MudContainer Class="d-flex flex-column align-center gap-4">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large"/>
+                <MudText>@TaskText</MudText>
+            </MudContainer>
+        }
+        else
+        {
             <MudText>Do you really want to delete this Profile? This process cannot be undone.</MudText>
             @if (MiniProfile.HasPassword)
             {
                 <PasswordFieldComponent @bind-Password="request.Password"/>
             }
+
             <MudContainer Class="mt-3 d-flex justify-end pa-0 gap-2">
-                <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="Submit">Delete</MudButton>
-                <MudButton Variant="Variant.Filled" Color="Color.Default" @onclick="Cancel">Cancel</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="RunDeleteTask">Delete</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Default" @onclick="UserCancelled">Cancel</MudButton>
             </MudContainer>
+        }
         </MudContainer>
     </DialogContent>
 </MudDialog>
 
 @code {
+    private bool success;
+    private bool requestInProgress;
+    private string TaskText = "";
     [Parameter]
     public MiniProfile MiniProfile { get; set; }
-
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; }
-
     private LoginRequest request { get; } = new();
     private CancellationTokenSource token { get; set; }
-    private bool UserCancel { get; } = false;
+    private bool UserCancel { get; set; }
 
     protected override void OnInitialized()
     {
@@ -35,47 +48,89 @@
         base.OnInitialized();
     }
 
-    private async Task Submit()
+    private async Task RunDeleteTask()
     {
+        var result = false;
+        requestInProgress = true;
         try
         {
-            token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            var result = await _stateHelper.PutAsync<RemoveResponse>(RequestUrl.Remove, request, token.Token);
-
-            if (!result)
-            {
-                AbortOrFail();
-                return;
-            }
-
-            token?.Dispose();
+            result = await CallServer("Deleting profile details from server", "Failed deleting profile details from server");
         }
-        catch (TaskCanceledException e) when (token is { IsCancellationRequested: true })
+        catch (TaskCanceledException e) when (token.IsCancellationRequested)
+        {
+            AbortOrFail("Request Timed out!");
+            return;
+        }
+        catch (HttpRequestException e)
+        {
+            AbortOrFail();
+            return;
+        }
+        catch (Exception e)
         {
             AbortOrFail();
             return;
         }
 
-        StateHasChanged();
-        _logHelper.LogInfo($"Removed profile: {MiniProfile.Username} from server");
-        _snackbar.Add($"Removed Profile {MiniProfile.Username} from server", Severity.Success);
-        MudDialog.Close(DialogResult.Ok(true));
+        if (result)
+        {
+            Submit();
+            requestInProgress = false;
+        }
     }
 
-    private void AbortOrFail()
+    private async Task<bool> CallServer(string taskText = "", string failString = "")
+    {
+        try
+        {
+            token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            TaskText = taskText;
+            StateHasChanged();
+            await Task.Delay(20);
+
+            var returnResult = await _httpHelper.GameServerPut<RemoveResponse>(RequestUrl.Remove, request, token.Token);
+            _stateHelper.ProfileList = returnResult.Profiles;
+            var result = returnResult.Response;
+
+            if (!result)
+            {
+                AbortOrFail(failString);
+                return false;
+            }
+
+            token?.Dispose();
+            return true;
+        }
+        catch (Exception e)
+        {
+            AbortOrFail();
+            return false;
+        }
+    }
+
+    private void Submit()
+    {
+        _snackbar.Add($"Deleted profile: {MiniProfile?.Username}!", Severity.Success);
+        MudDialog.Close(DialogResult.Ok(MiniProfile));
+    }
+
+    private void AbortOrFail(string message = "Error deleting profile from server!")
     {
         if (!UserCancel)
         {
-            _logHelper.LogInfo($"Error deleteing profile: {MiniProfile.Username} from server");
-            _snackbar.Add($"Error deleting profile {MiniProfile.Username} from server!", Severity.Error);
+            _snackbar.Add(message, Severity.Error);
         }
 
+        token?.Cancel();
         MudDialog.Cancel();
+        requestInProgress = false;
     }
 
-    private void Cancel()
+    private void UserCancelled()
     {
+        UserCancel = true;
+        requestInProgress = false;
+        token?.Cancel();
         MudDialog.Cancel();
     }
-
 }

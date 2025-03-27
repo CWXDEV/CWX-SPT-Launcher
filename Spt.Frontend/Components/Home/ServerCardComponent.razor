@@ -51,13 +51,13 @@
 
     protected override void OnInitialized()
     {
-        IsConnectedServer = _stateHelper.ConnectedServer?.ServerId == Server.ServerId;
+        IsConnectedServer = _stateHelper.SelectedServer?.ServerId == Server.ServerId;
         base.OnInitialized();
     }
 
     private async Task RunEditTask()
     {
-        if (_stateHelper.ConnectedServer?.ServerId == Server.ServerId)
+        if (_stateHelper.SelectedServer?.ServerId == Server.ServerId)
         {
             _stateHelper.LogoutAndDispose();
             _navigationHelper.SetBasicPages(false);
@@ -87,9 +87,9 @@
 
     private async Task RunLoginTask()
     {
-        if (_stateHelper.ConnectedServer != null)
+        if (_stateHelper.SelectedServer != null)
         {
-            if (_stateHelper.ConnectedServer.ServerId == Server.ServerId)
+            if (_stateHelper.SelectedServer.ServerId == Server.ServerId)
             {
                 _stateHelper.LogoutAndDispose();
                 _navigationHelper.SetBasicPages(false);
@@ -111,10 +111,10 @@
 
         if (result?.Canceled is false)
         {
-            _stateHelper.ServerLogin(Server);
-            if (_stateHelper.ConnectedServer != null)
+            _stateHelper.SetSelectedServer(Server);
+            if (_stateHelper.SelectedServer != null)
             {
-                IsConnectedServer = _stateHelper.ConnectedServer.ServerId == Server.ServerId;
+                IsConnectedServer = _stateHelper.SelectedServer.ServerId == Server.ServerId;
             }
 
             _navman.NavigateTo("/ProfilesPage");
@@ -123,7 +123,7 @@
 
     private async Task RunDeleteTask()
     {
-        if (_stateHelper.ConnectedServer != null)
+        if (_stateHelper.SelectedServer != null)
         {
             _stateHelper.LogoutAndDispose();
             IsConnectedServer = false;

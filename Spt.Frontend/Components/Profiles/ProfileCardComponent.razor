@@ -35,7 +35,7 @@
                 </MudTooltip>
                 <MudSpacer/>
             }
-            <MudTooltip Text="@(!loggedIn ? "Login to this profile" : "Logout of this profile")" Arrow="true"
+            <MudTooltip Text="@(loggedIn ? "Logout of this profile" : "Login to this profile")" Arrow="true"
                         Placement="Placement.Bottom">
                 <MudIconButton Class="mr-1" Color="Color.Default"
                                Icon="@(!loggedIn ? Icons.Material.Filled.Login : Icons.Material.Filled.Logout)"
@@ -85,7 +85,7 @@
     protected override void OnInitialized()
     {
         UseProfileColors = _configHelper.GetConfig().AppSettings.UseProfileColors;
-        loggedIn = _stateHelper.SelectedProfile != null;
+        loggedIn = _stateHelper.SelectedProfile != null && _stateHelper.SelectedProfile.ProfileID == MiniProfile.ProfileID;
         if (MiniProfile.Side.ToLower() == "unknown")
         {
             sideIsUnknown = true;
@@ -123,7 +123,7 @@
 
         if (result?.Canceled is false)
         {
-            _stateHelper.ProfileLogin(MiniProfile);
+            _stateHelper.SetSelectedProfile(MiniProfile);
             loggedIn = _stateHelper.SelectedProfile != null;
 
             _logHelper.LogInfo("Navigating to /Profile");
@@ -162,5 +162,4 @@
             await ProfileListChanged.InvokeAsync(ProfileList);
         }
     }
-
 }

@@ -66,7 +66,7 @@ public class GameHelper
         //start game
         var args =
             $"-force-gfx-jobs native -token={_stateHelper.SelectedProfile.ProfileID} -config=" +
-            $"{{'BackendUrl':'https://{_stateHelper.ConnectedServer.Ip}','Version':'live','MatchingVersion':'live'}}";
+            $"{{'BackendUrl':'https://{_stateHelper.SelectedServer.Ip}','Version':'live','MatchingVersion':'live'}}";
 
         _logHelper.AddLog(args);
 
