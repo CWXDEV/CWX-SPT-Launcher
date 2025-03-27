@@ -25,16 +25,15 @@
         <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="StartGame"
                    EndIcon="@Icons.Material.Filled.ArrowRight">Start Game</MudButton>
     </MudContainer>
-
 </MudContainer>
 
 @code {
-    public MiniProfile SelectedMiniProfile { get; set; }
+    private MiniProfile SelectedMiniProfile { get; set; }
 
     protected override void OnInitialized()
     {
         SelectedMiniProfile = _stateHelper.SelectedProfile;
-        _logHelper.LogInfo($"Selected profile: {SelectedMiniProfile.Username}");
+        _logHelper.LogInfo($"Selected profile: {SelectedMiniProfile?.Username}");
         base.OnInitialized();
     }
 

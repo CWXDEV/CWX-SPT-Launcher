@@ -43,6 +43,7 @@ public partial class MainWindow
         serviceCollection.AddSingleton<GameHelper>();
         serviceCollection.AddSingleton<LogHelper>();
         serviceCollection.AddSingleton<HttpHelper>();
+        serviceCollection.AddSingleton<ModHelper>();
 
         var serviceProvider = serviceCollection.BuildServiceProvider();
         Resources.Add("services", serviceProvider);
