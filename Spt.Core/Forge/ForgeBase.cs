@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Spt.Core.Forge.Meta;
 
 namespace Spt.Core.Forge;
 
-public record ForgeMod
+public record ForgeBase
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
@@ -17,7 +18,7 @@ public record ForgeMod
     public Dictionary<string, object>? Relationships { get; set; }
 
     [JsonPropertyName("includes")]
-    public List<ForgeMod>? Includes { get; set; }
+    public ForgeModIncludes? Includes { get; set; }
 
     [JsonPropertyName("links")]
     public ModLinks? Links { get; set; }

@@ -9,7 +9,7 @@ namespace Spt.Core.Responses;
 public class ForgeModsResponse
 {
     [JsonPropertyName("data")]
-    public List<ForgeMod>? Data { get; set; }
+    public List<ForgeBase>? Data { get; set; }
 
     [JsonPropertyName("links")]
     public ForgeLinks? Links { get; set; }
