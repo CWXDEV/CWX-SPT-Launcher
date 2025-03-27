@@ -36,14 +36,19 @@
                     <MudText Typo="Typo.body2">By @GetModdersName()</MudText>
                 </CardHeaderContent>
                 <CardHeaderActions>
-                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default"/>
+                    @if (GetModFeatured())
+                    {
+                        <MudTooltip Arrow="true" Placement="Placement.Bottom" Text="Featured">
+                            <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Primary"/>
+                        </MudTooltip>
+                    }
                 </CardHeaderActions>
             </MudCardHeader>
             <MudCardContent>
                 <MudText Typo="Typo.body2">@GetModTeaser()</MudText>
             </MudCardContent>
             <MudCardActions>
-                <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Default"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Download" Color="Color.Default"/>
                 <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Default"/>
             </MudCardActions>
         </MudCard>
@@ -53,11 +58,11 @@
 @code {
     [Parameter] public bool IsSkeleton { get; set; }
 
-    [Parameter] public ForgeMod ForgeMod { get; set; }
+    [Parameter] public ForgeBase ForgeMod { get; set; }
 
     private char? GetAvatarLetter()
     {
-        return ForgeMod.Includes.FirstOrDefault(x => x.Type == "user").Attributes.Name.ToUpper()[0];
+        return ForgeMod.Includes.Users.FirstOrDefault().Attributes.Name.ToUpper()[0];
     }
 
     private string? GetModName()
@@ -67,11 +72,16 @@
 
     private string? GetModdersName()
     {
-        return ForgeMod.Includes.FirstOrDefault(x => x.Type == "user").Attributes.Name.UppercaseFirst();
+        return ForgeMod.Includes.Users.FirstOrDefault().Attributes.Name.UppercaseFirst();
     }
 
     private string? GetModTeaser()
     {
         return ForgeMod.Attributes.Teaser.UppercaseFirst();
+    }
+
+    private bool GetModFeatured()
+    {
+        return ForgeMod.Attributes.Featured ?? false;
     }
 }
