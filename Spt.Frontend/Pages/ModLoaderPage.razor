@@ -1,15 +1,111 @@
 ﻿@page "/ModLoaderPage"
 
+@using MudBlazor.Utilities
+@inject IJSRuntime _jsRuntime
 @inject LogHelper _logHelper
 @inject ModHelper _modHelper
 
 <MudContainer Class="px-8 my-2 pa-0" MaxWidth="MaxWidth.Large">
-
+    <MudItem sm="12" Class="d-flex">
+        <MudFab id="scrollTopBtn" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" Class="fixed z-90" Style="bottom: 10px; right: 10px; display: none;" @onclick="ScrollToTop" Size="Size.Small"/>
+        <MudButton OnClick="SaveData" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" Size="Size.Large" Class="flex-grow-1">Save Data</MudButton>
+    </MudItem>
+    <MudGrid Style="width: 100%; margin: 0;">
+        <MudItem sm="8" Class="pa-0 ma-0">
+            <MudDropContainer T="DropItem" Items="_items1" @ref="_installContainer" ItemsSelector="@((item, dropzone) => item.Selector == dropzone)" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1">
+                <ChildContent>
+                    <MudDropZone T="DropItem" Identifier="1" Class="rounded mud-background-gray flex-grow-1 my-5 mr-5 pa-4">
+                        <MudText Typo="Typo.h6" Class="mb-4">Unloaded</MudText>
+                    </MudDropZone>
+                    <MudDropZone T="DropItem" Identifier="2" Class="rounded mud-background-gray mud-alert-text-success flex-grow-1 my-5 pa-4">
+                        <MudText Typo="Typo.h6" Class="mb-4">Loaded mods</MudText>
+                    </MudDropZone>
+                </ChildContent>
+                <ItemRenderer>
+                    <MudPaper Elevation="25" Class="pa-4 my-4">@context.Name</MudPaper>
+                </ItemRenderer>
+            </MudDropContainer>
+        </MudItem>
+        <MudItem sm="4" Class="pa-0 ma-0">
+            <MudDropContainer T="DropItem" Items="_serverData" @ref="_orderContainer" ItemsSelector="@((item, dropzone) => item.Selector == dropzone)" ItemDropped="OrderUpdated" Class="d-flex flex-wrap flex-grow-1">
+                <ChildContent>
+                    <MudDropZone T="DropItem" Identifier="3" Class="rounded mud-background-gray flex-grow-1 my-5 ml-5 pa-4" AllowReorder="true">
+                        <MudText Typo="Typo.h6" Class="mb-4">Load Order</MudText>
+                    </MudDropZone>
+                </ChildContent>
+                <ItemRenderer>
+                    <MudPaper Elevation="25" Class="pa-4 my-4">@context.Name</MudPaper>
+                </ItemRenderer>
+            </MudDropContainer>
+        </MudItem>
+    </MudGrid>
 </MudContainer>
 
 @code {
-    protected override void OnInitialized()
+    private MudDropContainer<DropItem> _installContainer;
+    private MudDropContainer<DropItem> _orderContainer;
+
+    private void ItemUpdated(MudItemDropInfo<DropItem> dropItem)
     {
-        base.OnInitialized();
+        dropItem.Item.Selector = dropItem.DropzoneIdentifier;
+        if (dropItem.Item.Selector == "2")
+        {
+            if (!_serverData.Exists(x => x.Name == dropItem.Item.Name))
+            {
+                var item = new DropItem() { Name = dropItem.Item.Name, Selector = "3", Order = _serverData.Count };
+                _serverData.Add(item);
+            }
+        }
+
+        if (dropItem.Item.Selector == "1")
+        {
+            _serverData.Remove(_serverData.Find(x => x.Name == dropItem.Item.Name));
+        }
+
+        RefreshContainer();
+    }
+
+    private void OrderUpdated(MudItemDropInfo<DropItem> dropItem)
+    {
+        dropItem.Item.Order = dropItem.IndexInZone;
+    }
+
+    private List<DropItem> _items1 = new()
+    {
+        new DropItem() { Name = "mod1", Selector = "1", Order = -1 },
+        new DropItem() { Name = "mod2", Selector = "1", Order = -1 },
+        new DropItem() { Name = "mod3", Selector = "1", Order = -1 },
+        new DropItem() { Name = "mod4", Selector = "1", Order = -1 },
+        new DropItem() { Name = "mod5", Selector = "1", Order = -1 },
+        new DropItem() { Name = "mod6", Selector = "1", Order = -1 },
+    };
+
+    private List<DropItem> _serverData = new() { };
+
+    public class DropItem
+    {
+        public string Name { get; init; }
+        public string Selector { get; set; }
+        public int Order { get; set; }
+    }
+
+    private void RefreshContainer()
+    {
+        //update the binding to the container
+        StateHasChanged();
+
+        //the container refreshes the internal state
+        _installContainer.Refresh();
+        _orderContainer.Refresh();
+    }
+
+    private void SaveData()
+    {
+
+    }
+
+    private async Task ScrollToTop()
+    {
+        await _jsRuntime.InvokeVoidAsync("scrollToTopSmooth");
     }
 }
