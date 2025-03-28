@@ -15,10 +15,10 @@
             <MudDropContainer T="DropItem" Items="_items1" @ref="_installContainer" ItemsSelector="@((item, dropzone) => item.Selector == dropzone)" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1" CanDropClass="mud-border-success" NoDropClass="mud-border-error">
                 <ChildContent>
                     <MudDropZone T="DropItem" Identifier="1" Class="rounded mud-background-gray mud-alert-text-info border-2 border-solid mud-border-lines-default flex-grow-1 my-5 mr-5 pa-4">
-                        <MudText Typo="Typo.h6" Class="mb-4">Unloaded</MudText>
+                        <MudText Typo="Typo.h6" Class="mb-4">Unloaded Mods</MudText>
                     </MudDropZone>
                     <MudDropZone T="DropItem" Identifier="2" Class="rounded mud-background-gray mud-alert-text-success border-2 border-solid mud-border-lines-default flex-grow-1 my-5 pa-4">
-                        <MudText Typo="Typo.h6" Class="mb-4">Loaded mods</MudText>
+                        <MudText Typo="Typo.h6" Class="mb-4">Loaded Mods</MudText>
                     </MudDropZone>
                 </ChildContent>
                 <ItemRenderer>
@@ -30,7 +30,8 @@
             <MudDropContainer T="DropItem" Items="_serverData" @ref="_orderContainer" ItemsSelector="@((item, dropzone) => item.Selector == dropzone)" ItemDropped="OrderUpdated" Class="d-flex flex-wrap flex-grow-1" CanDropClass="mud-border-success" NoDropClass="mud-border-error">
                 <ChildContent>
                     <MudDropZone T="DropItem" Identifier="3" Class="rounded mud-background-gray mud-alert-text-warning border-2 border-solid mud-border-lines-default flex-grow-1 my-5 ml-5 pa-4" AllowReorder="true">
-                        <MudText Typo="Typo.h6" Class="mb-4">Load Order</MudText>
+                        <MudText Typo="Typo.h6" Class="mb-n2">Load Order</MudText>
+                        <MudText Typo="Typo.caption" Class="mb-4">Higher up loads first.</MudText>
                     </MudDropZone>
                 </ChildContent>
                 <ItemRenderer>
@@ -68,16 +69,20 @@
     private void OrderUpdated(MudItemDropInfo<DropItem> dropItem)
     {
         dropItem.Item.Order = dropItem.IndexInZone;
+
+        // fix ordering
+
+        RefreshContainer();
     }
 
     private List<DropItem> _items1 = new()
     {
-        new DropItem() { Name = "mod1", Selector = "1", Order = -1 },
-        new DropItem() { Name = "mod2", Selector = "1", Order = -1 },
-        new DropItem() { Name = "mod3", Selector = "1", Order = -1 },
-        new DropItem() { Name = "mod4", Selector = "1", Order = -1 },
-        new DropItem() { Name = "mod5", Selector = "1", Order = -1 },
-        new DropItem() { Name = "mod6", Selector = "1", Order = -1 },
+        new DropItem() { Name = "Sain", Selector = "1", Order = 0 },
+        new DropItem() { Name = "SVM", Selector = "1", Order = 0 },
+        new DropItem() { Name = "CWX-MegaMod", Selector = "1", Order = 0 },
+        new DropItem() { Name = "Performance Improvements", Selector = "1", Order = 0 },
+        new DropItem() { Name = "Waypoints", Selector = "1", Order = 0 },
+        new DropItem() { Name = "UI Fixes", Selector = "1", Order = 0 },
     };
 
     private List<DropItem> _serverData = new() { };
