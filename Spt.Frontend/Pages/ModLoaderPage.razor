@@ -1,18 +1,23 @@
 ﻿@page "/ModLoaderPage"
 
+@implements IDisposable;
 @using MudBlazor.Utilities
+@inject ConfigHelper _configHelper
 @inject IJSRuntime _jsRuntime
 @inject LogHelper _logHelper
 @inject ModHelper _modHelper
+@inject IDialogService _dialogService
+@inject NavigationManager _navigationManager;
 
 <MudContainer Class="px-8 my-2 pa-0" MaxWidth="MaxWidth.Large">
     <MudItem sm="12" Class="d-flex">
         <MudFab id="scrollTopBtn" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" Class="fixed z-90" Style="bottom: 10px; right: 10px; display: none;" @onclick="ScrollToTop" Size="Size.Small"/>
-        <MudButton OnClick="SaveData" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" Size="Size.Large" Class="flex-grow-1">Save Data</MudButton>
+        <MudButton OnClick="SaveData" Variant="Variant.Filled" Disabled="@(!_unsavedData)" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" Size="Size.Large" Class="flex-grow-1">Save Changes</MudButton>
     </MudItem>
     <MudGrid Style="width: 100%; margin: 0;">
         <MudItem sm="8" Class="pa-0 ma-0">
-            <MudDropContainer T="DropItem" Items="_items1" @ref="_installContainer" ItemsSelector="@((item, dropzone) => item.Selector == dropzone)" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1" CanDropClass="mud-border-success" NoDropClass="mud-border-error">
+            <MudDropContainer T="DropItem" Items="_items1" @ref="_installContainer" ItemsSelector="@((item, dropzone) => item.Selector == dropzone)" ItemDropped="ItemUpdated" Class="d-flex flex-wrap flex-grow-1"
+                              CanDropClass="mud-border-success" NoDropClass="mud-border-error">
                 <ChildContent>
                     <MudDropZone T="DropItem" Identifier="1" Class="rounded mud-background-gray mud-alert-text-info border-2 border-solid mud-border-lines-default flex-grow-1 my-5 mr-5 pa-4">
                         <MudText Typo="Typo.h6" Class="mb-4">Unloaded Mods</MudText>
@@ -27,7 +32,8 @@
             </MudDropContainer>
         </MudItem>
         <MudItem sm="4" Class="pa-0 ma-0">
-            <MudDropContainer T="DropItem" Items="_serverData" @ref="_orderContainer" ItemsSelector="@((item, dropzone) => item.Selector == dropzone)" ItemDropped="OrderUpdated" Class="d-flex flex-wrap flex-grow-1" CanDropClass="mud-border-success" NoDropClass="mud-border-error">
+            <MudDropContainer T="DropItem" Items="_serverData" @ref="_orderContainer" ItemsSelector="@((item, dropzone) => item.Selector == dropzone)" ItemDropped="OrderUpdated" Class="d-flex flex-wrap flex-grow-1"
+                              CanDropClass="mud-border-success" NoDropClass="mud-border-error">
                 <ChildContent>
                     <MudDropZone T="DropItem" Identifier="3" Class="rounded mud-background-gray mud-alert-text-warning border-2 border-solid mud-border-lines-default flex-grow-1 my-5 ml-5 pa-4" AllowReorder="true">
                         <MudText Typo="Typo.h6" Class="mb-n2">Load Order</MudText>
@@ -45,6 +51,37 @@
 @code {
     private MudDropContainer<DropItem> _installContainer;
     private MudDropContainer<DropItem> _orderContainer;
+    private bool _unsavedData { get; set; }
+    private IDisposable _handler { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _handler = _navigationManager.RegisterLocationChangingHandler(Handler);
+        base.OnInitialized();
+    }
+
+    private async ValueTask Handler(LocationChangingContext context)
+    {
+        if (!_unsavedData)
+        {
+            // no unsavedData
+            return;
+        }
+
+        Console.WriteLine($"Check user wants to navigate with unsaved data");
+
+        var dialog = await _dialogService.ShowAsync<UnsavedDataDialog>("UnsavedDataDialog", _configHelper.DialogOptions);
+        var result = await dialog.Result;
+
+        if (result?.Canceled is false)
+        {
+            Console.WriteLine($"User did not want to save data, navigating to: {context.TargetLocation}");
+            return;
+        }
+
+        Console.WriteLine($"User cancelled navigation");
+        context.PreventNavigation();
+    }
 
     private void ItemUpdated(MudItemDropInfo<DropItem> dropItem)
     {
@@ -63,6 +100,7 @@
             _serverData.Remove(_serverData.Find(x => x.Name == dropItem.Item.Name));
         }
 
+        _unsavedData = true;
         RefreshContainer();
     }
 
@@ -70,9 +108,8 @@
     {
         dropItem.Item.Order = dropItem.IndexInZone;
 
-        // fix ordering
-
-        RefreshContainer();
+        _serverData.UpdateOrder(dropItem, item => item.Order, _serverData.Count);
+        _unsavedData = true;
     }
 
     private List<DropItem> _items1 = new()
@@ -101,16 +138,22 @@
 
         //the container refreshes the internal state
         _installContainer.Refresh();
-        _orderContainer.Refresh();
+        // _orderContainer.Refresh();
     }
 
     private void SaveData()
     {
-
+        _unsavedData = true;
     }
 
     private async Task ScrollToTop()
     {
         await _jsRuntime.InvokeVoidAsync("scrollToTopSmooth");
     }
+
+    public void Dispose()
+    {
+        _handler.Dispose();
+    }
+
 }
