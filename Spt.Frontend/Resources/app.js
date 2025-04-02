@@ -8,7 +8,6 @@ window.scrollToTopSmooth = function() {
 window.toggleScrollButton = function() {
     var scrollButton = document.getElementById('scrollTopBtn');
     if (!scrollButton) {
-        console.log('ScrollButton was null');
         return;
     }
     if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {

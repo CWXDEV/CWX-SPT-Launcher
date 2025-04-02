@@ -3,16 +3,15 @@
 @implements IDisposable;
 @using MudBlazor.Utilities
 @inject ConfigHelper _configHelper
-@inject IJSRuntime _jsRuntime
 @inject LogHelper _logHelper
 @inject ModHelper _modHelper
 @inject IDialogService _dialogService
 @inject NavigationManager _navigationManager;
 
 <MudContainer Class="px-8 my-2 pa-0" MaxWidth="MaxWidth.Large">
-    <MudItem sm="12" Class="d-flex mb-4">
-        <MudFab id="scrollTopBtn" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" Class="fixed z-90" Style="bottom: 10px; right: 10px; display: none;" @onclick="ScrollToTop" Size="Size.Small"/>
-        <MudButton OnClick="SaveData" Variant="Variant.Filled" Disabled="@(!_unsavedData)" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" Size="Size.Large" Class="flex-grow-1">Save Changes</MudButton>
+    <MudItem sm="12" Class="mb-4">
+        <MudButton OnClick="RevertChanges" Variant="Variant.Filled" Disabled="@(!_unsavedData)" Color="Color.Error" StartIcon="@Icons.Material.Filled.Undo" Size="Size.Large" Class="flex-grow-1">Undo Changes</MudButton>
+        <MudButton OnClick="SaveChanges" Variant="Variant.Filled" Disabled="@(!_unsavedData)" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" Size="Size.Large" Class="flex-grow-1">Save Changes</MudButton>
     </MudItem>
     <MudGrid>
         <MudItem sm="6">
@@ -70,9 +69,21 @@
 
 @code {
     private MudDropContainer<DropItem> _container { get; set; }
+    private bool _unsavedData { get; set; }
+    private List<DropItem> _items = new List<DropItem>();
+    private IDisposable _handler { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _handler = _navigationManager.RegisterLocationChangingHandler(Handler);
+        _items = LoadData();
+        base.OnInitialized();
+    }
 
     private void ItemUpdated(MudItemDropInfo<DropItem> dropItem)
     {
+        _unsavedData = true;
+
         switch (dropItem.DropzoneIdentifier)
         {
             case "1":
@@ -91,52 +102,6 @@
         StateHasChanged();
     }
 
-    private List<DropItem> _items = new List<DropItem>()
-    {
-        new DropItem() { Name = "Mod1", Zone = "2", IsLoaded = true, HasServerComponent = true },
-        new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod3", Zone = "2", IsLoaded = true, HasServerComponent = true },
-        new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod5", Zone = "3", IsLoaded = true, HasServerComponent = false },
-        new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
-        new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
-        new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
-        new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
-        new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
-        new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
-        new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
-        new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
-        new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
-        new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
-        new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
-        new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false }
-    };
-
     public class DropItem
     {
         public string Name { get; set; }
@@ -147,6 +112,8 @@
 
     private void MoveModCallback(DropItem item)
     {
+        _unsavedData = true;
+
         if (item.HasServerComponent)
         {
             item.Zone = item.IsLoaded ? "1" : "2";
@@ -157,15 +124,6 @@
         }
 
         item.IsLoaded = !item.IsLoaded;
-    }
-
-    private bool _unsavedData { get; set; }
-    private IDisposable _handler { get; set; }
-
-    protected override void OnInitialized()
-    {
-        _handler = _navigationManager.RegisterLocationChangingHandler(Handler);
-        base.OnInitialized();
     }
 
     private async ValueTask Handler(LocationChangingContext context)
@@ -191,19 +149,70 @@
         context.PreventNavigation();
     }
 
-    private void SaveData()
+    private void SaveChanges()
     {
-        _unsavedData = true;
+        _unsavedData = false;
     }
 
-    private async Task ScrollToTop()
+    private void RevertChanges()
     {
-        await _jsRuntime.InvokeVoidAsync("scrollToTopSmooth");
+        _items = LoadData();
+        StateHasChanged();
+        _unsavedData = false;
     }
 
     public void Dispose()
     {
         _handler.Dispose();
+    }
+
+    private List<DropItem> LoadData()
+    {
+        return new List<DropItem>()
+        {
+            new DropItem() { Name = "Mod1", Zone = "2", IsLoaded = true, HasServerComponent = true },
+            new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod3", Zone = "2", IsLoaded = true, HasServerComponent = true },
+            new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod5", Zone = "3", IsLoaded = true, HasServerComponent = false },
+            new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false }
+        };
     }
 
 }
