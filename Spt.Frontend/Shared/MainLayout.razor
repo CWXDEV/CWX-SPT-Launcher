@@ -1,10 +1,11 @@
 ﻿@inherits LayoutComponentBase
+@inject IJSRuntime _jsRuntime
 
 <MudThemeProvider IsDarkMode="true"/>
 <MudPopoverProvider/>
 <MudSnackbarProvider/>
 <MudDialogProvider/>
-
+<MudFab id="scrollTopBtn" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" Class="fixed z-90" Style="bottom: 10px; right: 10px; display: none;" @onclick="ScrollToTop" Size="Size.Small"/>
 <MudLayout>
     <MudDrawer @bind-Open="_drawerOpen" Width="150px" ClipMode="DrawerClipMode.Never" Elevation="2" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true" Breakpoint="Breakpoint.None">
         <NavMenu/>
@@ -16,4 +17,9 @@
 
 @code {
     bool _drawerOpen = true;
+
+    private async Task ScrollToTop()
+    {
+        await _jsRuntime.InvokeVoidAsync("scrollToTopSmooth");
+    }
 }

@@ -1,7 +1,4 @@
 ﻿@inject NavigationHelper _navigationHelper
-@inject IJSRuntime _jsRuntime
-
-<MudFab id="scrollTopBtn" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" Class="fixed z-90" Style="bottom: 10px; right: 10px; display: none;" @onclick="ScrollToTop" Size="Size.Small"/>
 
 <MudNavMenu>
     <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.ConnectedTv" Match="NavLinkMatch.All" Href="/">Home</MudNavLink>
@@ -41,10 +38,5 @@
     public void Dispose()
     {
         _navigationHelper.OnStateChanged -= StateHasChanged;
-    }
-
-    private async Task ScrollToTop()
-    {
-        await _jsRuntime.InvokeVoidAsync("scrollToTopSmooth");
     }
 }
