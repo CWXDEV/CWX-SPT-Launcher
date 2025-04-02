@@ -33,12 +33,6 @@ public class AppSettings
         set;
     }
 
-    public bool UseProfileColors
-    {
-        get;
-        set;
-    }
-
     // Advanced panel options
     public bool AdvancedUser
     {

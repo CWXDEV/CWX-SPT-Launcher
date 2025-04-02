@@ -165,16 +165,6 @@ public class ConfigHelper
         }
     }
 
-    public void SetUseProfileColors(bool profileColors)
-    {
-        lock (_lock)
-        {
-            _logHelper.LogInfo("SetUseProfileColors...");
-            _settings.AppSettings.UseProfileColors = profileColors;
-            SaveConfig();
-        }
-    }
-
     public void SetDebugLoggingPage(bool access)
     {
         lock (_lock)
@@ -228,7 +218,6 @@ public class ConfigHelper
                 CloseToTray = false,
                 MinimizeOnLaunch = false,
                 AlwaysTop = false,
-                UseProfileColors = true,
                 AdvancedUser = false
             },
             Servers =

@@ -12,10 +12,7 @@
         {
             <MudImage Src=@(ImageName()) Elevation="0" Class=@(ImageClassNames())/>
         }
-        @if (UseProfileColors)
-        {
-            <MudPaper Elevation="0" Class=@(GlowClassNames())/>
-        }
+        <MudPaper Elevation="0" Class=@(GlowClassNames())/>
         <MudText Class="mb-n4 no-pointers no-select" Typo="Typo.caption">Name:</MudText>
         <MudText Typo="Typo.h6">@MiniProfile.Username</MudText>
         <MudDivider DividerType="DividerType.Middle"/>
@@ -61,7 +58,6 @@
     [Parameter] public MiniProfile MiniProfile { get; set; }
     [Parameter] public List<MiniProfile> ProfileList { get; set; }
     [Parameter] public EventCallback<List<MiniProfile>> ProfileListChanged { get; set; }
-    private bool UseProfileColors { get; set; }
     private bool sideIsUnknown { get; set; } = false;
     private string glowClass { get; set; }
     private string sideClass { get; set; }
@@ -84,7 +80,6 @@
 
     protected override void OnInitialized()
     {
-        UseProfileColors = _configHelper.GetConfig().AppSettings.UseProfileColors;
         loggedIn = _stateHelper.SelectedProfile != null && _stateHelper.SelectedProfile.ProfileID == MiniProfile.ProfileID;
         if (MiniProfile.Side.ToLower() == "unknown")
         {

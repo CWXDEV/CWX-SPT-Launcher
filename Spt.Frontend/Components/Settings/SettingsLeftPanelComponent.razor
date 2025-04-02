@@ -2,10 +2,9 @@
 
 <MudItem sm="6">
     <MudPaper Class="pa-5 mr-1 gap-2 d-flex flex-column card-overflow" Elevation="3">
-        <SettingOptionComponent Switch="@closeToTraySwitch" OptionName="Close to tray" SwitchFunc="@SetCloseToTray"/>
-        <SettingOptionComponent Switch="@minimizeOnLaunchSwitch" OptionName="Minimize on game start" SwitchFunc="@SetMinimizeOnLaunch"/>
-        <SettingOptionComponent Switch="@alwaysOnTopSwitch" OptionName="Always on top" SwitchFunc="@SetAlwaysOnTop"/>
-        <SettingOptionComponent Switch="@useProfileColors" OptionName="Use Profile Colors" SwitchFunc="@SetUseProfileColors"/>
+        <SettingOptionComponent Switch="@closeToTraySwitch" OptionName="Close To Tray" SwitchFunc="@SetCloseToTray"/>
+        <SettingOptionComponent Switch="@minimizeOnLaunchSwitch" OptionName="Minimize On Game Start" SwitchFunc="@SetMinimizeOnLaunch"/>
+        <SettingOptionComponent Switch="@alwaysOnTopSwitch" OptionName="Always On Top" SwitchFunc="@SetAlwaysOnTop"/>
     </MudPaper>
 </MudItem>
 
@@ -22,7 +21,6 @@
         closeToTraySwitch = settings.AppSettings.CloseToTray;
         minimizeOnLaunchSwitch = settings.AppSettings.MinimizeOnLaunch;
         alwaysOnTopSwitch = settings.AppSettings.AlwaysTop;
-        useProfileColors = settings.AppSettings.UseProfileColors;
 
         base.OnInitialized();
     }
@@ -44,11 +42,5 @@
         alwaysOnTopSwitch = !alwaysOnTopSwitch;
         MainWindow.WindowMain.Topmost = alwaysOnTopSwitch;
         _ConfigHelper.SetAlwaysOnTop(alwaysOnTopSwitch);
-    }
-
-    private async Task SetUseProfileColors()
-    {
-        useProfileColors = !useProfileColors;
-        _ConfigHelper.SetUseProfileColors(useProfileColors);
     }
 }
