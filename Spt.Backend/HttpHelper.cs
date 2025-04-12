@@ -101,6 +101,7 @@ public class HttpHelper
             _logHelper.LogInfo("GetMods - API Key is missing.");
             return null;
         }
+        _logHelper.LogInfo($"api key: {_configHelper.GetConfig().ApiKey}");
 
         var paramsToUse = GetParamsCollection(search, sort, ConvertFeaturedToBool(includeFeatured));
         var message = new HttpRequestMessage(HttpMethod.Get, $"https://forge.sp-tarkov.com/api/v0/mods?page={page}&{paramsToUse.ToString()}")
@@ -125,7 +126,7 @@ public class HttpHelper
             return null;
         }
 
-        var message = new HttpRequestMessage(HttpMethod.Delete, "https://forge.sp-tarkov.com/api/logout")
+        var message = new HttpRequestMessage(HttpMethod.Delete, "https://forge.sp-tarkov.com/api/v0/auth/logout")
         {
             Content = new StringContent("", Encoding.UTF8, "application/json")
         };
@@ -141,7 +142,7 @@ public class HttpHelper
     {
         _logHelper.LogInfo($"Forge ForgeLogin");
 
-        var message = new HttpRequestMessage(HttpMethod.Post, "https://forge.sp-tarkov.com/api/login")
+        var message = new HttpRequestMessage(HttpMethod.Post, "https://forge.sp-tarkov.com/api/v0/auth/login")
         {
             Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json")
         };
@@ -155,12 +156,19 @@ public class HttpHelper
     private NameValueCollection GetParamsCollection(string search, string sort, bool? featured)
     {
         NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
-        queryString.Add("include", "users,versions,license");
-        queryString.Add("filter[name]", $"*{search}*");
+        queryString.Add("include", "versions,owner,authors");
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            queryString.Add("filter[name]", search);
+        }
+
         if (featured is not null)
         {
             queryString.Add("filter[featured]", featured.ToString());
         }
+
+        // make this dynamic later
+        queryString.Add("filter[spt_version]", "3.11.3");
 
         queryString.Add("sort", sort);
         return queryString;
