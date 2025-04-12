@@ -8,6 +8,9 @@ namespace Spt.Core.Responses;
 
 public class ForgeModsResponse
 {
+    [JsonPropertyName("success")]
+    public bool Success { get; set; }
+
     [JsonPropertyName("data")]
     public List<ForgeBase>? Data { get; set; }
 
