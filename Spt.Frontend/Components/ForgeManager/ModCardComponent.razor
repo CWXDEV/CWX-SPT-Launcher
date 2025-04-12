@@ -62,26 +62,26 @@
 
     private char? GetAvatarLetter()
     {
-        return ForgeMod.Includes.Users.FirstOrDefault().Attributes.Name.ToUpper()[0];
+        return ForgeMod.Owner.Name.ToUpper()[0];
     }
 
     private string? GetModName()
     {
-        return ForgeMod.Attributes.Name.UppercaseFirst();
+        return ForgeMod.Name.UppercaseFirst();
     }
 
     private string? GetModdersName()
     {
-        return ForgeMod.Includes.Users.FirstOrDefault().Attributes.Name.UppercaseFirst();
+        return ForgeMod.Owner.Name.UppercaseFirst();
     }
 
     private string? GetModTeaser()
     {
-        return ForgeMod.Attributes.Teaser.UppercaseFirst();
+        return ForgeMod.Teaser.UppercaseFirst();
     }
 
     private bool GetModFeatured()
     {
-        return ForgeMod.Attributes.Featured ?? false;
+        return ForgeMod.Featured ?? false;
     }
 }
