@@ -1,0 +1,55 @@
+﻿@page "/ForgeModPage/{ModId}"
+
+@inject ISnackbar _snackbar
+@inject IDialogService _dialogService
+@inject ForgeHelper _forgeHelper
+@inject HttpHelper _httpHelper
+@inject ConfigHelper _configHelper
+@inject LogHelper _logHelper
+
+<MudContainer Class="px-8 mt-2 mb-6 pa-0" MaxWidth="MaxWidth.Large">
+    <MudGrid>
+        @if (_searchResponse is null || _searchInProgress)
+        {
+            // TODO: change to look like a mod page loading
+            <DetailedModComponent IsSkeleton="true"/>
+        }
+        else if (_searchResponse?.Data is not null)
+        {
+            <DetailedModComponent ForgeMod="@_searchResponse?.Data"/>
+        }
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private ForgeModResponse? _searchResponse { get; set; }
+    private bool _searchInProgress { get; set; }
+    [Parameter] public string ModId { get; set; }
+
+    protected override void OnInitialized()
+    {
+        SearchForMod();
+        base.OnInitialized();
+    }
+
+    private async Task SearchForMod()
+    {
+        _searchInProgress = true;
+
+        try
+        {
+            var token = new CancellationTokenSource(TimeSpan.FromSeconds(10)); // implement sort & filter - filter needs on select change
+            _searchResponse = await _httpHelper.ForgeGetMod(ModId, token.Token);
+        }
+        catch (Exception e)
+        {
+            _logHelper.AddLog("Exception thrown from ForgeHelper.SearchForMod");
+            _logHelper.AddLog(e.ToString());
+            return;
+        }
+
+        _searchInProgress = false;
+        StateHasChanged();
+    }
+
+}

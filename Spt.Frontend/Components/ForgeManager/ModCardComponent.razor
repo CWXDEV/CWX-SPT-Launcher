@@ -1,7 +1,15 @@
-﻿<MudItem sm="6">
+﻿@inject ISnackbar _snackbar
+@inject IDialogService _dialogService
+@inject ForgeHelper _forgeHelper
+@inject HttpHelper _httpHelper
+@inject ConfigHelper _configHelper
+@inject LogHelper _logHelper
+@inject NavigationManager _navman
+
+<MudItem sm="6">
     @if (IsSkeleton)
     {
-        <MudCard Class="info-card-height">
+        <MudCard Class="info-card-height mud-background-gray border-2 border-solid mud-border-lines-default">
             <MudCardHeader>
                 <CardHeaderAvatar>
                     @* Randomise colour *@
@@ -26,7 +34,7 @@
     }
     else
     {
-        <MudCard Class="info-card-height">
+        <MudCard Class="info-card-height mud-background-gray border-2 border-solid mud-border-lines-default">
             <MudCardHeader>
                 <CardHeaderAvatar>
                     <MudAvatar Color="Color.Secondary">@GetAvatarLetter()</MudAvatar>
@@ -49,7 +57,7 @@
             </MudCardContent>
             <MudCardActions>
                 <MudIconButton Icon="@Icons.Material.Filled.Download" Color="Color.Default"/>
-                <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Default"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Default" @onclick="(() => NavigateToSingleMod(ForgeMod.Id))"/>
             </MudCardActions>
         </MudCard>
     }
@@ -83,5 +91,12 @@
     private bool GetModFeatured()
     {
         return ForgeMod.Featured ?? false;
+    }
+
+    private void NavigateToSingleMod(int? modId)
+    {
+        // navigate to mod page
+        Console.WriteLine($"Navigating to mod page: {modId}");
+        _navman.NavigateTo($"/ForgeModPage/{modId}");
     }
 }

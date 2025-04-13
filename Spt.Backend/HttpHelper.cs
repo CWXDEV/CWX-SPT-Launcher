@@ -86,7 +86,31 @@ public class HttpHelper
         );
     }
 
-    public async Task<ForgeModsResponse> ForgeMods(
+    public async Task<ForgeModResponse> ForgeGetMod(string? modId, CancellationToken token)
+    {
+        _logHelper.LogInfo($"forge GetModFromForge");
+
+        if (string.IsNullOrWhiteSpace(_configHelper.GetConfig().ApiKey))
+        {
+            _logHelper.LogInfo("GetMods - API Key is missing.");
+            return null;
+        }
+        _logHelper.LogInfo($"api key: {_configHelper.GetConfig().ApiKey}");
+
+        var paramsToUse = GetParamsCollection();
+        var message = new HttpRequestMessage(HttpMethod.Get, $"https://forge.sp-tarkov.com/api/v0/mod/{modId}?{paramsToUse.ToString()}")
+        {
+            Content = new StringContent("", Encoding.UTF8, "application/json")
+        };
+
+        message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
+        var task = await _httpClient?.SendAsync(message, token);
+        return JsonSerializer.Deserialize<ForgeModResponse>(await task.Content.ReadAsStringAsync(token));
+    }
+
+    public async Task<ForgeModsResponse> ForgeGetMods(
         CancellationToken token,
         string search = "",
         string sort = "-featured,name",
@@ -153,7 +177,7 @@ public class HttpHelper
         return JsonSerializer.Deserialize<ForgeLoginResponse>(await task.Content.ReadAsStringAsync(token));
     }
 
-    private NameValueCollection GetParamsCollection(string search, string sort, bool? featured)
+    private NameValueCollection GetParamsCollection(string? search = null, string? sort = null, bool? featured = null)
     {
         NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
         queryString.Add("include", "versions,owner,authors");
@@ -170,7 +194,11 @@ public class HttpHelper
         // make this dynamic later
         queryString.Add("filter[spt_version]", "3.11.3");
 
-        queryString.Add("sort", sort);
+        if (!string.IsNullOrWhiteSpace(sort))
+        {
+            queryString.Add("sort", sort);
+        }
+
         return queryString;
     }
 

@@ -131,3 +131,10 @@ a.setting-on-hover:hover {
 .edition-text {
     background-color: #303038;
 }
+
+.text-overflow span{
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

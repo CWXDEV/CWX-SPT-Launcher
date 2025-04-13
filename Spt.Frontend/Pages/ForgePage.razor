@@ -133,7 +133,7 @@
         try
         {
             var token = new CancellationTokenSource(TimeSpan.FromSeconds(10)); // implement sort & filter - filter needs on select change
-            _searchResponse = await _httpHelper.ForgeMods(token.Token, Search, "-featured,name", page, FilterValue);
+            _searchResponse = await _httpHelper.ForgeGetMods(token.Token, Search, "-featured,name", page, FilterValue);
         }
         catch (Exception e)
         {

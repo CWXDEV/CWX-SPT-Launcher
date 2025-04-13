@@ -1,0 +1,70 @@
+﻿@inject ISnackbar _snackbar
+@inject IDialogService _dialogService
+@inject ForgeHelper _forgeHelper
+@inject HttpHelper _httpHelper
+@inject ConfigHelper _configHelper
+@inject LogHelper _logHelper
+@inject NavigationManager _navman
+
+<MudItem sm="12">
+    @if (IsSkeleton)
+    {
+        // Create replica of Below layout as a skeleton
+    }
+    else
+    {
+        <MudGrid>
+            <MudItem sm="8">
+                <MudCard Class="mud-background-gray border-2 border-solid mud-border-lines-default">
+                    <MudCardHeader>
+
+                    </MudCardHeader>
+                    <MudCardContent>
+
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+            <MudItem sm="4">
+                <MudCard Class="mud-background-gray border-2 border-solid mud-border-lines-default">
+                    <MudCardContent Class="d-flex flex-column align-start text-overflow">
+                        <MudItem Class="pb-4">
+                            <MudText Typo="Typo.h6" Class="no-pointers no-select">Details</MudText>
+                        </MudItem>
+                        <MudText Typo="Typo.body1" Class="no-pointers no-select">Additional Authors</MudText>
+                        <MudText Typo="Typo.caption" Class="pb-2">@(ForgeMod.Authors.Any() ? ForgeMod.Authors.Select(x => x.Name).Aggregate((i, j) => i + ", " + j) : "None")</MudText>
+                        <MudText Typo="Typo.body1" Class="no-pointers no-select">License</MudText>
+                        <MudText Typo="Typo.caption" Class="pb-2">License to add</MudText>
+                        <MudText Typo="Typo.body1" Class="no-pointers no-select">Source Code</MudText>
+                        <MudText Typo="Typo.caption" Class="pb-2">
+                            @if (ForgeMod.SourceCodeLink is not null)
+                            {
+                                <MudLink Typo="Typo.caption" Href="@ForgeMod.SourceCodeLink">@ForgeMod.SourceCodeLink</MudLink>
+                            }
+                            else
+                            {
+                                @("None")
+                            }
+                        </MudText>
+                        <MudText Typo="Typo.body1" Class="no-pointers no-select">Latest Version VirusTotal Result</MudText>
+                        <MudText Typo="Typo.caption" Class="pb-2">
+                            @if (ForgeMod.Versions.FirstOrDefault().VirusTotalLink is not null)
+                            {
+                                <MudLink Typo="Typo.caption" Href="@ForgeMod.Versions.FirstOrDefault().VirusTotalLink">@ForgeMod.Versions.FirstOrDefault().VirusTotalLink</MudLink>
+                            }
+                            else
+                            {
+                                @("None")
+                            }
+                        </MudText>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    }
+</MudItem>
+
+@code {
+    [Parameter] public bool IsSkeleton { get; set; }
+
+    [Parameter] public ForgeBase ForgeMod { get; set; }
+}
