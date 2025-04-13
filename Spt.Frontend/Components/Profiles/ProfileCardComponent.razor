@@ -80,10 +80,14 @@
 
     protected override void OnInitialized()
     {
+        base.OnInitialized();
+
         loggedIn = _stateHelper.SelectedProfile != null && _stateHelper.SelectedProfile.ProfileID == MiniProfile.ProfileID;
         if (MiniProfile.Side.ToLower() == "unknown")
         {
             sideIsUnknown = true;
+            glowClass = "";
+            return;
         }
 
         glowClass = MiniProfile.Edition.ToLower() switch
@@ -91,13 +95,11 @@
             "spt developer" => "glow-green",
             "spt easy start" => "glow-red",
             "spt zero to hero" => "glow-purple",
-            "the unheard edition" => "glow-blue",
+            "unheard" => "glow-blue",
             "edge of darkness" => "glow-gold",
             "standard edition" => "glow-grey",
             _ => "glow-grey"
         };
-
-        base.OnInitialized();
     }
 
     private async Task RunLoginTask()

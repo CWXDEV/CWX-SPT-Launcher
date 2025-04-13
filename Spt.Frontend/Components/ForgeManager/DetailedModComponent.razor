@@ -10,6 +10,15 @@
     @if (IsSkeleton)
     {
         // Create replica of Below layout as a skeleton
+        <MudGrid>
+            <MudItem sm="8">
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="200px" Class="mb-4"/>
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="300px" />
+            </MudItem>
+            <MudItem sm="4">
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="300px" />
+            </MudItem>
+        </MudGrid>
     }
     else
     {
