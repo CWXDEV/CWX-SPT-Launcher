@@ -13,6 +13,9 @@ public class ForgeModVersion
     [JsonPropertyName("version")]
     public string? Version { get; set; }
 
+    [JsonPropertyName("description")]
+    public string? Description { get; set; }
+
     [JsonPropertyName("link")]
     public string? Link { get; set; }
 

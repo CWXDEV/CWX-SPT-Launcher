@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.40.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Wpf" Version="9.0.50" />
     <PackageReference Include="MudBlazor" Version="8.3.0" />
   </ItemGroup>

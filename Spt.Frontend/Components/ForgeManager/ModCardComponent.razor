@@ -27,8 +27,9 @@
                 <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="150px" />
             </MudCardContent>
             <MudCardActions>
-                <MudSkeleton SkeletonType="SkeletonType.Circle" Height="30px" Width="30px" Class="ml-2 mb-2"/>
-                <MudSkeleton SkeletonType="SkeletonType.Circle" Height="30px" Width="30px" Class="ml-3 mb-2"/>
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="30px" Width="80px" Class="ml-2 mb-2 rounded-pill"/>
+                <MudSpacer />
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="30px" Width="80px" Class="mr-2 mb-2 rounded-pill"/>
             </MudCardActions>
         </MudCard>
     }
@@ -55,9 +56,10 @@
             <MudCardContent>
                 <MudText Typo="Typo.body2">@GetModTeaser()</MudText>
             </MudCardContent>
-            <MudCardActions>
-                <MudIconButton Icon="@Icons.Material.Filled.Download" Color="Color.Default"/>
-                <MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Default" @onclick="(() => NavigateToSingleMod(ForgeMod.Id))"/>
+            <MudCardActions Class="pa-4">
+                <MudFab StartIcon="@Icons.Material.Filled.ReadMore" Label="Read More" Color="Color.Primary" Size="Size.Small" DropShadow="false" @onclick="(() => NavigateToSingleMod(ForgeMod.Id))"/>
+                <MudSpacer/>
+                <MudFab StartIcon="@Icons.Material.Filled.OpenInNew" Label="Forge" Color="Color.Default" Size="Size.Small" DropShadow="false" Href="@($"https://forge.sp-tarkov.com/mod/{ForgeMod.Id}/{ForgeMod.Slug}")"/>
             </MudCardActions>
         </MudCard>
     }

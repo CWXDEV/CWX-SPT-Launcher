@@ -11,12 +11,11 @@
     <MudGrid>
         @if (_searchResponse is null || _searchInProgress)
         {
-            // TODO: change to look like a mod page loading
             <DetailedModComponent IsSkeleton="true"/>
         }
-        else if (_searchResponse?.Data is not null)
+        else if (_searchResponse?.Data is not null && _versionResponse?.Data is not null)
         {
-            <DetailedModComponent ForgeMod="@_searchResponse?.Data"/>
+            <DetailedModComponent ForgeMod="@_searchResponse?.Data" ForgeVersions="@_versionResponse?.Data"/>
         }
     </MudGrid>
 </MudContainer>
@@ -24,11 +23,14 @@
 @code {
     private ForgeModResponse? _searchResponse { get; set; }
     private bool _searchInProgress { get; set; }
+    private ForgeVersionResponse? _versionResponse { get; set; }
+    private bool _versionInProgress { get; set; }
     [Parameter] public string ModId { get; set; }
 
     protected override void OnInitialized()
     {
         SearchForMod();
+        SearchForVersions();
         base.OnInitialized();
     }
 
@@ -38,7 +40,7 @@
 
         try
         {
-            var token = new CancellationTokenSource(TimeSpan.FromSeconds(10)); // implement sort & filter - filter needs on select change
+            var token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
             _searchResponse = await _httpHelper.ForgeGetMod(ModId, token.Token);
         }
         catch (Exception e)
@@ -52,4 +54,23 @@
         StateHasChanged();
     }
 
+    private async Task SearchForVersions()
+    {
+        _versionInProgress = true;
+
+        try
+        {
+            var token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            _versionResponse = await _httpHelper.ForgeGetVersions(ModId, token.Token);
+        }
+        catch (Exception e)
+        {
+            _logHelper.AddLog("Exception thrown from ForgeHelper.SearchForVersions");
+            _logHelper.AddLog(e.ToString());
+            return;
+        }
+
+        _versionInProgress = false;
+        StateHasChanged();
+    }
 }

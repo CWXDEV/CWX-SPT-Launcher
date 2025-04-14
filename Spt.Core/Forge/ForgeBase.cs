@@ -54,6 +54,13 @@ public record ForgeBase
         set;
     }
 
+    [JsonPropertyName("description")]
+    public string? Description
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("source_code_link")]
     public string? SourceCodeLink
     {

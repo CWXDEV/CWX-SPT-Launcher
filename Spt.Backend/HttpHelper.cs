@@ -86,6 +86,30 @@ public class HttpHelper
         );
     }
 
+    public async Task<ForgeVersionResponse> ForgeGetVersions(string? modId, CancellationToken token)
+    {
+        _logHelper.LogInfo($"forge ForgeGetVersions");
+
+        if (string.IsNullOrWhiteSpace(_configHelper.GetConfig().ApiKey))
+        {
+            _logHelper.LogInfo("GetMods - API Key is missing.");
+            return null;
+        }
+        _logHelper.LogInfo($"api key: {_configHelper.GetConfig().ApiKey}");
+
+        var paramsToUse = GetParamsCollection();
+        var message = new HttpRequestMessage(HttpMethod.Get, $"https://forge.sp-tarkov.com/api/v0/mod/{modId}/versions")
+        {
+            Content = new StringContent("", Encoding.UTF8, "application/json")
+        };
+
+        message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
+        var task = await _httpClient?.SendAsync(message, token);
+        return JsonSerializer.Deserialize<ForgeVersionResponse>(await task.Content.ReadAsStringAsync(token));
+    }
+
     public async Task<ForgeModResponse> ForgeGetMod(string? modId, CancellationToken token)
     {
         _logHelper.LogInfo($"forge GetModFromForge");

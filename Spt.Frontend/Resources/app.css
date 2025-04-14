@@ -132,9 +132,21 @@ a.setting-on-hover:hover {
     background-color: #303038;
 }
 
-.text-overflow span{
+.text-overflow span {
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.markdown ol {
+    padding-left: 19px;
+}
+
+.markdown ul {
+    padding-left: 19px;
+}
+
+.markdown img {
+    max-width: 100%;
 }
