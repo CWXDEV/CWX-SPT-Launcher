@@ -97,7 +97,7 @@ public class HttpHelper
         }
         _logHelper.LogInfo($"api key: {_configHelper.GetConfig().ApiKey}");
 
-        var paramsToUse = GetParamsCollection();
+        var paramsToUse = GetParamsCollection(null, "-version");
         var message = new HttpRequestMessage(HttpMethod.Get, $"https://forge.sp-tarkov.com/api/v0/mod/{modId}/versions")
         {
             Content = new StringContent("", Encoding.UTF8, "application/json")
@@ -204,7 +204,7 @@ public class HttpHelper
     private NameValueCollection GetParamsCollection(string? search = null, string? sort = null, bool? featured = null)
     {
         NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
-        queryString.Add("include", "versions,owner,authors");
+        queryString.Add("include", "versions,owner,authors,license");
         if (!string.IsNullOrWhiteSpace(search))
         {
             queryString.Add("filter[name]", search);
@@ -230,12 +230,11 @@ public class HttpHelper
     {
         switch (selected.ToLower())
         {
-            case "include":
-                return null;
             case "exclude":
                 return false;
             case "only":
                 return true;
+            case "include":
             default:
                 return null;
         }

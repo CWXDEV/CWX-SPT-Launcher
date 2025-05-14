@@ -16,6 +16,7 @@ public class StateHelper
     public List<MiniProfile> ProfileList = [];
     public Dictionary<string, string> ProfileTypes = new();
     private readonly LogHelper _logHelper;
+    public int? CurrentPagination;
 
     public StateHelper(
         LogHelper logHelper
