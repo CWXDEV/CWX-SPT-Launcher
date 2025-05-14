@@ -130,4 +130,11 @@ public record ForgeBase
         get;
         set;
     }
+
+    [JsonPropertyName("license")]
+    public ForgeLicense? License
+    {
+        get;
+        set;
+    }
 }
