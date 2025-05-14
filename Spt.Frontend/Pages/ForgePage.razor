@@ -4,6 +4,7 @@
 @inject IDialogService _dialogService
 @inject ForgeHelper _forgeHelper
 @inject HttpHelper _httpHelper
+@inject StateHelper _stateHelper
 @inject ConfigHelper _configHelper
 @inject LogHelper _logHelper
 
@@ -126,14 +127,18 @@
         await SearchForMods(1);
     }
 
-    private async Task SearchForMods(int page = 1)
+    private async Task SearchForMods(int? page = null)
     {
         _searchInProgress = true;
+        if (page is null)
+        {
+            page = _stateHelper.CurrentPagination;
+        }
 
         try
         {
             var token = new CancellationTokenSource(TimeSpan.FromSeconds(10)); // implement sort & filter - filter needs on select change
-            _searchResponse = await _httpHelper.ForgeGetMods(token.Token, Search, "-featured,name", page, FilterValue);
+            _searchResponse = await _httpHelper.ForgeGetMods(token.Token, Search, "-featured,name", page ?? 1, FilterValue);
         }
         catch (Exception e)
         {
@@ -142,7 +147,8 @@
             return;
         }
 
-        _paginationSelected = page;
+        _paginationSelected = page ?? 1;
+        _stateHelper.CurrentPagination = _paginationSelected;
         _searchInProgress = false;
         StateHasChanged();
     }
