@@ -12,7 +12,6 @@
         <MudCard Class="info-card-height mud-background-gray border-2 border-solid mud-border-lines-default">
             <MudCardHeader>
                 <CardHeaderAvatar>
-                    @* Randomise colour *@
                     <MudSkeleton SkeletonType="SkeletonType.Circle" Height="40px" Width="40px"/>
                 </CardHeaderAvatar>
                 <CardHeaderContent>
@@ -38,7 +37,16 @@
         <MudCard Class="info-card-height mud-background-gray border-2 border-solid mud-border-lines-default">
             <MudCardHeader>
                 <CardHeaderAvatar>
-                    <MudAvatar Color="Color.Secondary">@GetAvatarLetter()</MudAvatar>
+                    @if (TryGetProfileAvatar(out string? url))
+                    {
+                        <MudAvatar Color="Color.Secondary">
+                            <MudImage Src="@url"/>
+                        </MudAvatar>
+                    }
+                    else
+                    {
+                        <MudAvatar Color="Color.Secondary">@GetAvatarLetter()</MudAvatar>
+                    }
                 </CardHeaderAvatar>
                 <CardHeaderContent>
                     <MudText Typo="Typo.body1">@GetModName()</MudText>
@@ -47,7 +55,7 @@
                 <CardHeaderActions>
                     @if (GetModFeatured())
                     {
-                        <MudTooltip Arrow="true" Placement="Placement.Bottom" Text="Featured">
+                        <MudTooltip Arrow="true" Placement="Placement.Bottom" Text="Featured" Duration="0" Delay="0">
                             <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Primary"/>
                         </MudTooltip>
                     }
@@ -57,9 +65,9 @@
                 <MudText Typo="Typo.body2">@GetModTeaser()</MudText>
             </MudCardContent>
             <MudCardActions Class="pa-4">
-                <MudFab StartIcon="@Icons.Material.Filled.ReadMore" Label="Read More" Color="Color.Primary" Size="Size.Small" DropShadow="false" @onclick="(() => NavigateToSingleMod(ForgeMod.Id))"/>
+                <MudButton StartIcon="@Icons.Material.Filled.ReadMore" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" DropShadow="false" @onclick="(() => NavigateToSingleMod(ForgeMod.Id))">Read More</MudButton>
                 <MudSpacer/>
-                <MudFab StartIcon="@Icons.Material.Filled.OpenInNew" Label="Forge" Color="Color.Default" Size="Size.Small" DropShadow="false" Href="@($"https://forge.sp-tarkov.com/mod/{ForgeMod.Id}/{ForgeMod.Slug}")"/>
+                <MudButton StartIcon="@Icons.Material.Filled.OpenInNew" Variant="Variant.Filled" Color="Color.Success" Size="Size.Small" DropShadow="false" Href="@($"https://forge.sp-tarkov.com/mod/{ForgeMod.Id}/{ForgeMod.Slug}")">Forge</MudButton>
             </MudCardActions>
         </MudCard>
     }
@@ -73,6 +81,12 @@
     private char? GetAvatarLetter()
     {
         return ForgeMod.Owner.Name.ToUpper()[0];
+    }
+
+    private bool TryGetProfileAvatar(out string? url)
+    {
+        url = ForgeMod.Owner.ProfilePhotoUrl;
+        return !string.IsNullOrEmpty(url);
     }
 
     private string? GetModName()

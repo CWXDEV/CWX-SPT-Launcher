@@ -13,8 +13,8 @@
                 <MudText Typo="Typo.body1">@Server.Name</MudText>
             </CardHeaderContent>
             <CardHeaderActions>
-                <MudTooltip Text="Edit server" Arrow="true" Placement="Placement.Bottom">
-                <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" @onclick="RunEditTask"/>
+                <MudTooltip Text="Edit server" Arrow="true" Placement="Placement.Bottom" Duration="50" Delay="0">
+                    <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" @onclick="RunEditTask"/>
                 </MudTooltip>
             </CardHeaderActions>
         </MudCardHeader>
@@ -23,16 +23,19 @@
             <MudText Typo="Typo.body1">@Server.Ip</MudText>
         </MudCardContent>
         <MudCardActions Class="pa-4 d-flex mt-2">
-            <MudTooltip Text="@(IsConnectedServer ? "Connected" : "Disconnected")" Arrow="true" Placement="Placement.Bottom">
-                <MudIcon Class="mb-n2" Icon="@Icons.Material.Filled.Circle" Color="@(IsConnectedServer ? Color.Success : Color.Error)"/>
+            <MudTooltip Text="@(IsConnectedServer ? "Connected" : "Disconnected")" Arrow="true"
+                        Placement="Placement.Bottom" Duration="50" Delay="0">
+                <MudIcon Class="mb-n2" Icon="@Icons.Material.Filled.Circle"
+                         Color="@(IsConnectedServer ? Color.Success : Color.Error)"/>
             </MudTooltip>
             <MudSpacer/>
-            <MudTooltip Text="@(!IsConnectedServer ? "Login to server" : "Logout of server")" Arrow="true" Placement="Placement.Bottom">
+            <MudTooltip Text="@(!IsConnectedServer ? "Login to server" : "Logout of server")" Arrow="true"
+                        Placement="Placement.Bottom" Duration="50" Delay="0">
                 <MudIconButton Class="mr-1" Color="Color.Default"
                                Icon="@(!IsConnectedServer ? Icons.Material.Filled.Login : Icons.Material.Filled.Logout)"
                                Size="Size.Small" @onclick="RunLoginTask"/>
             </MudTooltip>
-            <MudTooltip Text="Delete server" Arrow="true" Placement="Placement.Bottom">
+            <MudTooltip Text="Delete server" Arrow="true" Placement="Placement.Bottom" Duration="50" Delay="0">
                 <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="Size.Small"
                                @onclick="RunDeleteTask"/>
             </MudTooltip>
@@ -41,11 +44,14 @@
 </MudItem>
 
 @code {
-    [Parameter] public Servers Server { get; set; }
+    [Parameter]
+    public Servers Server { get; set; }
 
-    [Parameter] public List<Servers> ServerList { get; set; }
+    [Parameter]
+    public List<Servers> ServerList { get; set; }
 
-    [Parameter] public EventCallback<List<Servers>> ServerListChanged { get; set; }
+    [Parameter]
+    public EventCallback<List<Servers>> ServerListChanged { get; set; }
 
     private bool IsConnectedServer { get; set; }
 
@@ -65,7 +71,12 @@
             IsConnectedServer = false;
         }
 
-        var param = new DialogParameters { { "Server", Server } };
+        var param = new DialogParameters
+        {
+            {
+                "Server", Server
+            }
+        };
 
         var dialog = await _dialogService.ShowAsync<ServerEditDialog>("ServerEditDialog", param, _configHelper.DialogOptions);
         var result = await dialog.Result;
@@ -104,7 +115,12 @@
             IsConnectedServer = false;
         }
 
-        var param = new DialogParameters { { "Server", Server } };
+        var param = new DialogParameters
+        {
+            {
+                "Server", Server
+            }
+        };
 
         var dialog = await _dialogService.ShowAsync<ServerLoginDialog>("ServerLoginDialog", param, _configHelper.DialogOptions);
         var result = await dialog.Result;
