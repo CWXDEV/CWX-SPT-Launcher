@@ -6,8 +6,7 @@ namespace Spt.Backend;
 
 public class ConfigHelper
 {
-    private static readonly string AppPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "CWX-SPT-Launcher\\Resources");
+    private static readonly string AppPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "CWX-SPT-Launcher\\Resources");
 
     public readonly DialogOptions DialogOptions = new()
     {
@@ -50,8 +49,7 @@ public class ConfigHelper
             }
 
             // if not save
-            _settings = JsonSerializer.Deserialize<Settings>(
-                File.ReadAllText(Path.Combine(AppPath, "settings.json")));
+            _settings = JsonSerializer.Deserialize<Settings>(File.ReadAllText(Path.Combine(AppPath, "settings.json")));
         }
     }
 
@@ -191,15 +189,14 @@ public class ConfigHelper
         {
             _logHelper.LogInfo("SaveDefaults...");
             Directory.CreateDirectory(AppPath);
-            File.WriteAllText(Path.Combine(AppPath, "settings.json"), GetDefaults());
+            File.WriteAllText(Path.Combine(AppPath, "settings.json"), JsonSerializer.Serialize(GetDefaults()));
         }
     }
 
-    private string GetDefaults()
+    private Settings GetDefaults()
     {
         _logHelper.LogInfo("GetDefaults...");
-        // work around not being able to read embedded json
-        var settings = new Settings()
+        return new Settings
         {
             FirstRun = true,
             GamePath = Environment.CurrentDirectory,
@@ -216,7 +213,7 @@ public class ConfigHelper
                     Width = 0
                 },
                 CloseToTray = false,
-                MinimizeOnLaunch = false,
+                MinimizeOnLaunch = true,
                 AlwaysTop = false,
                 AdvancedUser = false
             },
@@ -226,7 +223,8 @@ public class ConfigHelper
                 {
                     Ip = "127.0.0.1:6969",
                     Name = "LocalHost",
-                    ServerId = "1721162719"
+                    ServerId = "1721162719",
+                    Locked = true
                 }
             ],
             DebugSettings = new DebugSettings
@@ -235,7 +233,5 @@ public class ConfigHelper
             },
             ApiKey = ""
         };
-
-        return JsonSerializer.Serialize(settings);
     }
 }
