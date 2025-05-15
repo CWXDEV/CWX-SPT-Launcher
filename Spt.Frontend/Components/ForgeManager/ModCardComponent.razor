@@ -39,7 +39,7 @@
                 <CardHeaderAvatar>
                     @if (TryGetProfileAvatar(out string? url))
                     {
-                        <MudAvatar>
+                        <MudAvatar Style="background-color: transparent !important;">
                             <MudImage Src="@url"/>
                         </MudAvatar>
                     }
