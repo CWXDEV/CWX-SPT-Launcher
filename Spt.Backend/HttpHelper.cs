@@ -207,7 +207,7 @@ public class HttpHelper
         queryString.Add("include", "versions,owner,authors,license");
         if (!string.IsNullOrWhiteSpace(search))
         {
-            queryString.Add("filter[name]", search);
+            queryString.Add("query", search);
         }
 
         if (featured is not null)
