@@ -7,7 +7,8 @@
 @inject LogHelper _logHelper
 
 <MudItem sm="12" md="4">
-    <MudPaper Elevation="2" Class="pa-4 d-flex flex-column flex-none gap-2 card-overflow mud-background-gray border-2 border-solid mud-border-lines-default">
+    <MudPaper Elevation="2"
+              Class="pa-4 d-flex flex-column flex-none gap-2 card-overflow mud-background-gray border-2 border-solid mud-border-lines-default">
         @if (!sideIsUnknown)
         {
             <MudImage Src=@(ImageName()) Elevation="0" Class=@(ImageClassNames())/>
@@ -55,9 +56,12 @@
 </MudItem>
 
 @code {
-    [Parameter] public MiniProfile MiniProfile { get; set; }
-    [Parameter] public List<MiniProfile> ProfileList { get; set; }
-    [Parameter] public EventCallback<List<MiniProfile>> ProfileListChanged { get; set; }
+    [Parameter]
+    public MiniProfile MiniProfile { get; set; }
+    [Parameter]
+    public List<MiniProfile> ProfileList { get; set; }
+    [Parameter]
+    public EventCallback<List<MiniProfile>> ProfileListChanged { get; set; }
     private bool sideIsUnknown { get; set; } = false;
     private string glowClass { get; set; }
     private string sideClass { get; set; }
@@ -115,7 +119,12 @@
             }
         }
 
-        var dialogParams = new DialogParameters { { "MiniProfile", MiniProfile } };
+        var dialogParams = new DialogParameters
+        {
+            {
+                "MiniProfile", MiniProfile
+            }
+        };
 
         var dialog = await _dialogService.ShowAsync<ProfileLoginDialog>("ProfileLoginDialog", dialogParams, _configHelper.DialogOptions);
         var result = await dialog.Result;
@@ -132,7 +141,12 @@
 
     private async Task RunDeleteTask()
     {
-        var dialogParams = new DialogParameters { { "MiniProfile", MiniProfile } };
+        var dialogParams = new DialogParameters
+        {
+            {
+                "MiniProfile", MiniProfile
+            }
+        };
 
         var dialog = await _dialogService.ShowAsync<ProfileRemoveDialog>("ProfileRemoveDialog", dialogParams, _configHelper.DialogOptions);
         var result = await dialog.Result;
@@ -150,7 +164,12 @@
         loggedIn = false;
         _navigationHelper.SetProfilePages(false);
 
-        var dialogParams = new DialogParameters { { "MiniProfile", MiniProfile } };
+        var dialogParams = new DialogParameters
+        {
+            {
+                "MiniProfile", MiniProfile
+            }
+        };
 
         var dialog = await _dialogService.ShowAsync<ProfileEditDialog>("ProfileEditDialog", dialogParams, _configHelper.DialogOptions);
         var result = await dialog.Result;
@@ -161,4 +180,5 @@
             await ProfileListChanged.InvokeAsync(ProfileList);
         }
     }
+
 }
