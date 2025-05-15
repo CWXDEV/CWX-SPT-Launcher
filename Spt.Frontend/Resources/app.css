@@ -150,3 +150,9 @@ a.setting-on-hover:hover {
 .markdown img {
     max-width: 100%;
 }
+
+.mod-thumbnail {
+    max-width: 144px;
+    max-height: 144px;
+    border-radius: 3px;
+}
