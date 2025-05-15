@@ -22,4 +22,10 @@ public class Servers
         get;
         set;
     }
+
+    public bool Locked
+    {
+        get;
+        set;
+    }
 }

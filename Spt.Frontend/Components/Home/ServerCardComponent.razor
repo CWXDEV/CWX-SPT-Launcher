@@ -35,10 +35,20 @@
                                Icon="@(!IsConnectedServer ? Icons.Material.Filled.Login : Icons.Material.Filled.Logout)"
                                Size="Size.Small" @onclick="RunLoginTask"/>
             </MudTooltip>
-            <MudTooltip Text="Delete server" Arrow="true" Placement="Placement.Bottom" Duration="50" Delay="0">
-                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="Size.Small"
-                               @onclick="RunDeleteTask"/>
-            </MudTooltip>
+            @if (Server.Locked)
+            {
+                <MudTooltip Text="Protected from Deletion" Arrow="true" Placement="Placement.Bottom" Duration="50"
+                            Delay="0">
+                    <MudIconButton Color="Color.Tertiary" Icon="@Icons.Material.Filled.Lock" Size="Size.Small"/>
+                </MudTooltip>
+            }
+            else
+            {
+                <MudTooltip Text="Delete server" Arrow="true" Placement="Placement.Bottom" Duration="50" Delay="0">
+                    <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="Size.Small"
+                                   @onclick="RunDeleteTask"/>
+                </MudTooltip>
+            }
         </MudCardActions>
     </MudCard>
 </MudItem>
