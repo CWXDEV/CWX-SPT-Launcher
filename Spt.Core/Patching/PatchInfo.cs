@@ -7,7 +7,7 @@
 
 using System.Text;
 
-namespace Spt.Core.Patching;
+namespace Spt.Core.Models;
 
 public class PatchInfo
 {

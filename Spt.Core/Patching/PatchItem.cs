@@ -5,7 +5,7 @@
  * Basuro
  */
 
-namespace Spt.Core.Patching;
+namespace Spt.Core.Models;
 
 public class PatchItem
 {

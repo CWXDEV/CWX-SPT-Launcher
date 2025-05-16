@@ -19,7 +19,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="9.0.4" />
-    <ProjectReference Include="..\Spt.Backend\Spt.Backend.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Spt.Core\Spt.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -5,19 +5,17 @@
  * Basuro
  */
 
-using Spt.Core.Enums;
-
-namespace Spt.Core.Patching;
+namespace Spt.Core.Models;
 
 public class DiffResult
 {
-    public DiffResult(Enums.DiffResultEnum resultEnum, PatchInfo patchInfo)
+    public DiffResult(DiffResultEnum resultEnum, PatchInfo patchInfo)
     {
         ResultEnum = resultEnum;
         PatchInfo = patchInfo;
     }
 
-    public Enums.DiffResultEnum ResultEnum
+    public DiffResultEnum ResultEnum
     {
         get;
     }

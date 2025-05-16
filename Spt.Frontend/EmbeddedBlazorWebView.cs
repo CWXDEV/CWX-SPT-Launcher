@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using Spt.Backend;
 using Microsoft.AspNetCore.Components.WebView.Wpf;
 using Microsoft.Extensions.FileProviders;
 

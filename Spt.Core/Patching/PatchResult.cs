@@ -5,19 +5,17 @@
  * Basuro
  */
 
-using Spt.Core.Enums;
-
-namespace Spt.Core.Patching;
+namespace Spt.Core.Models;
 
 public class PatchResult
 {
-    public PatchResult(Enums.PatchResultEnum resultEnum, byte[] patchedData)
+    public PatchResult(PatchResultEnum resultEnum, byte[] patchedData)
     {
         ResultEnum = resultEnum;
         PatchedData = patchedData;
     }
 
-    public Enums.PatchResultEnum ResultEnum
+    public PatchResultEnum ResultEnum
     {
         get;
     }
