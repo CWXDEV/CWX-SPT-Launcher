@@ -8,7 +8,7 @@
         <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.AddToQueue" Size="Size.Large" @onclick="RunAddTask" Variant="Variant.Filled">Add New Server</MudButton>
     </MudContainer>
     <MudGrid>
-        @if (ServerList.Count > 0)
+        @if (ServerList.Any())
         {
             @foreach (var server in ServerList)
             {

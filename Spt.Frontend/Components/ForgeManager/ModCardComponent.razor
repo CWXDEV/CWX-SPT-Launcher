@@ -57,9 +57,9 @@
                 <CardHeaderActions>
                     @if (@ForgeMod.GetModFeatured())
                     {
-                        <MudTooltip Arrow="true" Placement="Placement.Bottom" Text="Featured" Duration="0" Delay="0">
+                        <ToolTip Text="Featured">
                             <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Primary"/>
-                        </MudTooltip>
+                        </ToolTip>
                     }
 
                     @* TODO: add one for if ai generated *@

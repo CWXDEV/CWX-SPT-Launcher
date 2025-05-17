@@ -13,9 +13,9 @@
                 <MudText Typo="Typo.body1">@Server.Name</MudText>
             </CardHeaderContent>
             <CardHeaderActions>
-                <MudTooltip Text="Edit server" Arrow="true" Placement="Placement.Bottom" Duration="50" Delay="0">
+                <ToolTip Text="Edit server">
                     <MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" @onclick="RunEditTask"/>
-                </MudTooltip>
+                </ToolTip>
             </CardHeaderActions>
         </MudCardHeader>
         <MudCardContent Class="py-2">
@@ -23,31 +23,28 @@
             <MudText Typo="Typo.body1">@Server.Ip</MudText>
         </MudCardContent>
         <MudCardActions Class="pa-4 d-flex mt-2">
-            <MudTooltip Text="@(IsConnectedServer ? "Connected" : "Disconnected")" Arrow="true"
-                        Placement="Placement.Bottom" Duration="50" Delay="0">
+            <ToolTip Text="@(IsConnectedServer ? "Connected" : "Disconnected")">
                 <MudIcon Class="mb-n2" Icon="@Icons.Material.Filled.Circle"
                          Color="@(IsConnectedServer ? Color.Success : Color.Error)"/>
-            </MudTooltip>
+            </ToolTip>
             <MudSpacer/>
-            <MudTooltip Text="@(!IsConnectedServer ? "Login to server" : "Logout of server")" Arrow="true"
-                        Placement="Placement.Bottom" Duration="50" Delay="0">
+            <ToolTip Text="@(!IsConnectedServer ? "Login to server" : "Logout of server")">
                 <MudIconButton Class="mr-1" Color="Color.Default"
                                Icon="@(!IsConnectedServer ? Icons.Material.Filled.Login : Icons.Material.Filled.Logout)"
                                Size="Size.Small" @onclick="RunLoginTask"/>
-            </MudTooltip>
+            </ToolTip>
             @if (Server.Locked)
             {
-                <MudTooltip Text="Protected from Deletion" Arrow="true" Placement="Placement.Bottom" Duration="50"
-                            Delay="0">
+                <ToolTip Text="Protected from Deletion">
                     <MudIconButton Color="Color.Tertiary" Icon="@Icons.Material.Filled.Lock" Size="Size.Small"/>
-                </MudTooltip>
+                </ToolTip>
             }
             else
             {
-                <MudTooltip Text="Delete server" Arrow="true" Placement="Placement.Bottom" Duration="50" Delay="0">
+                <ToolTip Text="Delete server">
                     <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="Size.Small"
                                    @onclick="RunDeleteTask"/>
-                </MudTooltip>
+                </ToolTip>
             }
         </MudCardActions>
     </MudCard>

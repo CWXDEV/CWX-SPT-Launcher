@@ -8,12 +8,14 @@
 
 <MudItem sm="12" md="4">
     <MudPaper Elevation="2"
-              Class="pa-4 d-flex flex-column flex-none gap-2 card-overflow mud-background-gray border-2 border-solid mud-border-lines-default">
-        @if (!sideIsUnknown)
-        {
-            <MudImage Src=@(ImageName()) Elevation="0" Class=@(ImageClassNames())/>
-        }
-        <MudPaper Elevation="0" Class=@(GlowClassNames())/>
+              Class="pa-4 d-flex flex-column flex-none gap-2 mud-background-gray border-2 border-solid mud-border-lines-default card-container">
+        <div class="card-overflow">
+            @if (!sideIsUnknown)
+            {
+                <MudImage Src=@(ImageName()) Elevation="0" Class=@(ImageClassNames())/>
+            }
+            <MudPaper Elevation="0" Class=@(GlowClassNames())/>
+        </div>
         <MudText Class="mb-n4 no-pointers no-select" Typo="Typo.caption">Name:</MudText>
         <MudText Typo="Typo.h6">@MiniProfile.Username</MudText>
         <MudDivider DividerType="DividerType.Middle"/>
@@ -28,28 +30,27 @@
         <MudContainer Class="justify-end d-flex pa-0">
             @if (MiniProfile.HasPassword)
             {
-                <MudTooltip Text="Password Protected" Arrow="true" Placement="Placement.Bottom">
+                <ToolTip Text="Password Protected">
                     <MudIconButton Color="Color.Tertiary" Icon="@Icons.Material.Filled.Lock" Size="Size.Small"/>
-                </MudTooltip>
+                </ToolTip>
                 <MudSpacer/>
             }
-            <MudTooltip Text="@(loggedIn ? "Logout of this profile" : "Login to this profile")" Arrow="true"
-                        Placement="Placement.Bottom">
+            <ToolTip Text="@(loggedIn ? "Logout of this profile" : "Login to this profile")">
                 <MudIconButton Class="mr-1" Color="Color.Default"
                                Icon="@(!loggedIn ? Icons.Material.Filled.Login : Icons.Material.Filled.Logout)"
                                Size="Size.Small"
                                @onclick="RunLoginTask"/>
-            </MudTooltip>
+            </ToolTip>
 
-            <MudTooltip Text="Edit this profile" Arrow="true" Placement="Placement.Bottom">
+            <ToolTip Text="Edit this profile">
                 <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Build" Size="Size.Small"
                                @onclick="RunEditTask"/>
-            </MudTooltip>
+            </ToolTip>
 
-            <MudTooltip Text="Delete this profile" Arrow="true" Placement="Placement.Bottom">
+            <ToolTip Text="Delete this profile">
                 <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="Size.Small"
                                @onclick="RunDeleteTask"/>
-            </MudTooltip>
+            </ToolTip>
 
         </MudContainer>
     </MudPaper>

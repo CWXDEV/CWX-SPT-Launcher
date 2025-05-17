@@ -59,8 +59,16 @@
     rotate: 165deg;
 }
 
-.card-overflow {
+.card-container {
     position: relative;
+}
+
+.card-overflow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
 }
 
@@ -116,6 +124,11 @@
 a.setting-on-hover:hover {
     background-color: rgba(170, 170, 170, 0.2);
     border-radius: 5px;
+}
+
+.setting-on-hover-container {
+    position: relative;
+    overflow: hidden;
 }
 
 .no-select {
@@ -294,4 +307,46 @@ a.setting-on-hover:hover {
     .hidden {
         display: none;
     }
+}
+
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: max-content;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 8px;
+    border: 1px solid rgba(119, 107, 231, 1);
+    position: absolute;
+    z-index: 10;
+    top: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+    white-space: nowrap;
+}
+
+.tooltip-text::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #333 transparent;
+}
+
+.tooltip-container:hover .tooltip-text,
+.tooltip-container:focus-within .tooltip-text {
+    visibility: visible;
+    opacity: 1;
 }
