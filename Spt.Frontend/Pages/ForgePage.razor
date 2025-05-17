@@ -28,7 +28,7 @@
             <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">No Internet access found, please fix and refresh!</MudAlert>
         </MudItem>
         <MudItem sm="12" Class="mt-4 d-flex justify-center align-center">
-            <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Refresh" Label="Refresh" @onclick="CheckInternetAccess"/>
+            <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Refresh" @onclick="CheckInternetAccess">Refresh</MudButton>
         </MudItem>
     }
     else if (!_apiKeyAvailable)
@@ -48,7 +48,7 @@
                 <MudText>This requires you to login via the button below.</MudText>
                 <MudAlert Dense="true" Severity="Severity.Info" Variant="Variant.Outlined" Class="my-2">None of your login details will be saved!</MudAlert>
                 <MudItem sm="12" Class="mt-4 d-flex justify-start">
-                    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Login" Label="Login" @onclick="StartForgeLoginTask"/>
+                    <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Login" @onclick="StartForgeLoginTask">Login</MudButton>
                 </MudItem>
             </MudExpansionPanel>
             <MudExpansionPanel Text="Discord login">
@@ -62,7 +62,7 @@
                 <MudText>3. Under "Token Name" put "SPT Launcher Key" and click create.</MudText>
                 <MudText>4. Click the button below to save this Token and test it. if it worked you'll be moved to the Forge Section.</MudText>
                 <MudItem sm="12" Class="mt-4 d-flex justify-start">
-                    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Login" Label="Login" @onclick="StartForgeDiscordTask" Disabled="true"/>
+                    <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Login" @onclick="StartForgeDiscordTask" Disabled="true">Login</MudButton>
                 </MudItem>
             </MudExpansionPanel>
         </MudExpansionPanels>
@@ -184,6 +184,13 @@
             _logHelper.AddLog("Exception thrown from ForgeHelper.SearchForMods");
             _logHelper.AddLog(e.ToString());
             return;
+        }
+
+        if (!_searchResponse.Success)
+        {
+            _configHelper.SetApiKey("");
+            _searchResponse = null;
+            _apiKeyAvailable = false;
         }
 
         _paginationSelected = page ?? 1;

@@ -195,19 +195,13 @@
             return;
         }
 
-        if (result.Message == ForgeResponseMessage.Unauthenticated)
+        if (result.Code == ForgeResponseMessage.Unauthenticated)
         {
             _logHelper.AddLog($"Forge ForgeLogout failed to authenticate");
             return;
         }
 
-        if (result.Message == ForgeResponseMessage.InvalidCredentials)
-        {
-            _logHelper.AddLog($"Forge ForgeLogout failed to invalid-credentials");
-            return;
-        }
-
-        if (result.Message == ForgeResponseMessage.Success)
+        if (result.Success)
         {
             _logHelper.AddLog($"Forge ForgeLogout Successful");
             _httpHelper.ClearApiKey();

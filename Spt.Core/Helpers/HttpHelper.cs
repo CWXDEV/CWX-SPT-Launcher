@@ -160,6 +160,16 @@ public class HttpHelper
         message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 
         var task = await _httpClient?.SendAsync(message, token);
+
+        if (!task.IsSuccessStatusCode)
+        {
+            // remove any api keys and get them to log back in.
+            return new ForgeModsResponse()
+            {
+                Success = false
+            };
+        }
+
         return JsonSerializer.Deserialize<ForgeModsResponse>(await task.Content.ReadAsStringAsync(token));
     }
 
@@ -173,7 +183,7 @@ public class HttpHelper
             return null;
         }
 
-        var message = new HttpRequestMessage(HttpMethod.Delete, "https://forge.sp-tarkov.com/api/v0/auth/logout")
+        var message = new HttpRequestMessage(HttpMethod.Post, "https://forge.sp-tarkov.com/api/v0/auth/logout")
         {
             Content = new StringContent("", Encoding.UTF8, "application/json")
         };
