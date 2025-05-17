@@ -1,6 +1,6 @@
 ﻿@inject NavigationHelper _navigationHelper
 
-<MudNavMenu>
+<MudNavMenu Class="mud-typography-nowrap">
     <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.ConnectedTv" Match="NavLinkMatch.All" Href="/">Home</MudNavLink>
     @if (_navigationHelper.ShowProfilesPage)
     {
@@ -16,7 +16,7 @@
     }
 </MudNavMenu>
 <MudSpacer/>
-<MudNavMenu>
+<MudNavMenu Class="mud-typography-nowrap">
     @if (_navigationHelper.ShowLoggingPage)
     {
         <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.AdminPanelSettings" Match="NavLinkMatch.All" Href="/AdminPage">Admin</MudNavLink>
