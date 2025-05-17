@@ -38,7 +38,7 @@
                                 <MudLink Href="@($"https://forge.sp-tarkov.com/mod/{ForgeMod.Id}/{ForgeMod.Slug}")"
                                          Typo="Typo.h6">@ForgeMod.Name</MudLink>
                                 <MudText Typo="Typo.body1" Class="no-pointers no-select">
-                                    By @ForgeMod.Owner.Name.UppercaseFirst()</MudText>
+                                    By @ForgeMod.GetModdersName()</MudText>
                                 <MudText Typo="Typo.body2" Class="no-pointers no-select">@ForgeMod.Downloads Downloads
                                 </MudText>
                                 <MudText Typo="Typo.body2" Class="no-pointers no-select">@ForgeMod.Id ID</MudText>
@@ -60,28 +60,32 @@
                             <MudGrid>
                                 <MudItem sm="8">
                                     <MudText Typo="Typo.h6" Class="no-pointers no-select">
-                                        Version @ForgeVersions.FirstOrDefault(x => x.Version == ForgeMod.Versions.FirstOrDefault().Version).Version</MudText>
-                                    <MudLink
-                                        Href="@ForgeVersions.FirstOrDefault(x => x.Version == ForgeMod.Versions.FirstOrDefault().Version).VirusTotalLink">
-                                        Virus Total Results
-                                    </MudLink>
+                                        Version @(_latestVersion.Version)</MudText>
+
+                                    @if (!string.IsNullOrEmpty(_latestVersion.VirusTotalLink))
+                                    {
+                                        <MudLink
+                                            Href="@(_latestVersion.VirusTotalLink)">
+                                            Virus Total Results
+                                        </MudLink>
+                                    }
                                 </MudItem>
                                 <MudItem sm="4" Class="d-flex flex-column align-end">
                                     <MudText Typo="Typo.body1" Class="no-pointers no-select">
-                                        Created @(GetDateString(ForgeVersions.FirstOrDefault(x => x.Version == @ForgeMod.Versions.FirstOrDefault().Version).CreatedAt))</MudText> @* @ForgeVersions.FirstOrDefault().CreatedAt *@
+                                        Created @(_latestVersion.GetCreatedDateFormatted())</MudText>
                                     <MudText Typo="Typo.body1" Class="no-pointers no-select">
-                                        Published @(GetDateString(ForgeVersions.FirstOrDefault(x => x.Version == @ForgeMod.Versions.FirstOrDefault().Version).PublishedAt))</MudText> @* @ForgeVersions.FirstOrDefault().PublishedAt *@
+                                        Published @(_latestVersion.GetPublishedDateFormatted())</MudText>
                                 </MudItem>
                             </MudGrid>
                         </MudCardHeader>
                         <MudCardContent Class="">
-                            @((MarkupString)ForgeVersions.FirstOrDefault(x => x.Version == ForgeMod.Versions.FirstOrDefault().Version).Description)
+                            @((MarkupString) _latestVersion.Description)
                         </MudCardContent>
                     </MudCard>
                 }
                 <MudCard Class="mud-background-gray border-2 border-solid mud-border-lines-default">
                     <MudCardContent Class="user-markdown">
-                        @((MarkupString)ForgeMod.Description)
+                        @((MarkupString) ForgeMod.Description)
                     </MudCardContent>
                 </MudCard>
             </MudItem>
@@ -89,7 +93,7 @@
                 <MudItem sm="12">
                     <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.Download"
                                Variant="Variant.Filled" Class="mb-4"
-                               Style="width: 100%">@($"Download Latest ({ForgeMod.Versions.FirstOrDefault().Version})")</MudButton>
+                               Style="width: 100%">@($"Download Latest ({_latestVersion.Version})")</MudButton>
                 </MudItem>
                 <MudCard Class="mud-background-gray border-2 border-solid mud-border-lines-default">
                     <MudCardContent Class="d-flex flex-column align-start text-overflow">
@@ -97,8 +101,9 @@
                             <MudText Typo="Typo.h6" Class="no-pointers no-select">Details</MudText>
                         </MudItem>
                         <MudText Typo="Typo.body1" Class="no-pointers no-select">Additional Authors</MudText>
-                        <MudText Typo="Typo.caption"
-                                 Class="pb-2">@(ForgeMod.Authors.Any() ? ForgeMod.Authors.Select(x => x.Name).Aggregate((i, j) => i + ", " + j) : "None")</MudText>
+                        <MudText Typo="Typo.caption" Class="pb-2">
+                            @(ForgeMod.GetAdditionalAuthors())
+                        </MudText>
                         <MudText Typo="Typo.body1" Class="no-pointers no-select">License</MudText>
                         <MudText Typo="Typo.caption" Class="pb-2">
                             @if (ForgeMod.License is not null)
@@ -113,7 +118,7 @@
                         </MudText>
                         <MudText Typo="Typo.body1" Class="no-pointers no-select">Source Code</MudText>
                         <MudText Typo="Typo.caption" Class="pb-2">
-                            @if (ForgeMod.SourceCode is not null)
+                            @if (!string.IsNullOrEmpty(ForgeMod.SourceCode))
                             {
                                 <MudLink Typo="Typo.caption" Href="@ForgeMod.SourceCode">@ForgeMod.SourceCode</MudLink>
                             }
@@ -122,13 +127,13 @@
                                 @("None")
                             }
                         </MudText>
-                        <MudText Typo="Typo.body1" Class="no-pointers no-select">Latest Version VirusTotal Result
+                        <MudText Typo="Typo.body1" Class="no-pointers no-select">Latest VirusTotal Result
                         </MudText>
                         <MudText Typo="Typo.caption" Class="pb-2">
-                            @if (ForgeMod.Versions.FirstOrDefault().VirusTotalLink is not null)
+                            @if (!string.IsNullOrEmpty(_latestVersion.VirusTotalLink))
                             {
                                 <MudLink Typo="Typo.caption"
-                                         Href="@ForgeMod.Versions.FirstOrDefault().VirusTotalLink">@ForgeMod.Versions.FirstOrDefault().VirusTotalLink</MudLink>
+                                         Href="@_latestVersion.VirusTotalLink">@_latestVersion.VirusTotalLink</MudLink>
                             }
                             else
                             {
@@ -143,25 +148,38 @@
 </MudItem>
 
 @code {
+    private List<ForgeModVersion> _forgeVersions;
+
     [Parameter]
     public bool IsSkeleton { get; set; }
     [Parameter]
     public ForgeBase ForgeMod { get; set; }
+
     [Parameter]
-    public List<ForgeModVersion> ForgeVersions { get; set; }
-
-    private string GetDateString(string date)
+    public List<ForgeModVersion> ForgeVersions
     {
-        // 2025-04-18T02:01:14.000000Z example of what comes in
-
-        var dated = DateTime.Parse(date);
-        return dated.ToString("dd-MM-yy");
+        get
+        {
+            return _forgeVersions;
+        }
+        set
+        {
+            _forgeVersions = value;
+            if (_forgeVersions is not null)
+            {
+                _latestVersion = _forgeVersions
+                    .FirstOrDefault(x =>
+                        x.Version == ForgeMod.Versions.FirstOrDefault().Version
+                    );
+            }
+        }
     }
+
+    private ForgeModVersion _latestVersion { get; set; }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
         JS.InvokeVoidAsync("setTabContent");
         return base.OnAfterRenderAsync(firstRender);
     }
-
 }

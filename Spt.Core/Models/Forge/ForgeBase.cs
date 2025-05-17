@@ -167,4 +167,12 @@ public record ForgeBase
     {
         return this.Featured ?? false;
     }
+
+    public string? GetAdditionalAuthors()
+    {
+        // if there are any, concat them like this: name1, name2, name3
+        return this.Authors.Any()
+            ? this.Authors.Select(x => x.Name).Aggregate((i, j) => i + ", " + j)
+            : "None";
+    }
 }

@@ -36,4 +36,25 @@ public class ForgeModVersion
 
     [JsonPropertyName("updated_at")]
     public string? UpdatedAt { get; set; }
+
+    private string? GetDateString(string date)
+    {
+        var dated = DateTime.Parse(date);
+        return dated.ToString("dd-MM-yy");
+    }
+
+    public string? GetCreatedDateFormatted()
+    {
+        return GetDateString(this.CreatedAt);
+    }
+
+    public string? GetUpdatedDateFormatted()
+    {
+        return GetDateString(this.UpdatedAt);
+    }
+
+    public string? GetPublishedDateFormatted()
+    {
+        return GetDateString(this.PublishedAt);
+    }
 }
