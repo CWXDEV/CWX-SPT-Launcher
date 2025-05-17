@@ -15,13 +15,16 @@
             else
             {
                 <MudForm Model="request" @bind-IsValid="@success" Class="gap-2 mt-3">
-                    <MudTextField Immediate="true" @bind-Value="request.Email" Label="Email" Variant="Variant.Outlined" Margin="Margin.Dense" Required="true"/>
+                    <MudTextField Immediate="true" @bind-Value="request.Email" Label="Email" Variant="Variant.Outlined"
+                                  Margin="Margin.Dense" Required="true"/>
                     <PasswordFieldComponent @bind-Password="request.Password" IsRequired="true"/>
                 </MudForm>
             }
 
             <MudContainer Class="mt-3 d-flex justify-end pa-0 gap-2">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" @onclick="RunLoginTask">Login</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" @onclick="RunLoginTask" Disabled="@requestInProgress">
+                    Login
+                </MudButton>
                 <MudButton Variant="Variant.Filled" Color="Color.Default" @onclick="UserCancelled">Close</MudButton>
             </MudContainer>
         </MudContainer>
@@ -86,25 +89,7 @@
                 return false;
             }
 
-            if (result.Message == ForgeResponseMessage.Unauthenticated)
-            {
-                _logHelper.AddLog($"Forge ForgeLogin failed to authenticate");
-                return false;
-            }
-
-            if (result.Message == ForgeResponseMessage.InvalidEmail)
-            {
-                _logHelper.AddLog($"Forge ForgeLogin failed due to invalid email");
-                return false;
-            }
-
-            if (result.Message == ForgeResponseMessage.InvalidCredentials)
-            {
-                _logHelper.AddLog($"Forge ForgeLogin failed to invalid credentials");
-                return false;
-            }
-
-            if (result.Message == ForgeResponseMessage.Authenticated)
+            if (result.Success)
             {
                 _logHelper.AddLog($"Forge ForgeLogin Authenticated");
                 _httpHelper.SetApiKey(result.Data.Token);
@@ -112,9 +97,25 @@
                 return true;
             }
 
-            token?.Dispose();
-            _logHelper.AddLog($"Forge ForgeLogin ?? {result.Message}");
-            return false;
+            switch (result.Code)
+            {
+                case ForgeResponseMessage.Unauthenticated:
+                    _logHelper.AddLog($"Forge ForgeLogin failed to authenticate");
+                    AbortOrFail();
+                    return false;
+                case ForgeResponseMessage.InvalidCredentials:
+                    _logHelper.AddLog($"Forge ForgeLogin failed, Invalid Credentials");
+                    AbortOrFail();
+                    return false;
+                case ForgeResponseMessage.InvalidEmail:
+                    _logHelper.AddLog($"Forge ForgeLogin failed due to invalid email");
+                    AbortOrFail();
+                    return false;
+                default:
+                    _logHelper.AddLog($"Forge ForgeLogin ?? {result.Message}");
+                    AbortOrFail();
+                    return false;
+            }
         }
         catch (Exception e)
         {
