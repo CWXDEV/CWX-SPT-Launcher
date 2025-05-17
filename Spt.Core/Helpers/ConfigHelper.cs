@@ -67,7 +67,7 @@ public class ConfigHelper
         lock (_lock)
         {
             _logHelper.LogInfo("SaveConfig...");
-            File.WriteAllText(Path.Combine(AppPath, "settings.json"), JsonSerializer.Serialize(_settings));
+            File.WriteAllText(Path.Combine(AppPath, "settings.json"), JsonSerializer.Serialize(_settings, new JsonSerializerOptions() { WriteIndented = true }));
         }
     }
 
