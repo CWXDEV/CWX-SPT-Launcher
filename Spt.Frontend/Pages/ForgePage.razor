@@ -91,6 +91,10 @@
     private ForgeModsResponse? _searchResponse { get; set; }
     private bool _searchInProgress { get; set; }
     private int _selected = 1;
+    private string _search = "";
+    private string _sortValue = "-created_at";
+    private string _filterValue = "Include";
+
     private int _paginationSelected
     {
         get => _selected;
@@ -105,9 +109,44 @@
     }
 
     // search functionality
-    public string Search { get; set; } = "";
-    public string SortValue { get; set; } = "Newest"; // currently not implemented fully
-    public string FilterValue { get; set; } = "Include"; // currently not implemented fully
+    public string Search
+    {
+        get
+        {
+            return _search;
+        }
+        set
+        {
+            _search = value;
+            SearchUpdate();
+        }
+    }
+
+    public string SortValue
+    {
+        get
+        {
+            return _sortValue;
+        }
+        set
+        {
+            _sortValue = value;
+            SearchUpdate();
+        }
+    }
+
+    public string FilterValue
+    {
+        get
+        {
+            return _filterValue;
+        }
+        set
+        {
+            _filterValue = value;
+            SearchUpdate();
+        }
+    }
 
     protected override void OnInitialized()
     {
@@ -137,8 +176,8 @@
 
         try
         {
-            var token = new CancellationTokenSource(TimeSpan.FromSeconds(10)); // implement sort & filter - filter needs on select change
-            _searchResponse = await _httpHelper.ForgeGetMods(token.Token, Search, "-featured,name", page ?? 1, FilterValue);
+            var token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            _searchResponse = await _httpHelper.ForgeGetMods(token.Token, Search, SortValue, page ?? 1, FilterValue);
         }
         catch (Exception e)
         {

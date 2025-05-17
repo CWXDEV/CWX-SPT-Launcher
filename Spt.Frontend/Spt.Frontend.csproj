@@ -25,4 +25,8 @@
     <ProjectReference Include="..\Spt.Core\Spt.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Resources\UserTabset.js" />
+  </ItemGroup>
+
 </Project>

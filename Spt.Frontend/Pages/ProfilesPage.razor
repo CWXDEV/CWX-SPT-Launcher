@@ -23,9 +23,8 @@
             // TODO: server might hide profiles, but an edge case might be a fresh server
             case 0 when IsConnected:
                 <MudItem sm="12">
-                    <MudAlert Severity="Severity.Info" Variant="Variant.Filled">The server you are connected too, does
-                        not
-                        show profiles, please use the above "Login with details" button.
+                    <MudAlert Severity="Severity.Info" Variant="Variant.Filled">Server has no profiles yet or does not show them.
+                        Please create a new profile or login with details.
                     </MudAlert>
                 </MudItem>
                 break;
