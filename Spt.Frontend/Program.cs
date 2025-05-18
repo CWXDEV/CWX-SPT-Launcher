@@ -9,10 +9,13 @@ namespace Spt.Frontend;
 
 public class Program
 {
+    public static PhotinoBlazorApp App { get; set; }
+
     [STAThread]
     static void Main(string[] args)
     {
-        var appBuilder = PhotinoBlazorAppBuilder.CreateDefault(new ManifestEmbeddedFileProvider(typeof(Program).Assembly, "Resources"), args);
+        var embed = new ManifestEmbeddedFileProvider(typeof(Program).Assembly, "Resources");
+        var appBuilder = PhotinoBlazorAppBuilder.CreateDefault(embed, args);
 
         appBuilder.Services
             .AddSingleton<ConfigHelper>()
@@ -39,7 +42,8 @@ public class Program
         var app = appBuilder.Build();
 
         // customize window
-        app.MainWindow.SetTitle("Photino Blazor Sample");
+        app.MainWindow.SetTitle("Spt.LauncherV2");
+        app.MainWindow.SetIconFile(embed.GetFileInfo("Resources/icon.ico").PhysicalPath);
         app.MainWindow.DevToolsEnabled = true;
         // use this to disable bottom left status bar like in a browser
         app.MainWindow.BrowserControlInitParameters = "--kiosk";
@@ -49,7 +53,7 @@ public class Program
             app.MainWindow.ShowMessage("Fatal exception", error.ExceptionObject.ToString());
         };
 
+        App = app;
         app.Run();
-
     }
 }
