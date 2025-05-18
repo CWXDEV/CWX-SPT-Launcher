@@ -67,6 +67,7 @@ public class Program
         App.MainWindow.SetTitle("Spt.LauncherV2");
         App.MainWindow.SetIconFile(EmbedProvider.GetFileInfo("Resources/icon.ico").PhysicalPath);
         App.MainWindow.DevToolsEnabled = true;
+        App.MainWindow.LogVerbosity = 0;
 
         // use this to disable bottom left status bar like in a browser
         // comment out to gain devtools - this flag disables it.
