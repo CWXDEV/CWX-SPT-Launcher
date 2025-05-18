@@ -1,6 +1,7 @@
 ﻿@using System.Collections.Specialized
 @using System.Windows
 @using Size = MudBlazor.Size
+
 @inject LogHelper _logHelper
 @inject ConfigHelper _configHelper
 @inject HttpHelper _httpHelper
@@ -170,8 +171,8 @@
     {
         var collection = new StringCollection();
         collection.AddRange(filePaths.ToArray());
-        Clipboard.Clear();
-        Clipboard.SetFileDropList(collection);
+        // Clipboard.Clear();
+        // Clipboard.SetFileDropList(collection);
     }
 
     private async Task ClearApiKey()
