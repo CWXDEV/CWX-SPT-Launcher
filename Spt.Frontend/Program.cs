@@ -41,6 +41,8 @@ public class Program
         // customize window
         app.MainWindow.SetTitle("Photino Blazor Sample");
         app.MainWindow.DevToolsEnabled = true;
+        // use this to disable bottom left status bar like in a browser
+        app.MainWindow.BrowserControlInitParameters = "--kiosk";
 
         AppDomain.CurrentDomain.UnhandledException += (sender, error) =>
         {
