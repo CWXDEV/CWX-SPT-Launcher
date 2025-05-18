@@ -10,11 +10,12 @@
     <ApplicationIcon>Resources\app.ico</ApplicationIcon>
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\*"/>
-    <EmbeddedResource Include="Resources\*"/>
+    <None Remove="Resources\**"/>
+    <EmbeddedResource Include="Resources\**"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -23,10 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Spt.Core\Spt.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Resources\UserTabset.js" />
   </ItemGroup>
 
 </Project>

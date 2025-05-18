@@ -17,8 +17,4 @@
       <HintPath>SharedDependencies\zlib.net.dll</HintPath>
     </Reference>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
 </Project>
