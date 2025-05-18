@@ -33,6 +33,12 @@
         base.OnInitialized();
     }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        Program.App.MainWindow.SetMinimized(false);
+    }
+
     private async Task RunAddTask()
     {
         var dialog = await _dialogService.ShowAsync<ServerAddDialog>("ServerAddDialog", _configHelper.DialogOptions);

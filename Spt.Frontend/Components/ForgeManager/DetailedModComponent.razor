@@ -36,7 +36,7 @@
                             </MudItem>
                             <MudItem>
                                 <MudLink Href="@($"https://forge.sp-tarkov.com/mod/{ForgeMod.Id}/{ForgeMod.Slug}")"
-                                         Typo="Typo.h6">@ForgeMod.Name</MudLink>
+                                         Typo="Typo.h6" Target="_blank">@ForgeMod.Name</MudLink>
                                 <MudText Typo="Typo.body1" Class="no-pointers no-select">
                                     By @ForgeMod.GetModdersName()</MudText>
                                 <MudText Typo="Typo.body2" Class="no-pointers no-select">@ForgeMod.Downloads Downloads
@@ -65,7 +65,7 @@
                                     @if (!string.IsNullOrEmpty(_latestVersion.VirusTotalLink))
                                     {
                                         <MudLink
-                                            Href="@(_latestVersion.VirusTotalLink)">
+                                            Href="@(_latestVersion.VirusTotalLink)" Target="_blank">
                                             Virus Total Results
                                         </MudLink>
                                     }
@@ -109,7 +109,7 @@
                             @if (ForgeMod.License is not null)
                             {
                                 <MudLink Typo="Typo.caption"
-                                         Href="@ForgeMod.License.Link">@ForgeMod.License.Name</MudLink>
+                                         Href="@ForgeMod.License.Link" Target="_blank">@ForgeMod.License.Name</MudLink>
                             }
                             else
                             {
@@ -120,7 +120,7 @@
                         <MudText Typo="Typo.caption" Class="pb-2">
                             @if (!string.IsNullOrEmpty(ForgeMod.SourceCode))
                             {
-                                <MudLink Typo="Typo.caption" Href="@ForgeMod.SourceCode">@ForgeMod.SourceCode</MudLink>
+                                <MudLink Typo="Typo.caption" Href="@ForgeMod.SourceCode" Target="_blank">@ForgeMod.SourceCode</MudLink>
                             }
                             else
                             {
@@ -133,7 +133,7 @@
                             @if (!string.IsNullOrEmpty(_latestVersion.VirusTotalLink))
                             {
                                 <MudLink Typo="Typo.caption"
-                                         Href="@_latestVersion.VirusTotalLink">@_latestVersion.VirusTotalLink</MudLink>
+                                         Href="@_latestVersion.VirusTotalLink" Target="_blank">@_latestVersion.VirusTotalLink</MudLink>
                             }
                             else
                             {
