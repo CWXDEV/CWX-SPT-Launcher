@@ -12,11 +12,11 @@ namespace Spt.Frontend;
 public class Program
 {
     public static PhotinoBlazorApp App { get; set; }
-    public static ManifestEmbeddedFileProvider EmbedProvider { get; set; }
-    public static ConfigHelper ConfigHelper { get; set; }
+    private static ManifestEmbeddedFileProvider EmbedProvider { get; set; }
+    private static ConfigHelper ConfigHelper { get; set; }
 
     [STAThread]
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
         EmbedProvider = new ManifestEmbeddedFileProvider(typeof(Program).Assembly, "Resources");
         var appBuilder = PhotinoBlazorAppBuilder.CreateDefault(EmbedProvider, args);
