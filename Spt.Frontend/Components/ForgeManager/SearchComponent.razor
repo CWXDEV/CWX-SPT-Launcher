@@ -44,8 +44,7 @@
         }
     }
 
-    [Parameter]
-    public EventCallback<string> SearchChanged { get; set; }
+    [Parameter] public EventCallback<string> SearchChanged { get; set; }
 
     private string sortValue = "-created_at";
 
@@ -65,8 +64,7 @@
         }
     }
 
-    [Parameter]
-    public EventCallback<string> SortValueChanged { get; set; }
+    [Parameter] public EventCallback<string> SortValueChanged { get; set; }
 
     private string filterValue = "Include";
 
@@ -86,8 +84,6 @@
         }
     }
 
-    [Parameter]
-    public EventCallback<string> FilterValueChanged { get; set; }
-    [Parameter]
-    public Func<Task> SearchFunc { get; set; }
+    [Parameter] public EventCallback<string> FilterValueChanged { get; set; }
+    [Parameter] public Func<Task> SearchFunc { get; set; }
 }

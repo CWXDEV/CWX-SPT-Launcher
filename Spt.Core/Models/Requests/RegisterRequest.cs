@@ -7,9 +7,5 @@ public class RegisterRequest : LoginRequest
 {
     [Required]
     [JsonPropertyName("edition")]
-    public string Edition
-    {
-        get;
-        set;
-    } = "";
+    public string Edition { get; set; } = "";
 }

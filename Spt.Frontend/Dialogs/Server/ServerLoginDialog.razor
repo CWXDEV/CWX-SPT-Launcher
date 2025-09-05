@@ -11,7 +11,9 @@
                 <MudText>@TaskText</MudText>
             </MudContainer>
             <MudContainer Class="mt-3 d-flex justify-end pa-0 gap-2">
-                <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="UserCancelled">Cancel</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="UserCancelled">
+                    Cancel
+                </MudButton>
             </MudContainer>
         </MudContainer>
     </DialogContent>
@@ -19,10 +21,8 @@
 
 @code {
     private string TaskText = "";
-    [Parameter]
-    public Servers Server { get; set; }
-    [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; }
+    [Parameter] public Server Server { get; set; }
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
     private CancellationTokenSource token { get; set; }
     private bool UserCancel { get; set; }
 
@@ -63,7 +63,7 @@
 
     private async Task CallServer(RequestTask option, string taskText = "", string failString = "")
     {
-        bool result = false;
+        var result = false;
         token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         TaskText = taskText;
         StateHasChanged();
@@ -132,4 +132,5 @@
         token?.Cancel();
         MudDialog.Cancel();
     }
+
 }

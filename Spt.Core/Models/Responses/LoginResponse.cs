@@ -2,9 +2,5 @@
 
 public class LoginResponse : ISptResponse<bool>
 {
-    public bool Response
-    {
-        get;
-        set;
-    }
+    public bool Response { get; set; }
 }

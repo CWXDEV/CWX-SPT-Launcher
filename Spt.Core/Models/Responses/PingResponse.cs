@@ -2,9 +2,5 @@
 
 public class PingResponse : ISptResponse<string>
 {
-    public string Response
-    {
-        get;
-        set;
-    } = "";
+    public string Response { get; set; } = "";
 }

@@ -5,6 +5,7 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
+using System.Web;
 using ComponentAce.Compression.Libs.zlib;
 using Spt.Core.Models;
 
@@ -12,12 +13,12 @@ namespace Spt.Core.Helpers;
 
 public class HttpHelper
 {
-    private readonly HttpClient _httpClient;
     private readonly ConfigHelper _configHelper;
+    private readonly HttpClient _httpClient;
     private readonly LogHelper _logHelper;
     private readonly StateHelper _stateHelper;
+    private bool _internetAccess;
     private string _token;
-    private bool _internetAccess = false;
 
     public HttpHelper(
         ConfigHelper configHelper,
@@ -35,7 +36,7 @@ public class HttpHelper
         _httpClient.DefaultRequestVersion = new Version(3, 0);
         _httpClient.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
 
-        _token = configHelper.GetConfig().ApiKey;
+        _token = configHelper.GetConfig().ForgeApiKey;
     }
 
     private bool CertificateValidationCallback(
@@ -50,7 +51,7 @@ public class HttpHelper
 
     private string BuildGameUrl(string url)
     {
-        return "https://" + _stateHelper.SelectedServer.Ip + url;
+        return "https://" + _stateHelper.SelectedServer.IpAddress + url;
     }
 
     public async Task<T> GameServerGet<T>(string url, CancellationToken token)
@@ -87,14 +88,15 @@ public class HttpHelper
 
     public async Task<ForgeVersionResponse> ForgeGetVersions(string? modId, CancellationToken token)
     {
-        _logHelper.LogInfo($"forge ForgeGetVersions");
+        _logHelper.LogInfo("forge ForgeGetVersions");
 
-        if (string.IsNullOrWhiteSpace(_configHelper.GetConfig().ApiKey))
+        if (string.IsNullOrWhiteSpace(_configHelper.GetConfig().ForgeApiKey))
         {
             _logHelper.LogInfo("GetMods - API Key is missing.");
             return null;
         }
-        _logHelper.LogInfo($"api key: {_configHelper.GetConfig().ApiKey}");
+
+        _logHelper.LogInfo($"api key: {_configHelper.GetConfig().ForgeApiKey}");
 
         var paramsToUse = GetParamsCollection(null, "-version");
         var message = new HttpRequestMessage(HttpMethod.Get, $"https://forge.sp-tarkov.com/api/v0/mod/{modId}/versions")
@@ -111,17 +113,18 @@ public class HttpHelper
 
     public async Task<ForgeModResponse> ForgeGetMod(string? modId, CancellationToken token)
     {
-        _logHelper.LogInfo($"forge GetModFromForge");
+        _logHelper.LogInfo("forge GetModFromForge");
 
-        if (string.IsNullOrWhiteSpace(_configHelper.GetConfig().ApiKey))
+        if (string.IsNullOrWhiteSpace(_configHelper.GetConfig().ForgeApiKey))
         {
             _logHelper.LogInfo("GetMods - API Key is missing.");
             return null;
         }
-        _logHelper.LogInfo($"api key: {_configHelper.GetConfig().ApiKey}");
+
+        _logHelper.LogInfo($"api key: {_configHelper.GetConfig().ForgeApiKey}");
 
         var paramsToUse = GetParamsCollection();
-        var message = new HttpRequestMessage(HttpMethod.Get, $"https://forge.sp-tarkov.com/api/v0/mod/{modId}?{paramsToUse.ToString()}")
+        var message = new HttpRequestMessage(HttpMethod.Get, $"https://forge.sp-tarkov.com/api/v0/mod/{modId}?{paramsToUse}")
         {
             Content = new StringContent("", Encoding.UTF8, "application/json")
         };
@@ -141,17 +144,18 @@ public class HttpHelper
         string? includeFeatured = null
     )
     {
-        _logHelper.LogInfo($"forge GetModsFromForge");
+        _logHelper.LogInfo("forge GetModsFromForge");
 
-        if (string.IsNullOrWhiteSpace(_configHelper.GetConfig().ApiKey))
+        if (string.IsNullOrWhiteSpace(_configHelper.GetConfig().ForgeApiKey))
         {
             _logHelper.LogInfo("GetMods - API Key is missing.");
             return null;
         }
-        _logHelper.LogInfo($"api key: {_configHelper.GetConfig().ApiKey}");
+
+        _logHelper.LogInfo($"api key: {_configHelper.GetConfig().ForgeApiKey}");
 
         var paramsToUse = GetParamsCollection(search, sort, ConvertFeaturedToBool(includeFeatured));
-        var message = new HttpRequestMessage(HttpMethod.Get, $"https://forge.sp-tarkov.com/api/v0/mods?page={page}&{paramsToUse.ToString()}")
+        var message = new HttpRequestMessage(HttpMethod.Get, $"https://forge.sp-tarkov.com/api/v0/mods?page={page}&{paramsToUse}")
         {
             Content = new StringContent("", Encoding.UTF8, "application/json")
         };
@@ -164,7 +168,7 @@ public class HttpHelper
         if (!task.IsSuccessStatusCode)
         {
             // remove any api keys and get them to log back in.
-            return new ForgeModsResponse()
+            return new ForgeModsResponse
             {
                 Success = false
             };
@@ -175,9 +179,9 @@ public class HttpHelper
 
     public async Task<ForgeLogoutResponse> ForgeLogout(CancellationToken token)
     {
-        _logHelper.LogInfo($"Forge ForgeLogout");
+        _logHelper.LogInfo("Forge ForgeLogout");
 
-        if (string.IsNullOrWhiteSpace(_configHelper.GetConfig().ApiKey))
+        if (string.IsNullOrWhiteSpace(_configHelper.GetConfig().ForgeApiKey))
         {
             _logHelper.LogInfo("GetMods - API Key is missing.");
             return null;
@@ -197,7 +201,7 @@ public class HttpHelper
 
     public async Task<ForgeLoginResponse> ForgeLogin(object request, CancellationToken token)
     {
-        _logHelper.LogInfo($"Forge ForgeLogin");
+        _logHelper.LogInfo("Forge ForgeLogin");
 
         var message = new HttpRequestMessage(HttpMethod.Post, "https://forge.sp-tarkov.com/api/v0/auth/login")
         {
@@ -212,7 +216,7 @@ public class HttpHelper
 
     private NameValueCollection GetParamsCollection(string? search = null, string? sort = null, bool? featured = null)
     {
-        NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+        var queryString = HttpUtility.ParseQueryString(string.Empty);
         queryString.Add("include", "versions,owner,authors,license");
         if (!string.IsNullOrWhiteSpace(search))
         {
@@ -273,7 +277,7 @@ public class HttpHelper
             using (var ping = new Ping())
             {
                 var result = ping.Send("8.8.8.8", 1000); // Google's DNS server
-                _internetAccess = (result.Status == IPStatus.Success);
+                _internetAccess = result.Status == IPStatus.Success;
             }
         }
         catch

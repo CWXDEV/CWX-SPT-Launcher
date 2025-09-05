@@ -2,14 +2,14 @@
 
 public class ModHelper
 {
-    private readonly string _serverModPath = "D:\\Repos\\CWX-SPT-Launcher\\emulatedMods\\ServerMods"; // this is temp
+    private readonly string _backupClientModPath = "D:\\Repos\\CWX-SPT-Launcher\\emulatedMods\\BackupClientMods"; // this is temp
     private readonly string _backupServerModPath = "D:\\Repos\\CWX-SPT-Launcher\\emulatedMods\\BackupServerMods"; // this is temp
     private readonly string _clientModPath = "D:\\Repos\\CWX-SPT-Launcher\\emulatedMods\\ClientMods"; // this is temp
-    private readonly string _backupClientModPath = "D:\\Repos\\CWX-SPT-Launcher\\emulatedMods\\BackupClientMods"; // this is temp
-    private LogHelper _logHelper;
+    private readonly string _serverModPath = "D:\\Repos\\CWX-SPT-Launcher\\emulatedMods\\ServerMods"; // this is temp
+    private readonly List<string> _ServerModRootDirectories = [];
+    private List<string> _clientModRootDirectories = [];
     private ConfigHelper _configHelper;
-    private List<String> _ServerModRootDirectories = [];
-    private List<String> _clientModRootDirectories = [];
+    private LogHelper _logHelper;
 
     public ModHelper
     (

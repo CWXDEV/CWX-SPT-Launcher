@@ -22,7 +22,8 @@
             }
 
             <MudContainer Class="mt-3 d-flex justify-end pa-0 gap-2">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" @onclick="RunLoginTask" Disabled="@requestInProgress">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" @onclick="RunLoginTask"
+                           Disabled="@requestInProgress">
                     Login
                 </MudButton>
                 <MudButton Variant="Variant.Filled" Color="Color.Default" @onclick="UserCancelled">Close</MudButton>
@@ -35,8 +36,7 @@
     private bool success;
     private bool requestInProgress;
     private string TaskText = "";
-    [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
     private ForgeLoginRequest request { get; } = new();
     private CancellationTokenSource token { get; set; }
     private bool UserCancel { get; set; }
@@ -85,13 +85,13 @@
 
             if (result is null)
             {
-                _logHelper.AddLog($"Forge ForgeLogin result is null");
+                _logHelper.AddLog("Forge ForgeLogin result is null");
                 return false;
             }
 
             if (result.Success)
             {
-                _logHelper.AddLog($"Forge ForgeLogin Authenticated");
+                _logHelper.AddLog("Forge ForgeLogin Authenticated");
                 _httpHelper.SetApiKey(result.Data.Token);
                 token?.Dispose();
                 return true;
@@ -100,15 +100,15 @@
             switch (result.Code)
             {
                 case ForgeResponseMessage.Unauthenticated:
-                    _logHelper.AddLog($"Forge ForgeLogin failed to authenticate");
+                    _logHelper.AddLog("Forge ForgeLogin failed to authenticate");
                     AbortOrFail();
                     return false;
                 case ForgeResponseMessage.InvalidCredentials:
-                    _logHelper.AddLog($"Forge ForgeLogin failed, Invalid Credentials");
+                    _logHelper.AddLog("Forge ForgeLogin failed, Invalid Credentials");
                     AbortOrFail();
                     return false;
                 case ForgeResponseMessage.InvalidEmail:
-                    _logHelper.AddLog($"Forge ForgeLogin failed due to invalid email");
+                    _logHelper.AddLog("Forge ForgeLogin failed due to invalid email");
                     AbortOrFail();
                     return false;
                 default:
@@ -149,4 +149,5 @@
         token?.Cancel();
         MudDialog.Cancel();
     }
+
 }

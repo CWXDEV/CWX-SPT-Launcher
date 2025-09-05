@@ -1,5 +1,6 @@
 ﻿<MudContainer Class="pa-0">
-    <a class="d-flex justify-center align-center @(Disabled ? "" : "cursor-pointer setting-on-hover") py-2 pl-5" @onclick="@SwitchFunc">
+    <a class="d-flex justify-center align-center @(Disabled ? "" : "cursor-pointer setting-on-hover") py-2 pl-5"
+       @onclick="@SwitchFunc">
         <MudText Class="no-select">@OptionName</MudText>
         <MudSpacer/>
         <MudSwitch Disabled="@Disabled" @bind-Value="@Switch" Color="Color.Tertiary"/>
@@ -11,7 +12,7 @@
 }
 
 @code {
-    [Parameter] public bool Disabled { get; set; } = false;
+    [Parameter] public bool Disabled { get; set; }
     [Parameter] public bool AddDiv { get; set; }
     [Parameter] public bool Switch { get; set; }
     [Parameter] public string OptionName { get; set; }

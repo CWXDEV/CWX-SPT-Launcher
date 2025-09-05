@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Components.WebView;
+﻿using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using MudBlazor;
 using MudBlazor.Services;
 using Photino.Blazor;
-using Photino.NET;
 using Spt.Core.Helpers;
 
 namespace Spt.Frontend;
@@ -53,10 +52,7 @@ public class Program
 
         CustomizeComponent();
 
-        AppDomain.CurrentDomain.UnhandledException += (sender, error) =>
-        {
-            App.MainWindow.ShowMessage("Fatal exception", error.ExceptionObject.ToString());
-        };
+        AppDomain.CurrentDomain.UnhandledException += (sender, error) => { App.MainWindow.ShowMessage("Fatal exception", error.ExceptionObject.ToString()); };
 
         App.Run();
     }
@@ -73,7 +69,7 @@ public class Program
         // comment out to gain devtools - this flag disables it.
         // App.MainWindow.BrowserControlInitParameters = "--kiosk";
 
-        App.MainWindow.Topmost = ConfigHelper.GetConfig().AppSettings.AlwaysTop;
+        App.MainWindow.Topmost = ConfigHelper.GetConfig().AlwaysTop;
         App.MainWindow.MinHeight = 550;
         App.MainWindow.MinWidth = 1070;
 
@@ -85,16 +81,16 @@ public class Program
         }
         else
         {
-            App.MainWindow.Width = ConfigHelper.GetConfig().AppSettings.StartSize.Width;
-            App.MainWindow.Height = ConfigHelper.GetConfig().AppSettings.StartSize.Height;
+            App.MainWindow.Width = ConfigHelper.GetConfig().StartSize.Width;
+            App.MainWindow.Height = ConfigHelper.GetConfig().StartSize.Height;
 
             App.MainWindow.SetUseOsDefaultLocation(false);
 
-            App.MainWindow.Top = ConfigHelper.GetConfig().AppSettings.StartLocation.X;
-            App.MainWindow.Left = ConfigHelper.GetConfig().AppSettings.StartLocation.Y;
+            App.MainWindow.Top = ConfigHelper.GetConfig().StartLocation.X;
+            App.MainWindow.Left = ConfigHelper.GetConfig().StartLocation.Y;
         }
 
-        App.MainWindow.RegisterWindowClosingHandler(new PhotinoWindow.NetClosingDelegate(OnExit));
+        App.MainWindow.RegisterWindowClosingHandler(OnExit);
         App.MainWindow.SetMinimized(true);
 
         App.MainWindow.RegisterWebMessageReceivedHandler((sender, message) =>
@@ -104,7 +100,7 @@ public class Program
                 var url = message.Substring("open-external:".Length);
                 try
                 {
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    Process.Start(new ProcessStartInfo
                     {
                         FileName = url,
                         UseShellExecute = true
@@ -124,7 +120,7 @@ public class Program
         ConfigHelper.SetClientSize(App.MainWindow.Height, App.MainWindow.Width);
         ConfigHelper.SetFirstRun(false);
 
-        if (ConfigHelper.GetConfig().AppSettings.CloseToTray)
+        if (ConfigHelper.GetConfig().CloseToTray)
         {
             App.MainWindow.SetMinimized(true);
             return true;

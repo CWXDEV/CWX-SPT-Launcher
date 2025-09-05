@@ -5,9 +5,12 @@
 <MudPopoverProvider/>
 <MudSnackbarProvider/>
 <MudDialogProvider/>
-<MudFab id="scrollTopBtn" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" Class="fixed z-90" Style="bottom: 10px; right: 10px; display: none;" @onclick="ScrollToTop" Size="Size.Small"/>
+<MudFab id="scrollTopBtn" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" Class="fixed z-90"
+        Style="bottom: 10px; right: 10px; display: none;" @onclick="ScrollToTop" Size="Size.Small"/>
 <MudLayout>
-    <MudDrawer @bind-Open="_drawerOpen" Width="150px" ClipMode="DrawerClipMode.Never" Elevation="2" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true" Breakpoint="Breakpoint.None" Class="mud-background-gray">
+    <MudDrawer @bind-Open="_drawerOpen" Width="150px" ClipMode="DrawerClipMode.Never" Elevation="2"
+               Variant="@DrawerVariant.Mini" OpenMiniOnHover="true" Breakpoint="Breakpoint.None"
+               Class="mud-background-gray">
         <NavMenu/>
     </MudDrawer>
     <MudMainContent Class="pt-1 pb-2">
@@ -22,4 +25,5 @@
     {
         await _jsRuntime.InvokeVoidAsync("scrollToTopSmooth");
     }
+
 }

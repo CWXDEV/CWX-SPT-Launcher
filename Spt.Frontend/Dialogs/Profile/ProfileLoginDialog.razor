@@ -19,7 +19,9 @@
                 <MudForm Model="request" @bind-IsValid="@success" Class="gap-2 mt-3">
                     @if (MiniProfile != null)
                     {
-                        <MudTextField Immediate="true" @bind-Value="request.Username" Label="Username" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" Required="true" ReadOnly="true"/>
+                        <MudTextField Immediate="true" @bind-Value="request.Username" Label="Username"
+                                      Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="true" Required="true"
+                                      ReadOnly="true"/>
                         @if (MiniProfile.HasPassword)
                         {
                             <PasswordFieldComponent @bind-Password="request.Password"/>
@@ -27,14 +29,18 @@
                     }
                     else
                     {
-                        <MudTextField Immediate="true" @bind-Value="request.Username" Label="Username" Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="false" Required="true"/>
+                        <MudTextField Immediate="true" @bind-Value="request.Username" Label="Username"
+                                      Variant="Variant.Outlined" Margin="Margin.Dense" Disabled="false"
+                                      Required="true"/>
                         <PasswordFieldComponent @bind-Password="request.Password"/>
                     }
                 </MudForm>
             }
 
             <MudContainer Class="mt-3 d-flex justify-end pa-0 gap-2">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" @onclick="RunLoginTask">Login</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" @onclick="RunLoginTask">
+                    Login
+                </MudButton>
                 <MudButton Variant="Variant.Filled" Color="Color.Default" @onclick="UserCancelled">Close</MudButton>
             </MudContainer>
         </MudContainer>
@@ -45,10 +51,8 @@
     private bool success;
     private bool requestInProgress;
     private string TaskText = "";
-    [Parameter]
-    public MiniProfile MiniProfile { get; set; }
-    [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; }
+    [Parameter] public MiniProfile MiniProfile { get; set; }
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
     private LoginRequest request { get; } = new();
     private CancellationTokenSource token { get; set; }
     private bool UserCancel { get; set; }
@@ -160,4 +164,5 @@
         token?.Cancel();
         MudDialog.Cancel();
     }
+
 }

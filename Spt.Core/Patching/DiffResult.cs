@@ -15,13 +15,7 @@ public class DiffResult
         PatchInfo = patchInfo;
     }
 
-    public DiffResultEnum ResultEnum
-    {
-        get;
-    }
+    public DiffResultEnum ResultEnum { get; }
 
-    public PatchInfo PatchInfo
-    {
-        get;
-    }
+    public PatchInfo PatchInfo { get; }
 }

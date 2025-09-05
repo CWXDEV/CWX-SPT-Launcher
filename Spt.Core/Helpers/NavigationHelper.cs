@@ -8,43 +8,19 @@ public class NavigationHelper
     {
         if (configHelper.GetConfig().DebugSettings.DebugUser &&
             configHelper.GetConfig().DebugSettings.ShowLoggingPage
-        )
+           )
         {
             SetLoggingPages(true);
         }
     }
 
-    private bool _showProfilesPage;
+    public bool ShowProfilesPage { get; set; }
 
-    public bool ShowProfilesPage
-    {
-        get => _showProfilesPage;
-        set => _showProfilesPage = value;
-    }
+    public bool ShowProfilePage { get; set; }
 
-    private bool _showProfilePage;
+    public bool ShowModPage { get; set; }
 
-    public bool ShowProfilePage
-    {
-        get => _showProfilePage;
-        set => _showProfilePage = value;
-    }
-
-    private bool _showModPage;
-
-    public bool ShowModPage
-    {
-        get => _showModPage;
-        set => _showModPage = value;
-    }
-
-    private bool _showLoggingPage;
-
-    public bool ShowLoggingPage
-    {
-        get => _showLoggingPage;
-        set => _showLoggingPage = value;
-    }
+    public bool ShowLoggingPage { get; set; }
 
     public void SetBasicPages(bool state)
     {
@@ -66,5 +42,9 @@ public class NavigationHelper
     }
 
     public event Action? OnStateChanged;
-    private void NotifyStateChanged() => OnStateChanged?.Invoke();
+
+    private void NotifyStateChanged()
+    {
+        OnStateChanged?.Invoke();
+    }
 }

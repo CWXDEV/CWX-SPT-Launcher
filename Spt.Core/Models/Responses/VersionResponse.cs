@@ -2,9 +2,5 @@
 
 public class VersionResponse : ISptResponse<SPTVersion>
 {
-    public SPTVersion Response
-    {
-        get;
-        set;
-    } = new();
+    public SPTVersion Response { get; set; } = new();
 }

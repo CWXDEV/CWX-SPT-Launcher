@@ -1,20 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <RootNamespace>Spt.Core</RootNamespace>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <RootNamespace>Spt.Core</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MudBlazor" Version="8.11.0" />
-    <PackageReference Include="Photino.Blazor" Version="4.0.13"/>
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="MudBlazor" Version="8.11.0"/>
+        <PackageReference Include="Photino.Blazor" Version="4.0.13"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="zlib.net">
-      <HintPath>SharedDependencies\zlib.net.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+    <ItemGroup>
+        <Reference Include="zlib.net">
+            <HintPath>SharedDependencies\zlib.net.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 </Project>

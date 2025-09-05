@@ -15,12 +15,15 @@
             else
             {
                 <MudForm Model="request" @bind-IsValid="@success" Class="gap-2 mt-3">
-                    <MudTextField Immediate="true" @bind-Value="request.Email" Label="Token" Variant="Variant.Outlined" Margin="Margin.Dense" Required="true"/>
+                    <MudTextField Immediate="true" @bind-Value="request.Email" Label="Token" Variant="Variant.Outlined"
+                                  Margin="Margin.Dense" Required="true"/>
                 </MudForm>
             }
 
             <MudContainer Class="mt-3 d-flex justify-end pa-0 gap-2">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" @onclick="RunLoginTask">Login</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" @onclick="RunLoginTask">
+                    Login
+                </MudButton>
                 <MudButton Variant="Variant.Filled" Color="Color.Default" @onclick="UserCancelled">Close</MudButton>
             </MudContainer>
         </MudContainer>
@@ -114,4 +117,5 @@
         token?.Cancel();
         MudDialog.Cancel();
     }
+
 }

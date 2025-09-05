@@ -1,5 +1,4 @@
 ﻿@using System.Collections.Specialized
-@using System.Windows
 @using Size = MudBlazor.Size
 
 @inject LogHelper _logHelper
@@ -8,11 +7,18 @@
 @inject ISnackbar _snackbar
 
 <MudContainer Class="pa-0 pb-4 d-flex justify-start gap-2">
-    <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="LoadLiveSettings">Load Live Settings</MudButton>
-    <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="ClearGameSettings">Clear Game Settings</MudButton>
-    <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="CleanTempFiles">Clean Temp Files</MudButton>
+    <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="LoadLiveSettings">Load Live
+        Settings
+    </MudButton>
+    <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="ClearGameSettings">Clear Game
+        Settings
+    </MudButton>
+    <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="CleanTempFiles">Clean Temp
+        Files
+    </MudButton>
     <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="CopyLogs">Copy Logs</MudButton>
-    <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="ClearApiKey">Clear ApiKey</MudButton>
+    <MudButton Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled" OnClick="ClearApiKey">Clear ApiKey
+    </MudButton>
 </MudContainer>
 
 @code {
@@ -26,7 +32,7 @@
         if (!Directory.Exists(eftSettingsFolder))
         {
             _logHelper.AddLog($"Settings can not be loaded from live, path given: {eftSettingsFolder}");
-            _snackbar.Add($"Settings can not be loaded from live, path given", Severity.Error);
+            _snackbar.Add("Settings can not be loaded from live, path given", Severity.Error);
             return;
         }
 
@@ -108,8 +114,8 @@
             return;
         }
 
-        _logHelper.AddLog($"Cleaned temp files");
-        _snackbar.Add($"Cleaned temp files", Severity.Success);
+        _logHelper.AddLog("Cleaned temp files");
+        _snackbar.Add("Cleaned temp files", Severity.Success);
     }
 
     private async Task CopyLogs()
@@ -192,21 +198,21 @@
 
         if (result is null)
         {
-            _logHelper.LogInfo($"Forge ForgeLogout result is null");
+            _logHelper.LogInfo("Forge ForgeLogout result is null");
             return;
         }
 
         if (result.Code == ForgeResponseMessage.Unauthenticated)
         {
-            _logHelper.AddLog($"Forge ForgeLogout failed to authenticate");
+            _logHelper.AddLog("Forge ForgeLogout failed to authenticate");
             return;
         }
 
         if (result.Success)
         {
-            _logHelper.AddLog($"Forge ForgeLogout Successful");
+            _logHelper.AddLog("Forge ForgeLogout Successful");
             _httpHelper.ClearApiKey();
-            return;
         }
     }
+
 }

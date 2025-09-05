@@ -1,7 +1,9 @@
 ﻿@inject ConfigHelper _configHelper
 
 <MudItem sm="12">
-    <MudPaper Class="pa-5 ml-1 gap-2 d-flex flex-column setting-on-hover-container mud-background-gray border-2 border-solid mud-border-lines-default" Elevation="3">
+    <MudPaper
+        Class="pa-5 ml-1 gap-2 d-flex flex-column setting-on-hover-container mud-background-gray border-2 border-solid mud-border-lines-default"
+        Elevation="3">
         <SettingOptionComponent Switch="@advancedUserSwitch" OptionName="Advanced User" SwitchFunc="@SetAdvUser"/>
     </MudPaper>
 </MudItem>
@@ -12,7 +14,7 @@
 
     protected override void OnInitialized()
     {
-        advancedUserSwitch = _configHelper.GetConfig().AppSettings.AdvancedUser;
+        advancedUserSwitch = _configHelper.GetConfig().AdvancedUser;
         base.OnInitialized();
     }
 

@@ -9,7 +9,8 @@
                    @onclick="RunAddTask" Variant="Variant.Filled" Disabled="@(!IsConnected)">Create New Profile
         </MudButton>
         <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.Login" Size="Size.Large"
-                   @onclick="RunLoginTaskWithDetails" Variant="Variant.Filled" Disabled="true">Login with details  @* @(!IsConnected) *@
+                   @onclick="RunLoginTaskWithDetails" Variant="Variant.Filled" Disabled="true">Login with
+            details @* @(!IsConnected) *@
         </MudButton>
     </MudContainer>
     <MudGrid>
@@ -23,7 +24,8 @@
             // TODO: server might hide profiles, but an edge case might be a fresh server
             case 0 when IsConnected:
                 <MudItem sm="12">
-                    <MudAlert Severity="Severity.Info" Variant="Variant.Filled">Server has no profiles yet or does not show them.
+                    <MudAlert Severity="Severity.Info" Variant="Variant.Filled">Server has no profiles yet or does not
+                        show them.
                         Please create a new profile or login with details.
                     </MudAlert>
                 </MudItem>
@@ -81,4 +83,5 @@
         {
         }
     }
+
 }

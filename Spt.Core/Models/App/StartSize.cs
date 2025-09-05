@@ -2,15 +2,6 @@
 
 public class StartSize
 {
-    public int Width
-    {
-        get;
-        set;
-    }
-
-    public int Height
-    {
-        get;
-        set;
-    }
+    public int Height { get; set; } = 550;
+    public int Width { get; set; } = 1070;
 }

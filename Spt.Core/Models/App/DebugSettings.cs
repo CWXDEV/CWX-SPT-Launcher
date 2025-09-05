@@ -2,22 +2,6 @@
 
 public class DebugSettings
 {
-    public bool DebugUser
-    {
-        get;
-        set;
-    }
-
-    // Not Used
-    public bool DebugLocation
-    {
-        get;
-        set;
-    }
-
-    public bool ShowLoggingPage
-    {
-        get;
-        set;
-    }
+    public bool DebugUser { get; set; } = false;
+    public bool ShowLoggingPage { get; set; } = false;
 }

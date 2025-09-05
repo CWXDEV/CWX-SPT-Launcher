@@ -1,13 +1,18 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Text.Json;
-using Spt.Core.Models;
 using Microsoft.Win32;
 
 namespace Spt.Core.Helpers;
 
 public class GameHelper
 {
+    private const string registryInstall = @"Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\EscapeFromTarkov";
+    private const string registrySettings = @"Software\Battlestate Games\EscapeFromTarkov";
+    private readonly ConfigHelper _configHelper;
+    private readonly LogHelper _logHelper;
+
+    private readonly StateHelper _stateHelper;
+
     public GameHelper(
         StateHelper stateHelper,
         LogHelper logHelper,
@@ -19,13 +24,6 @@ public class GameHelper
         _configHelper = configHelper;
     }
 
-    private StateHelper _stateHelper;
-    private LogHelper _logHelper;
-    private ConfigHelper _configHelper;
-
-    private const string registryInstall = @"Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\EscapeFromTarkov";
-    private const string registrySettings = @"Software\Battlestate Games\EscapeFromTarkov";
-
     private string? DetectOriginalGamePath()
     {
         // We can't detect the installed path on non-Windows
@@ -35,7 +33,7 @@ public class GameHelper
         }
 
         var installLocation = Registry.LocalMachine.OpenSubKey(registryInstall, false)?.GetValue("InstallLocation");
-        var info = (installLocation is string key) ? new DirectoryInfo(key) : null;
+        var info = installLocation is string key ? new DirectoryInfo(key) : null;
         return info?.FullName;
     }
 
@@ -65,7 +63,7 @@ public class GameHelper
         //start game
         var args =
             $"-force-gfx-jobs native -token={_stateHelper.SelectedProfile.ProfileID} -config=" +
-            $"{{'BackendUrl':'https://{_stateHelper.SelectedServer.Ip}','Version':'live','MatchingVersion':'live'}}";
+            $"{{'BackendUrl':'https://{_stateHelper.SelectedServer.IpAddress}','Version':'live','MatchingVersion':'live'}}";
 
         _logHelper.AddLog(args);
 
@@ -73,7 +71,7 @@ public class GameHelper
         {
             Arguments = args,
             UseShellExecute = false,
-            WorkingDirectory = _configHelper.GetConfig().GamePath,
+            WorkingDirectory = _configHelper.GetConfig().GamePath
         };
 
         try
@@ -90,7 +88,7 @@ public class GameHelper
         return true;
     }
 
-    bool IsInstalledInLive()
+    private bool IsInstalledInLive()
     {
         var isInstalledInLive = false;
 
@@ -99,24 +97,24 @@ public class GameHelper
             FileInfo[] files =
             [
                 // SPT files
-                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, "SPT.Launcher.exe")),
-                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, "SPT.Server.exe")),
+                new(Path.Combine(_configHelper.GetConfig().GamePath, "SPT.Launcher.exe")),
+                new(Path.Combine(_configHelper.GetConfig().GamePath, "SPT.Server.exe")),
 
                 // bepinex files
-                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"doorstep_config.ini")),
-                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"winhttp.dll")),
+                new(Path.Combine(_configHelper.GetConfig().GamePath, @"doorstep_config.ini")),
+                new(Path.Combine(_configHelper.GetConfig().GamePath, @"winhttp.dll")),
 
                 // licenses
-                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"LICENSE-BEPINEX.txt")),
-                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"LICENSE-ConfigurationManager.txt")),
-                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"LICENSE-Launcher.txt")),
-                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"LICENSE-Modules.txt")),
-                new FileInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"LICENSE-Server.txt"))
+                new(Path.Combine(_configHelper.GetConfig().GamePath, @"LICENSE-BEPINEX.txt")),
+                new(Path.Combine(_configHelper.GetConfig().GamePath, @"LICENSE-ConfigurationManager.txt")),
+                new(Path.Combine(_configHelper.GetConfig().GamePath, @"LICENSE-Launcher.txt")),
+                new(Path.Combine(_configHelper.GetConfig().GamePath, @"LICENSE-Modules.txt")),
+                new(Path.Combine(_configHelper.GetConfig().GamePath, @"LICENSE-Server.txt"))
             ];
             DirectoryInfo[] directories =
             [
-                new DirectoryInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"SPT_Data")),
-                new DirectoryInfo(Path.Combine(_configHelper.GetConfig().GamePath, @"BepInEx"))
+                new(Path.Combine(_configHelper.GetConfig().GamePath, @"SPT_Data")),
+                new(Path.Combine(_configHelper.GetConfig().GamePath, @"BepInEx"))
             ];
 
             foreach (var file in files)
@@ -152,18 +150,9 @@ public class GameHelper
     }
 
 
-    void SetupGameFiles()
+    private void SetupGameFiles()
     {
-        var files = new[]
-        {
-            GetFileForCleanup("BattlEye"),
-            GetFileForCleanup("Logs"),
-            GetFileForCleanup("ConsistencyInfo"),
-            GetFileForCleanup("EscapeFromTarkov_BE.exe"),
-            GetFileForCleanup("Uninstall.exe"),
-            GetFileForCleanup("UnityCrashHandler64.exe"),
-            GetFileForCleanup("WinPixEventRuntime.dll")
-        };
+        var files = new[] { GetFileForCleanup("BattlEye"), GetFileForCleanup("Logs"), GetFileForCleanup("ConsistencyInfo"), GetFileForCleanup("EscapeFromTarkov_BE.exe"), GetFileForCleanup("Uninstall.exe"), GetFileForCleanup("UnityCrashHandler64.exe"), GetFileForCleanup("WinPixEventRuntime.dll") };
 
         foreach (var file in files)
         {
@@ -191,7 +180,7 @@ public class GameHelper
     }
 
     /// <summary>
-    /// Clean the temp folder
+    ///     Clean the temp folder
     /// </summary>
     /// <returns>returns true if the temp folder was cleaned succefully or doesn't exist. returns false if something went wrong.</returns>
     public bool CleanTempFiles()

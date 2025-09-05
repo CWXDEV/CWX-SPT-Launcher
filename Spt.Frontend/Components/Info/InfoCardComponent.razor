@@ -1,6 +1,7 @@
 ﻿<MudItem sm="4" Class="setting-on-hover">
     <MudLink Href="@Link" Target="_blank">
-        <MudCard Class="info-card-height cursor-pointer mud-background-gray border-2 border-solid mud-border-lines-default">
+        <MudCard
+            Class="info-card-height cursor-pointer mud-background-gray border-2 border-solid mud-border-lines-default">
             <MudCardHeader>
                 <CardHeaderContent>
                     <MudText Class="mb-n4 no-pointers no-select" Typo="Typo.caption">Name:</MudText>
@@ -16,15 +17,13 @@
 </MudItem>
 
 @code {
-    [Parameter]
-    public string Name { get; set; }
-    [Parameter]
-    public string Description { get; set; }
-    [Parameter]
-    public string Link { get; set; }
+    [Parameter] public string Name { get; set; }
+    [Parameter] public string Description { get; set; }
+    [Parameter] public string Link { get; set; }
 
     private async Task OpenLinkViaBrowser()
     {
         // TODO: open browser with link that is passed in
     }
+
 }

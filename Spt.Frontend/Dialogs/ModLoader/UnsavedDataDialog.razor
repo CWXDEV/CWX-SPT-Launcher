@@ -7,7 +7,8 @@
         <MudContainer Class="py-4">
             <MudText>Are you sure you want to leave? Any unsaved data will be lost.</MudText>
             <MudContainer Class="mt-3 d-flex justify-end pa-0 gap-2">
-                <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="Submit">Leave</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Error" Class="ml-auto" @onclick="Submit">Leave
+                </MudButton>
                 <MudButton Variant="Variant.Filled" Color="Color.Default" @onclick="Cancel">Cancel</MudButton>
             </MudContainer>
         </MudContainer>
@@ -17,7 +18,14 @@
 @code {
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
-    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    private void Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+    }
 
-    private void Cancel() => MudDialog.Cancel();
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
 }

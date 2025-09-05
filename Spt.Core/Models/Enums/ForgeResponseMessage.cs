@@ -1,6 +1,6 @@
 ﻿namespace Spt.Core.Models;
 
-public record ForgeResponseMessage()
+public record ForgeResponseMessage
 {
     // TODO: these need to be more consistent on the API
     public const string InvalidEmail = "The email field must be a valid email address.";

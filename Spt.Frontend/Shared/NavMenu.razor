@@ -1,30 +1,48 @@
 ﻿@inject NavigationHelper _navigationHelper
 
 <MudNavMenu Class="mud-typography-nowrap">
-    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.ConnectedTv" Match="NavLinkMatch.All" Href="/">Home</MudNavLink>
+    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.ConnectedTv" Match="NavLinkMatch.All" Href="/">
+        Home
+    </MudNavLink>
     @if (_navigationHelper.ShowProfilesPage)
     {
-        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.PeopleAlt" Match="NavLinkMatch.All" Href="/ProfilesPage">Profiles</MudNavLink>
+        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.PeopleAlt" Match="NavLinkMatch.All"
+                    Href="/ProfilesPage">Profiles
+        </MudNavLink>
     }
     @if (_navigationHelper.ShowProfilePage)
     {
-        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.Person" Match="NavLinkMatch.All" Href="/ProfilePage">Profile</MudNavLink>
+        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.Person" Match="NavLinkMatch.All"
+                    Href="/ProfilePage">Profile
+        </MudNavLink>
     }
     @if (_navigationHelper.ShowModPage)
     {
-        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.FolderOpen" Match="NavLinkMatch.All" Href="/ActiveModsPage">Mods</MudNavLink>
+        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.FolderOpen" Match="NavLinkMatch.All"
+                    Href="/ActiveModsPage">Mods
+        </MudNavLink>
     }
 </MudNavMenu>
 <MudSpacer/>
 <MudNavMenu Class="mud-typography-nowrap">
     @if (_navigationHelper.ShowLoggingPage)
     {
-        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.AdminPanelSettings" Match="NavLinkMatch.All" Href="/AdminPage">Admin</MudNavLink>
+        <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.AdminPanelSettings" Match="NavLinkMatch.All"
+                    Href="/AdminPage">Admin
+        </MudNavLink>
     }
-    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.Reorder" Match="NavLinkMatch.All" Href="/ModLoaderPage">Mod Loader</MudNavLink>
-    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.FolderZip" Match="NavLinkMatch.All" Href="/ForgePage">Forge</MudNavLink>
-    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.Settings" Match="NavLinkMatch.All" Href="/SettingsPage">Settings</MudNavLink>
-    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.Info" Match="NavLinkMatch.All" Href="/InfoPage">Info</MudNavLink>
+    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.Reorder" Match="NavLinkMatch.All"
+                Href="/ModLoaderPage">Mod Loader
+    </MudNavLink>
+    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.FolderZip" Match="NavLinkMatch.All"
+                Href="/ForgePage">Forge
+    </MudNavLink>
+    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.Settings" Match="NavLinkMatch.All"
+                Href="/SettingsPage">Settings
+    </MudNavLink>
+    <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.Info" Match="NavLinkMatch.All" Href="/InfoPage">
+        Info
+    </MudNavLink>
 </MudNavMenu>
 
 @code

@@ -11,13 +11,16 @@
 <MudContainer Class="px-8 mt-2 mb-6 pa-0" MaxWidth="MaxWidth.Large">
     @if (_netAvailable && _apiKeyAvailable)
     {
-        <SearchComponent @bind-Search="Search" @bind-FilterValue="FilterValue" @bind-SortValue="SortValue" SearchFunc="@SearchUpdate"/>
+        <SearchComponent @bind-Search="Search" @bind-FilterValue="FilterValue" @bind-SortValue="SortValue"
+                         SearchFunc="@SearchUpdate"/>
 
         @if (_searchResponse?.Meta?.LastPage is not null && _searchResponse?.Data?.Count > 0)
         {
             <MudItem sm="12" Class="d-flex justify-center">
-                <MudPagination Rectangular="true" Variant="Variant.Text" Count="@((int)_searchResponse.Meta.LastPage)" Class="mb-4"
-                               ShowFirstButton="true" ShowLastButton="true" ShowNextButton="true" ShowPreviousButton="true" @bind-Selected="@_paginationSelected"/>
+                <MudPagination Rectangular="true" Variant="Variant.Text" Count="@((int)_searchResponse.Meta.LastPage)"
+                               Class="mb-4"
+                               ShowFirstButton="true" ShowLastButton="true" ShowNextButton="true"
+                               ShowPreviousButton="true" @bind-Selected="@_paginationSelected"/>
             </MudItem>
         }
     }
@@ -25,16 +28,22 @@
     @if (!_netAvailable)
     {
         <MudItem sm="12">
-            <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">No Internet access found, please fix and refresh!</MudAlert>
+            <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">No Internet access found, please fix and
+                refresh!
+            </MudAlert>
         </MudItem>
         <MudItem sm="12" Class="mt-4 d-flex justify-center align-center">
-            <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Refresh" @onclick="CheckInternetAccess">Refresh</MudButton>
+            <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Refresh" @onclick="CheckInternetAccess">Refresh
+            </MudButton>
         </MudItem>
     }
     else if (!_apiKeyAvailable)
     {
         <MudItem sm="12">
-            <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Dense="true">No API Key found, please follow the instructions below to be able to use Forge!</MudAlert>
+            <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Dense="true">No API Key found, please follow
+                the instructions below to be able to use Forge!
+            </MudAlert>
         </MudItem>
         <MudItem sm="12" Class="my-2 pa-2">
             <MudText Class="mb-1">To use Forge via the launcher you must:</MudText>
@@ -46,9 +55,13 @@
             <MudExpansionPanel Text="Email and password login">
                 <MudText>If you have a Email and password login we are able to get a key automatically,</MudText>
                 <MudText>This requires you to login via the button below.</MudText>
-                <MudAlert Dense="true" Severity="Severity.Info" Variant="Variant.Outlined" Class="my-2">None of your login details will be saved!</MudAlert>
+                <MudAlert Dense="true" Severity="Severity.Info" Variant="Variant.Outlined" Class="my-2">None of your
+                    login details will be saved!
+                </MudAlert>
                 <MudItem sm="12" Class="mt-4 d-flex justify-start">
-                    <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Login" @onclick="StartForgeLoginTask">Login</MudButton>
+                    <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.Login" @onclick="StartForgeLoginTask">Login
+                    </MudButton>
                 </MudItem>
             </MudExpansionPanel>
             <MudExpansionPanel Text="Discord login">
@@ -60,9 +73,14 @@
                 </MudText>
                 <MudText>2. Click your icon top right and select API Tokens.</MudText>
                 <MudText>3. Under "Token Name" put "SPT Launcher Key" and click create.</MudText>
-                <MudText>4. Click the button below to save this Token and test it. if it worked you'll be moved to the Forge Section.</MudText>
+                <MudText>4. Click the button below to save this Token and test it. if it worked you'll be moved to the
+                    Forge Section.
+                </MudText>
                 <MudItem sm="12" Class="mt-4 d-flex justify-start">
-                    <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Login" @onclick="StartForgeDiscordTask" Disabled="true">Login</MudButton>
+                    <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.Login" @onclick="StartForgeDiscordTask"
+                               Disabled="true">Login
+                    </MudButton>
                 </MudItem>
             </MudExpansionPanel>
         </MudExpansionPanels>
@@ -111,10 +129,7 @@
     // search functionality
     public string Search
     {
-        get
-        {
-            return _search;
-        }
+        get => _search;
         set
         {
             _search = value;
@@ -124,10 +139,7 @@
 
     public string SortValue
     {
-        get
-        {
-            return _sortValue;
-        }
+        get => _sortValue;
         set
         {
             _sortValue = value;
@@ -137,10 +149,7 @@
 
     public string FilterValue
     {
-        get
-        {
-            return _filterValue;
-        }
+        get => _filterValue;
         set
         {
             _filterValue = value;
@@ -226,4 +235,5 @@
             SearchForMods();
         }
     }
+
 }
