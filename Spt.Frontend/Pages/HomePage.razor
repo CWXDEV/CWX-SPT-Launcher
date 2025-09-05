@@ -25,7 +25,7 @@
 </MudContainer>
 
 @code {
-    private List<Servers> ServerList;
+    private List<Server> ServerList;
 
     protected override void OnInitialized()
     {
@@ -40,8 +40,9 @@
 
         if (result?.Canceled is false)
         {
-            ServerList.Add(result.Data as Servers);
+            ServerList.Add(result.Data as Server);
             _configHelper.SetServers(ServerList);
         }
     }
+
 }

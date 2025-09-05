@@ -13,35 +13,15 @@ public class PatchInfo
 {
     public const string BYBA = "BYBA";
 
-    public byte[] OriginalChecksum
-    {
-        get;
-        set;
-    }
+    public byte[] OriginalChecksum { get; set; }
 
-    public int OriginalLength
-    {
-        get;
-        set;
-    }
+    public int OriginalLength { get; set; }
 
-    public byte[] PatchedChecksum
-    {
-        get;
-        set;
-    }
+    public byte[] PatchedChecksum { get; set; }
 
-    public int PatchedLength
-    {
-        get;
-        set;
-    }
+    public int PatchedLength { get; set; }
 
-    public PatchItem[] Items
-    {
-        get;
-        set;
-    }
+    public PatchItem[] Items { get; set; }
 
     public static PatchInfo FromBytes(byte[] bytes)
     {
@@ -80,7 +60,7 @@ public class PatchInfo
 
             var itemCount = br.ReadInt32();
 
-            List<PatchItem> items = new List<PatchItem>();
+            var items = new List<PatchItem>();
             for (var i = 0; i < itemCount; i++)
             {
                 items.Add(PatchItem.FromReader(br));

@@ -45,10 +45,8 @@
     private bool success;
     private bool requestInProgress;
     private string TaskText = "";
-    [Parameter]
-    public MiniProfile MiniProfile { get; set; }
-    [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; }
+    [Parameter] public MiniProfile MiniProfile { get; set; }
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
     private LoginRequest request { get; } = new();
     private CancellationTokenSource token { get; set; }
     private bool UserCancel { get; set; }
@@ -160,4 +158,5 @@
         token?.Cancel();
         MudDialog.Cancel();
     }
+
 }

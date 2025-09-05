@@ -1,20 +1,16 @@
-﻿using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-using System.Text.Json;
-using ComponentAce.Compression.Libs.zlib;
-using Spt.Core.Models;
+﻿using Spt.Core.Models;
 
 namespace Spt.Core.Helpers;
 
 public class StateHelper
 {
-    public Servers? SelectedServer;
-    public MiniProfile? SelectedProfile;
+    private readonly LogHelper _logHelper;
+    public int? CurrentPagination;
     public Dictionary<string, SPTMod> ModList = [];
     public List<MiniProfile> ProfileList = [];
     public Dictionary<string, string> ProfileTypes = new();
-    private readonly LogHelper _logHelper;
-    public int? CurrentPagination;
+    public MiniProfile? SelectedProfile;
+    public Server? SelectedServer;
 
     public StateHelper(
         LogHelper logHelper
@@ -25,7 +21,7 @@ public class StateHelper
 
     public void LogoutAndDispose()
     {
-        _logHelper.LogInfo($"Logged out of server {(SelectedServer?.Ip ?? "Unknown")} and disposed");
+        _logHelper.LogInfo($"Logged out of server {SelectedServer?.IpAddress ?? "Unknown"} and disposed");
         ProfileTypes = new Dictionary<string, string>();
         ProfileList = [];
         ModList = [];
@@ -33,7 +29,7 @@ public class StateHelper
         SelectedServer = null;
     }
 
-    public void SetSelectedServer(Servers server)
+    public void SetSelectedServer(Server server)
     {
         SelectedServer = server;
     }

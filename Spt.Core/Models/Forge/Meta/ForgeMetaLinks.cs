@@ -4,12 +4,9 @@ namespace Spt.Core.Models;
 
 public class ForgeMetaLinks
 {
-    [JsonPropertyName("url")]
-    public string? Url { get; set; }
+    [JsonPropertyName("url")] public string? Url { get; set; }
 
-    [JsonPropertyName("label")]
-    public string? Label { get; set; }
+    [JsonPropertyName("label")] public string? Label { get; set; }
 
-    [JsonPropertyName("active")]
-    public bool Active { get; set; }
+    [JsonPropertyName("active")] public bool Active { get; set; }
 }

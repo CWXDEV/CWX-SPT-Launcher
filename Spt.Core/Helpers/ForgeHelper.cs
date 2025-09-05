@@ -1,17 +1,12 @@
-﻿using System.Collections.Specialized;
-using System.Net.Http.Headers;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Text.Json;
-using Spt.Core.Models;
+﻿using Spt.Core.Models;
 
 namespace Spt.Core.Helpers;
 
 public class ForgeHelper
 {
-    private LogHelper _logHelper;
     private ConfigHelper _configHelper;
     private HttpHelper _httpHelper;
+    private LogHelper _logHelper;
 
     public ForgeHelper
     (

@@ -2,9 +2,5 @@
 
 public class ServerInfo
 {
-    public Dictionary<string, string> Types
-    {
-        get;
-        set;
-    } = new();
+    public Dictionary<string, string> Types { get; set; } = new();
 }

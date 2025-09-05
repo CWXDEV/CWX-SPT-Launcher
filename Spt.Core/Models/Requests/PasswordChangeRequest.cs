@@ -7,9 +7,5 @@ public class PasswordChangeRequest : LoginRequest
 {
     [Required]
     [JsonPropertyName("change")]
-    public string Change
-    {
-        get;
-        set;
-    } = "";
+    public string Change { get; set; } = "";
 }

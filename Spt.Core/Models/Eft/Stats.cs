@@ -20,9 +20,5 @@ public class Stats
         set;
     } = new();
 
-    public string SurvivorClass
-    {
-        get;
-        set;
-    } = "Unknown";
+    public string SurvivorClass { get; set; } = "Unknown";
 }

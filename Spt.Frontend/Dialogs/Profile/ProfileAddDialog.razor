@@ -5,36 +5,36 @@
 <MudDialog Class="mud-background-gray border-2 border-solid mud-border-lines-default">
     <DialogContent>
         <MudContainer Class="py-4">
-        @if (requestInProgress)
-        {
-            <MudContainer Class="d-flex flex-column align-center gap-4">
-                <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large"/>
-                <MudText>@TaskText</MudText>
-            </MudContainer>
-        }
-        else
-        {
-            <MudForm Model="request" @bind-IsValid="@success" Class="gap-2 mt-3">
-                <MudSelect @bind-Value="request.Edition" Variant="Variant.Outlined" Label="Edition" Margin="Margin.Dense" Dense="true" Required="true">
-                    @foreach (var edition in serverEditions)
+            @if (requestInProgress)
+            {
+                <MudContainer Class="d-flex flex-column align-center gap-4">
+                    <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large"/>
+                    <MudText>@TaskText</MudText>
+                </MudContainer>
+            }
+            else
+            {
+                <MudForm Model="request" @bind-IsValid="@success" Class="gap-2 mt-3">
+                    <MudSelect @bind-Value="request.Edition" Variant="Variant.Outlined" Label="Edition" Margin="Margin.Dense" Dense="true" Required="true">
+                        @foreach (var edition in serverEditions)
+                        {
+                            <MudSelectItem Value="@edition"/>
+                        }
+                    </MudSelect>
+                    <MudTextField Immediate="true" @bind-Value="request.Username" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense" Required="true"/>
+                    <PasswordFieldComponent @bind-Password="request.Password"/>
+                    @if (tooltipText != "")
                     {
-                        <MudSelectItem Value="@edition"/>
+                        <MudCard Class="pa-2 edition-text" Outlined="true">
+                            <MudText>@tooltipText</MudText>
+                        </MudCard>
                     }
-                </MudSelect>
-                <MudTextField Immediate="true" @bind-Value="request.Username" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense" Required="true"/>
-                <PasswordFieldComponent @bind-Password="request.Password"/>
-                @if (tooltipText != "")
-                {
-                    <MudCard Class="pa-2 edition-text" Outlined="true">
-                        <MudText>@tooltipText</MudText>
-                    </MudCard>
-                }
-            </MudForm>
-            <MudContainer Class="mt-3 d-flex justify-end pa-0 gap-2">
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto" @onclick="RunAddTask">Add</MudButton>
-                <MudButton Variant="Variant.Filled" Color="Color.Default" @onclick="UserCancelled">Cancel</MudButton>
-            </MudContainer>
-        }
+                </MudForm>
+                <MudContainer Class="mt-3 d-flex justify-end pa-0 gap-2">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto" @onclick="RunAddTask">Add</MudButton>
+                    <MudButton Variant="Variant.Filled" Color="Color.Default" @onclick="UserCancelled">Cancel</MudButton>
+                </MudContainer>
+            }
         </MudContainer>
     </DialogContent>
 </MudDialog>
@@ -45,8 +45,7 @@
     private string TaskText = "";
     public RegisterRequest request = new();
     private List<string> serverEditions { get; set; }
-    [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
     private CancellationTokenSource token { get; set; }
     private bool UserCancel { get; set; }
     private string tooltipText => _stateHelper.ProfileTypes.GetValueOrDefault(request.Edition, "");
@@ -142,4 +141,5 @@
         token?.Cancel();
         MudDialog.Cancel();
     }
+
 }

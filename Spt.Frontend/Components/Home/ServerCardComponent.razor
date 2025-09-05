@@ -20,7 +20,7 @@
         </MudCardHeader>
         <MudCardContent Class="py-2">
             <MudText Class="mb-n3 no-pointers no-select" Typo="Typo.caption">Address:</MudText>
-            <MudText Typo="Typo.body1">@Server.Ip</MudText>
+            <MudText Typo="Typo.body1">@Server.IpAddress</MudText>
         </MudCardContent>
         <MudCardActions Class="pa-4 d-flex mt-2">
             <ToolTip Text="@(IsConnectedServer ? "Connected" : "Disconnected")">
@@ -51,14 +51,11 @@
 </MudItem>
 
 @code {
-    [Parameter]
-    public Servers Server { get; set; }
+    [Parameter] public Server Server { get; set; }
 
-    [Parameter]
-    public List<Servers> ServerList { get; set; }
+    [Parameter] public List<Server> ServerList { get; set; }
 
-    [Parameter]
-    public EventCallback<List<Servers>> ServerListChanged { get; set; }
+    [Parameter] public EventCallback<List<Server>> ServerListChanged { get; set; }
 
     private bool IsConnectedServer { get; set; }
 
@@ -95,7 +92,7 @@
             if (serverToChange != null)
             {
                 serverToChange.Name = Server.Name;
-                serverToChange.Ip = Server.Ip;
+                serverToChange.IpAddress = Server.IpAddress;
             }
 
             _configHelper.SetServers(ServerList);

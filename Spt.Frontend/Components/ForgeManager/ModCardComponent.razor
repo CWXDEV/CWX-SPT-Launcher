@@ -39,7 +39,7 @@
         <MudCard Class="info-card-height mud-background-gray border-2 border-solid mud-border-lines-default">
             <MudCardHeader>
                 <CardHeaderAvatar>
-                    @if (@ForgeMod.TryGetProfileAvatar(out string? url))
+                    @if (ForgeMod.TryGetProfileAvatar(out var url))
                     {
                         <MudAvatar Style="background-color: transparent !important;">
                             <MudImage Src="@url"/>
@@ -55,7 +55,7 @@
                     <MudText Typo="Typo.body2">By @ForgeMod.GetModdersName()</MudText>
                 </CardHeaderContent>
                 <CardHeaderActions>
-                    @if (@ForgeMod.GetModFeatured())
+                    @if (ForgeMod.GetModFeatured())
                     {
                         <ToolTip Text="Featured">
                             <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Primary"/>
@@ -70,7 +70,7 @@
             </MudCardContent>
             <MudCardActions Class="pa-4">
                 <MudButton StartIcon="@Icons.Material.Filled.ReadMore" Variant="Variant.Filled" Color="Color.Primary"
-                           Size="Size.Small" DropShadow="false" @onclick="(() => NavigateToSingleMod(ForgeMod.Id))">Read
+                           Size="Size.Small" DropShadow="false" @onclick="() => NavigateToSingleMod(ForgeMod.Id)">Read
                     More
                 </MudButton>
                 <MudSpacer/>
@@ -84,11 +84,9 @@
 </MudItem>
 
 @code {
-    [Parameter]
-    public bool IsSkeleton { get; set; }
+    [Parameter] public bool IsSkeleton { get; set; }
 
-    [Parameter]
-    public ForgeBase ForgeMod { get; set; }
+    [Parameter] public ForgeBase ForgeMod { get; set; }
 
     private void NavigateToSingleMod(int? modId)
     {
@@ -96,4 +94,5 @@
         Console.WriteLine($"Navigating to mod page: {modId}");
         _navman.NavigateTo($"/ForgeModPage/{modId}");
     }
+
 }

@@ -19,10 +19,8 @@
 
 @code {
     private string TaskText = "";
-    [Parameter]
-    public Servers Server { get; set; }
-    [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; }
+    [Parameter] public Server Server { get; set; }
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
     private CancellationTokenSource token { get; set; }
     private bool UserCancel { get; set; }
 
@@ -63,7 +61,7 @@
 
     private async Task CallServer(RequestTask option, string taskText = "", string failString = "")
     {
-        bool result = false;
+        var result = false;
         token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         TaskText = taskText;
         StateHasChanged();
@@ -132,4 +130,5 @@
         token?.Cancel();
         MudDialog.Cancel();
     }
+
 }

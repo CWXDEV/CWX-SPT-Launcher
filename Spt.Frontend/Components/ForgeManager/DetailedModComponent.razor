@@ -31,7 +31,7 @@
                     <MudCardHeader>
                         <MudGrid>
                             <MudItem>
-                                <MudImage Src="@($"https://forge-static.sp-tarkov.com/{@ForgeMod.Thumbnail}")"
+                                <MudImage Src="@($"https://forge-static.sp-tarkov.com/{ForgeMod.Thumbnail}")"
                                           Class="mod-thumbnail" Style="background-color: transparent !important;"/>
                             </MudItem>
                             <MudItem>
@@ -79,13 +79,13 @@
                             </MudGrid>
                         </MudCardHeader>
                         <MudCardContent Class="">
-                            @((MarkupString) _latestVersion.Description)
+                            @((MarkupString)_latestVersion.Description)
                         </MudCardContent>
                     </MudCard>
                 }
                 <MudCard Class="mud-background-gray border-2 border-solid mud-border-lines-default">
                     <MudCardContent Class="user-markdown">
-                        @((MarkupString) ForgeMod.Description)
+                        @((MarkupString)ForgeMod.Description)
                     </MudCardContent>
                 </MudCard>
             </MudItem>
@@ -150,18 +150,13 @@
 @code {
     private List<ForgeModVersion> _forgeVersions;
 
-    [Parameter]
-    public bool IsSkeleton { get; set; }
-    [Parameter]
-    public ForgeBase ForgeMod { get; set; }
+    [Parameter] public bool IsSkeleton { get; set; }
+    [Parameter] public ForgeBase ForgeMod { get; set; }
 
     [Parameter]
     public List<ForgeModVersion> ForgeVersions
     {
-        get
-        {
-            return _forgeVersions;
-        }
+        get => _forgeVersions;
         set
         {
             _forgeVersions = value;
@@ -182,4 +177,5 @@
         JS.InvokeVoidAsync("setTabContent");
         return base.OnAfterRenderAsync(firstRender);
     }
+
 }

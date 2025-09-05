@@ -1,7 +1,6 @@
 ﻿@page "/ModLoaderPage"
 
 @implements IDisposable;
-@using MudBlazor.Utilities
 @inject ConfigHelper _configHelper
 @inject LogHelper _logHelper
 @inject ModHelper _modHelper
@@ -23,8 +22,8 @@
                 @foreach (var mod in _items.Where(x => !x.IsLoaded).OrderBy(o => o.Name))
                 {
                     <MudPaper Class="pa-4 flex-grow-1 d-flex justify-space-between" Elevation="25">
-                        <MudText Inline="true" Class="no-pointers no-select">@mod.Name - @(@mod.HasServerComponent ? "has server mod" : "Client only")</MudText>
-                        <MudIconButton Icon="@Icons.Material.Filled.AddCircle" Color="Color.Primary" Class="pa-0 px-2" @onclick="@(() => MoveModCallback(@mod))"/>
+                        <MudText Inline="true" Class="no-pointers no-select">@mod.Name - @(mod.HasServerComponent ? "has server mod" : "Client only")</MudText>
+                        <MudIconButton Icon="@Icons.Material.Filled.AddCircle" Color="Color.Primary" Class="pa-0 px-2" @onclick="@(() => MoveModCallback(mod))"/>
                     </MudPaper>
                 }
             </MudPaper>
@@ -44,8 +43,8 @@
                     </ChildContent>
                     <ItemRenderer>
                         <MudPaper Elevation="25" Class="pa-4 my-2 flex-grow-1 d-flex justify-space-between">
-                            <MudText Inline="true" Class="no-pointers no-select">@context.Name - @(@context.HasServerComponent ? "has server mod" : "Client only")</MudText>
-                            <MudIconButton Icon="@Icons.Material.Filled.RemoveCircle" Color="Color.Primary" Class="pa-0 px-2" @onclick="@(() => MoveModCallback(@context))"/>
+                            <MudText Inline="true" Class="no-pointers no-select">@context.Name - @(context.HasServerComponent ? "has server mod" : "Client only")</MudText>
+                            <MudIconButton Icon="@Icons.Material.Filled.RemoveCircle" Color="Color.Primary" Class="pa-0 px-2" @onclick="@(() => MoveModCallback(context))"/>
                         </MudPaper>
                     </ItemRenderer>
                 </MudDropContainer>
@@ -57,8 +56,8 @@
                     @foreach (var mod in _items.Where(x => !x.HasServerComponent && x.IsLoaded).OrderBy(o => o.Name))
                     {
                         <MudPaper Class="pa-4 flex-grow-1 d-flex justify-space-between" Elevation="25">
-                            <MudText Inline="true" Class="no-pointers no-select">@mod.Name - @(@mod.HasServerComponent ? "has server mod" : "Client only")</MudText>
-                            <MudIconButton Icon="@Icons.Material.Filled.RemoveCircle" Color="Color.Primary" Class="pa-0 px-2" @onclick="@(() => MoveModCallback(@mod))"/>
+                            <MudText Inline="true" Class="no-pointers no-select">@mod.Name - @(mod.HasServerComponent ? "has server mod" : "Client only")</MudText>
+                            <MudIconButton Icon="@Icons.Material.Filled.RemoveCircle" Color="Color.Primary" Class="pa-0 px-2" @onclick="@(() => MoveModCallback(mod))"/>
                         </MudPaper>
                     }
                 </MudItem>
@@ -70,7 +69,7 @@
 @code {
     private MudDropContainer<DropItem> _container { get; set; }
     private bool _unsavedData { get; set; }
-    private List<DropItem> _items = new List<DropItem>();
+    private List<DropItem> _items = new();
     private IDisposable _handler { get; set; }
 
     protected override void OnInitialized()
@@ -95,7 +94,7 @@
                 break;
             default:
                 dropItem.Item.Zone = "1";
-                Console.WriteLine($"something went wrong");
+                Console.WriteLine("something went wrong");
                 break;
         }
 
@@ -134,7 +133,7 @@
             return;
         }
 
-        Console.WriteLine($"Check user wants to navigate with unsaved data");
+        Console.WriteLine("Check user wants to navigate with unsaved data");
 
         var dialog = await _dialogService.ShowAsync<UnsavedDataDialog>("UnsavedDataDialog", _configHelper.DialogOptions);
         var result = await dialog.Result;
@@ -145,7 +144,7 @@
             return;
         }
 
-        Console.WriteLine($"User cancelled navigation");
+        Console.WriteLine("User cancelled navigation");
         context.PreventNavigation();
     }
 
@@ -168,50 +167,51 @@
 
     private List<DropItem> LoadData()
     {
-        return new List<DropItem>()
+        return new List<DropItem>
         {
-            new DropItem() { Name = "Mod1", Zone = "2", IsLoaded = true, HasServerComponent = true },
-            new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod3", Zone = "2", IsLoaded = true, HasServerComponent = true },
-            new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod5", Zone = "3", IsLoaded = true, HasServerComponent = false },
-            new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
-            new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
-            new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
-            new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
-            new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
-            new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
-            new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
-            new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
-            new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
-            new DropItem() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
-            new DropItem() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
-            new DropItem() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false }
+            new() { Name = "Mod1", Zone = "2", IsLoaded = true, HasServerComponent = true },
+            new() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod3", Zone = "2", IsLoaded = true, HasServerComponent = true },
+            new() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod5", Zone = "3", IsLoaded = true, HasServerComponent = false },
+            new() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod1", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new() { Name = "Mod2", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod3", Zone = "1", IsLoaded = false, HasServerComponent = true },
+            new() { Name = "Mod4", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod5", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod6", Zone = "1", IsLoaded = false, HasServerComponent = false },
+            new() { Name = "Mod7", Zone = "1", IsLoaded = false, HasServerComponent = false }
         };
     }
+
 }

@@ -1,9 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
@@ -11,7 +9,6 @@ using MudBlazor.Services;
 using Spt.Core.Helpers;
 using MediaColor = System.Windows.Media.Color;
 using Color = System.Drawing.Color;
-using Colors = MudBlazor.Colors;
 
 namespace Spt.Frontend;
 
@@ -69,7 +66,7 @@ public partial class MainWindow
         {
             var hWnd = new WindowInteropHelper(this).EnsureHandle();
             // This is the NavBar Background colour.
-            int colorRef = _titleBarColor.R | (_titleBarColor.G << 8) | (_titleBarColor.B << 16);
+            var colorRef = _titleBarColor.R | (_titleBarColor.G << 8) | (_titleBarColor.B << 16);
 
             DwmSetWindowAttribute(
                 hWnd,
@@ -94,7 +91,7 @@ public partial class MainWindow
             args.WebView.DefaultBackgroundColor = Color.FromArgb(255, 50, 51, 61);
         };
 
-        Topmost = _config.GetConfig().AppSettings.AlwaysTop;
+        Topmost = _config.GetConfig().AlwaysTop;
 
         if (_config.GetConfig().FirstRun)
         {
@@ -104,13 +101,13 @@ public partial class MainWindow
         }
         else
         {
-            Width = _config.GetConfig().AppSettings.StartSize.Width;
-            Height = _config.GetConfig().AppSettings.StartSize.Height;
+            Width = _config.GetConfig().StartSize.Width;
+            Height = _config.GetConfig().StartSize.Height;
 
             WindowStartupLocation = WindowStartupLocation.Manual;
 
-            Top = _config.GetConfig().AppSettings.StartLocation.X;
-            Left = _config.GetConfig().AppSettings.StartLocation.Y;
+            Top = _config.GetConfig().StartLocation.X;
+            Left = _config.GetConfig().StartLocation.Y;
         }
     }
 
@@ -120,7 +117,7 @@ public partial class MainWindow
         _config.SetClientSize((int) Height, (int) Width);
         _config.SetFirstRun(false);
 
-        if (_config.GetConfig().AppSettings.CloseToTray)
+        if (_config.GetConfig().CloseToTray)
         {
             WindowMain.WindowState = WindowState.Minimized;
             e.Cancel = true;

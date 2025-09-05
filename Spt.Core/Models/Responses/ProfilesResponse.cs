@@ -2,9 +2,5 @@
 
 public class ProfilesResponse : ISptResponse<List<MiniProfile>>
 {
-    public List<MiniProfile> Response
-    {
-        get;
-        set;
-    } = [];
+    public List<MiniProfile> Response { get; set; } = [];
 }

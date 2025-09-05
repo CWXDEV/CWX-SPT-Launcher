@@ -1,11 +1,11 @@
-window.scrollToTopSmooth = function() {
+window.scrollToTopSmooth = function () {
     window.scrollTo({
         top: 0,
         behavior: 'smooth'
     });
 }
 
-window.toggleScrollButton = function() {
+window.toggleScrollButton = function () {
     var scrollButton = document.getElementById('scrollTopBtn');
     if (!scrollButton) {
         return;
@@ -17,7 +17,7 @@ window.toggleScrollButton = function() {
     }
 };
 
-window.onscroll = function() {
+window.onscroll = function () {
     window.toggleScrollButton();
 };
 

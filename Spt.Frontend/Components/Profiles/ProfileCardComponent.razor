@@ -14,7 +14,7 @@
             {
                 <MudImage Src=@(ImageName()) Elevation="0" Class=@(ImageClassNames())/>
             }
-            <MudPaper Elevation="0" Class=@(GlowClassNames())/>
+            <MudPaper Elevation="0" Class="@(GlowClassNames())"/>
         </div>
         <MudText Class="mb-n4 no-pointers no-select" Typo="Typo.caption">Name:</MudText>
         <MudText Typo="Typo.h6">@MiniProfile.Username</MudText>
@@ -57,13 +57,10 @@
 </MudItem>
 
 @code {
-    [Parameter]
-    public MiniProfile MiniProfile { get; set; }
-    [Parameter]
-    public List<MiniProfile> ProfileList { get; set; }
-    [Parameter]
-    public EventCallback<List<MiniProfile>> ProfileListChanged { get; set; }
-    private bool sideIsUnknown { get; set; } = false;
+    [Parameter] public MiniProfile MiniProfile { get; set; }
+    [Parameter] public List<MiniProfile> ProfileList { get; set; }
+    [Parameter] public EventCallback<List<MiniProfile>> ProfileListChanged { get; set; }
+    private bool sideIsUnknown { get; set; }
     private string glowClass { get; set; }
     private string sideClass { get; set; }
     private bool loggedIn { get; set; }

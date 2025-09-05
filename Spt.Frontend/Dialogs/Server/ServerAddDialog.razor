@@ -5,7 +5,7 @@
         <MudContainer Class="py-4">
             <MudForm Model="Server" @bind-IsValid="@success" Class="gap-2 mt-3">
                 <MudTextField Immediate="true" @bind-Value="Server.Name" Label="Name" Variant="Variant.Outlined" Margin="Margin.Dense"/>
-                <MudTextField Immediate="true" @bind-Value="Server.Ip" Label="Address" Required="true" RequiredError="IP is required!" Variant="Variant.Outlined" Margin="Margin.Dense" Mask="@ipPortMask"/>
+                <MudTextField Immediate="true" @bind-Value="Server.IpAddress" Label="Address" Required="true" RequiredError="IP is required!" Variant="Variant.Outlined" Margin="Margin.Dense" Mask="@ipPortMask"/>
             </MudForm>
             <MudContainer Class="mt-3 d-flex justify-end pa-0 gap-2">
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto" @onclick="Submit">Add</MudButton>
@@ -20,10 +20,9 @@
 
     private readonly IMask ipPortMask = RegexMask.IPv4(true);
 
-    public Servers Server = new();
+    public Server Server = new();
 
-    [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; }
 
     private void Submit()
     {
@@ -36,4 +35,5 @@
     {
         MudDialog.Cancel();
     }
+
 }

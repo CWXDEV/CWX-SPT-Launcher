@@ -15,13 +15,7 @@ public class PatchResult
         PatchedData = patchedData;
     }
 
-    public PatchResultEnum ResultEnum
-    {
-        get;
-    }
+    public PatchResultEnum ResultEnum { get; }
 
-    public byte[] PatchedData
-    {
-        get;
-    }
+    public byte[] PatchedData { get; }
 }

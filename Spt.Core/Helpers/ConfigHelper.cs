@@ -6,7 +6,13 @@ namespace Spt.Core.Helpers;
 
 public class ConfigHelper
 {
-    private static readonly string AppPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "CWX-SPT-Launcher\\Resources");
+    private readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        WriteIndented = true
+    };
+
+    private readonly Lock _lock = new();
+    private readonly LogHelper? _logHelper;
 
     public readonly DialogOptions DialogOptions = new()
     {
@@ -19,9 +25,9 @@ public class ConfigHelper
         BackgroundClass = "dialog-backdrop-class"
     };
 
-    private Settings? _settings;
-    private Lock _lock = new Lock();
-    private LogHelper? _logHelper;
+    private readonly string LauncherAssetsPath = Path.Combine(Environment.CurrentDirectory, "SPT_Data", "Launcher");
+
+    private LauncherSettings? _settings;
 
     public ConfigHelper()
     {
@@ -42,18 +48,16 @@ public class ConfigHelper
         {
             _logHelper.LogInfo("LoadSettingsFromFile...");
 
-            // check if exists
-            if (!File.Exists(Path.Combine(AppPath, "settings.json")))
+            if (!File.Exists(Path.Combine(LauncherAssetsPath, "settings.json")))
             {
                 SaveDefaults();
             }
 
-            // if not save
-            _settings = JsonSerializer.Deserialize<Settings>(File.ReadAllText(Path.Combine(AppPath, "settings.json")));
+            _settings = JsonSerializer.Deserialize<LauncherSettings>(File.ReadAllText(Path.Combine(LauncherAssetsPath, "LauncherSettings.json")));
         }
     }
 
-    public Settings GetConfig()
+    public LauncherSettings GetConfig()
     {
         lock (_lock)
         {
@@ -67,7 +71,7 @@ public class ConfigHelper
         lock (_lock)
         {
             _logHelper.LogInfo("SaveConfig...");
-            File.WriteAllText(Path.Combine(AppPath, "settings.json"), JsonSerializer.Serialize(_settings, new JsonSerializerOptions() { WriteIndented = true }));
+            File.WriteAllText(Path.Combine(LauncherAssetsPath, "LauncherSettings.json"), JsonSerializer.Serialize(_settings, _jsonOptions));
         }
     }
 
@@ -76,8 +80,8 @@ public class ConfigHelper
         lock (_lock)
         {
             _logHelper.LogInfo("SetClientSize...");
-            _settings.AppSettings.StartSize.Height = height;
-            _settings.AppSettings.StartSize.Width = width;
+            _settings.StartSize.Height = height;
+            _settings.StartSize.Width = width;
             SaveConfig();
         }
     }
@@ -87,8 +91,8 @@ public class ConfigHelper
         lock (_lock)
         {
             _logHelper.LogInfo("SetClientLocation...");
-            _settings.AppSettings.StartLocation.X = x;
-            _settings.AppSettings.StartLocation.Y = y;
+            _settings.StartLocation.X = x;
+            _settings.StartLocation.Y = y;
             SaveConfig();
         }
     }
@@ -103,7 +107,7 @@ public class ConfigHelper
         }
     }
 
-    public void SetServers(List<Servers> servers)
+    public void SetServers(List<Server> servers)
     {
         lock (_lock)
         {
@@ -118,7 +122,7 @@ public class ConfigHelper
         lock (_lock)
         {
             _logHelper.LogInfo("SetCloseToTray...");
-            _settings.AppSettings.CloseToTray = closeToTray;
+            _settings.CloseToTray = closeToTray;
             SaveConfig();
         }
     }
@@ -128,7 +132,7 @@ public class ConfigHelper
         lock (_lock)
         {
             _logHelper.LogInfo("SetMinimizeOnLaunch...");
-            _settings.AppSettings.MinimizeOnLaunch = minimizeOnLaunch;
+            _settings.MinimizeOnLaunch = minimizeOnLaunch;
             SaveConfig();
         }
     }
@@ -138,7 +142,7 @@ public class ConfigHelper
         lock (_lock)
         {
             _logHelper.LogInfo("SetAlwaysOnTop...");
-            _settings.AppSettings.AlwaysTop = alwaysOnTop;
+            _settings.AlwaysTop = alwaysOnTop;
             SaveConfig();
         }
     }
@@ -148,7 +152,7 @@ public class ConfigHelper
         lock (_lock)
         {
             _logHelper.LogInfo("SetAdvancedUser...");
-            _settings.AppSettings.AdvancedUser = advancedUser;
+            _settings.AdvancedUser = advancedUser;
             SaveConfig();
         }
     }
@@ -178,7 +182,7 @@ public class ConfigHelper
         lock (_lock)
         {
             _logHelper.LogInfo("SetApiKey...");
-            _settings.ApiKey = apiKey;
+            _settings.ForgeApiKey = apiKey;
             SaveConfig();
         }
     }
@@ -188,50 +192,8 @@ public class ConfigHelper
         lock (_lock)
         {
             _logHelper.LogInfo("SaveDefaults...");
-            Directory.CreateDirectory(AppPath);
-            File.WriteAllText(Path.Combine(AppPath, "settings.json"), JsonSerializer.Serialize(GetDefaults()));
+            Directory.CreateDirectory(LauncherAssetsPath);
+            File.WriteAllText(Path.Combine(LauncherAssetsPath, "LauncherSettings.json"), JsonSerializer.Serialize(new LauncherSettings(), _jsonOptions));
         }
-    }
-
-    private Settings GetDefaults()
-    {
-        _logHelper.LogInfo("GetDefaults...");
-        return new Settings
-        {
-            FirstRun = true,
-            GamePath = Environment.CurrentDirectory,
-            AppSettings = new AppSettings
-            {
-                StartLocation = new StartLocation
-                {
-                    X = 0,
-                    Y = 0
-                },
-                StartSize = new StartSize
-                {
-                    Height = 0,
-                    Width = 0
-                },
-                CloseToTray = false,
-                MinimizeOnLaunch = true,
-                AlwaysTop = false,
-                AdvancedUser = false
-            },
-            Servers =
-            [
-                new Servers
-                {
-                    Ip = "127.0.0.1:6969",
-                    Name = "LocalHost",
-                    ServerId = "1721162719",
-                    Locked = true
-                }
-            ],
-            DebugSettings = new DebugSettings
-            {
-                DebugUser = false
-            },
-            ApiKey = ""
-        };
     }
 }

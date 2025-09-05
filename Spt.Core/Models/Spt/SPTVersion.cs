@@ -4,20 +4,6 @@ namespace Spt.Core.Models;
 
 public class SPTVersion
 {
-    [JsonPropertyName("sptVersion")]
-    public string SptVersion
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("eftVersion")]
-    public string EftVersion
-    {
-        get;
-        set;
-    }
-
     public SPTVersion(
         string spt = "",
         string eft = ""
@@ -26,4 +12,8 @@ public class SPTVersion
         SptVersion = spt;
         EftVersion = eft;
     }
+
+    [JsonPropertyName("sptVersion")] public string SptVersion { get; set; }
+
+    [JsonPropertyName("eftVersion")] public string EftVersion { get; set; }
 }

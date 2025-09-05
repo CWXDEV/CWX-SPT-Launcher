@@ -9,7 +9,7 @@
                    @onclick="RunAddTask" Variant="Variant.Filled" Disabled="@(!IsConnected)">Create New Profile
         </MudButton>
         <MudButton Color="Color.Primary" StartIcon="@Icons.Material.Filled.Login" Size="Size.Large"
-                   @onclick="RunLoginTaskWithDetails" Variant="Variant.Filled" Disabled="true">Login with details  @* @(!IsConnected) *@
+                   @onclick="RunLoginTaskWithDetails" Variant="Variant.Filled" Disabled="true">Login with details @* @(!IsConnected) *@
         </MudButton>
     </MudContainer>
     <MudGrid>
@@ -81,4 +81,5 @@
         {
         }
     }
+
 }

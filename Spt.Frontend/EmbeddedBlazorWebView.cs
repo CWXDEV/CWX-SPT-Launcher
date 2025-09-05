@@ -1,22 +1,13 @@
-﻿using System.Drawing;
-using Microsoft.AspNetCore.Components.WebView.Wpf;
+﻿using Microsoft.AspNetCore.Components.WebView.Wpf;
 using Microsoft.Extensions.FileProviders;
 
 namespace Spt.Frontend;
 
 public class EmbeddedBlazorWebView : BlazorWebView
 {
-    public bool UseEmbeddedResources
-    {
-        get;
-        init;
-    }
+    public bool UseEmbeddedResources { get; init; }
 
-    public IFileProvider EmbeddedFilesProvider
-    {
-        get;
-        set;
-    }
+    public IFileProvider EmbeddedFilesProvider { get; set; }
 
     public override IFileProvider CreateFileProvider(string contentRootDir)
     {

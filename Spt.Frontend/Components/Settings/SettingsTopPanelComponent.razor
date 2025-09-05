@@ -25,7 +25,7 @@
         if (!Directory.Exists(eftSettingsFolder))
         {
             _logHelper.AddLog($"Settings can not be loaded from live, path given: {eftSettingsFolder}");
-            _snackbar.Add($"Settings can not be loaded from live, path given", Severity.Error);
+            _snackbar.Add("Settings can not be loaded from live, path given", Severity.Error);
             return;
         }
 
@@ -107,8 +107,8 @@
             return;
         }
 
-        _logHelper.AddLog($"Cleaned temp files");
-        _snackbar.Add($"Cleaned temp files", Severity.Success);
+        _logHelper.AddLog("Cleaned temp files");
+        _snackbar.Add("Cleaned temp files", Severity.Success);
     }
 
     private async Task CopyLogs()
@@ -191,21 +191,21 @@
 
         if (result is null)
         {
-            _logHelper.LogInfo($"Forge ForgeLogout result is null");
+            _logHelper.LogInfo("Forge ForgeLogout result is null");
             return;
         }
 
         if (result.Code == ForgeResponseMessage.Unauthenticated)
         {
-            _logHelper.AddLog($"Forge ForgeLogout failed to authenticate");
+            _logHelper.AddLog("Forge ForgeLogout failed to authenticate");
             return;
         }
 
         if (result.Success)
         {
-            _logHelper.AddLog($"Forge ForgeLogout Successful");
+            _logHelper.AddLog("Forge ForgeLogout Successful");
             _httpHelper.ClearApiKey();
-            return;
         }
     }
+
 }

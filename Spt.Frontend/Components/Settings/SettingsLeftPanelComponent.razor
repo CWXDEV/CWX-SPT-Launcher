@@ -18,9 +18,9 @@
     protected override void OnInitialized()
     {
         var settings = _ConfigHelper.GetConfig();
-        closeToTraySwitch = settings.AppSettings.CloseToTray;
-        minimizeOnLaunchSwitch = settings.AppSettings.MinimizeOnLaunch;
-        alwaysOnTopSwitch = settings.AppSettings.AlwaysTop;
+        closeToTraySwitch = settings.CloseToTray;
+        minimizeOnLaunchSwitch = settings.MinimizeOnLaunch;
+        alwaysOnTopSwitch = settings.AlwaysTop;
 
         base.OnInitialized();
     }

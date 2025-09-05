@@ -5,7 +5,6 @@
  * Basuro
  */
 
-using System.IO;
 using System.Security.Cryptography;
 using Spt.Core.Models;
 

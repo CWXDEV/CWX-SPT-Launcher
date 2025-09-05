@@ -9,17 +9,9 @@ namespace Spt.Core.Models;
 
 public class PatchItem
 {
-    public int Offset
-    {
-        get;
-        set;
-    }
+    public int Offset { get; set; }
 
-    public byte[] Data
-    {
-        get;
-        set;
-    }
+    public byte[] Data { get; set; }
 
     public static PatchItem FromReader(BinaryReader br)
     {

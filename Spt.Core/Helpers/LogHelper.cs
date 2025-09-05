@@ -2,11 +2,14 @@
 
 public class LogHelper
 {
-    public List<string> Logs = new List<string>();
-    private Lock _lock = new Lock();
+    private readonly Lock _lock = new();
+    public List<string> Logs = new();
     public event Action OnLogsChanged;
 
-    private void NotifyLogsChanged() => OnLogsChanged?.Invoke();
+    private void NotifyLogsChanged()
+    {
+        OnLogsChanged?.Invoke();
+    }
 
     public void AddLog(string log)
     {
