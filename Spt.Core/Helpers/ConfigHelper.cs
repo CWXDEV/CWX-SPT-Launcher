@@ -48,7 +48,7 @@ public class ConfigHelper
         {
             _logHelper.LogInfo("LoadSettingsFromFile...");
 
-            if (!File.Exists(Path.Combine(LauncherAssetsPath, "settings.json")))
+            if (!File.Exists(Path.Combine(LauncherAssetsPath, "LauncherSettings.json")))
             {
                 SaveDefaults();
             }
