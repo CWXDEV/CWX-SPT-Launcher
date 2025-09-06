@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>SPTarkov.Core</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\**\*" CopyToPublishDirectory="Always" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MudBlazor" Version="8.12.0"/>
+    <PackageReference Include="Photino.Blazor" Version="4.0.13"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="zlib.net">
+      <HintPath>SharedDependencies\zlib.net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
