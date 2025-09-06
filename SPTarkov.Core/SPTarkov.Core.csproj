@@ -2,14 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <RootNamespace>SPTarkov.Core</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Include="wwwroot\**\*" CopyToPublishDirectory="Always" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MudBlazor" Version="8.12.0"/>
