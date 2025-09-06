@@ -16,7 +16,7 @@ public class EmbeddedBlazorWebView : BlazorWebView
             return base.CreateFileProvider(contentRootDir);
         }
 
-        EmbeddedFilesProvider = new ManifestEmbeddedFileProvider(typeof(App).Assembly, "Resources");
+        EmbeddedFilesProvider = new ManifestEmbeddedFileProvider(typeof(App).Assembly, "wwwroot");
         return EmbeddedFilesProvider;
     }
 }
