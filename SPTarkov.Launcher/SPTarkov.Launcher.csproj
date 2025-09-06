@@ -1,19 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <RootNamespace>SPTarkov.Launcher</RootNamespace>
     <TargetFramework>net9.0</TargetFramework>
     <LangVersion>latestmajor</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <ApplicationIcon>wwwroot\spt-logo.ico</ApplicationIcon>
-
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <PublishSingleFile>true</PublishSingleFile>
-    <SelfContained>true</SelfContained>
-    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,18 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="wwwroot\**"/>
     <EmbeddedResource Include="wwwroot\**" />
-    <EmbeddedResource Include="..\Common\bin\Release\net9.0\publish\**" />
-    <EmbeddedResource Remove="..\Common\bin\Release\net9.0\publish\*.*" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\favicon.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\_content\" />
   </ItemGroup>
 
   <ItemGroup>
