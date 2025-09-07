@@ -18,6 +18,7 @@ public class Launcher
     private static int _visibleStateDuration = 2000;
     private static int _showTransitionDuration = 100;
     private static int _hideTransitionDuration = 100;
+    private static string _openExternalString = "open-external:";
 
     [STAThread]
     private static void Main(string[] args)
@@ -110,11 +111,11 @@ public class Launcher
         App.MainWindow.RegisterWindowClosingHandler(OnExit);
         App.MainWindow.SetMinimized(true);
 
-        App.MainWindow.RegisterWebMessageReceivedHandler((sender, message) =>
+        App.MainWindow.RegisterWebMessageReceivedHandler((_, message) =>
         {
-            if (message.StartsWith("open-external:"))
+            if (message.StartsWith(_openExternalString))
             {
-                var url = message.Substring("open-external:".Length);
+                var url = message.Substring(_openExternalString.Length);
                 try
                 {
                     Process.Start(new ProcessStartInfo
