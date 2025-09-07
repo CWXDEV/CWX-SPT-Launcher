@@ -1,9 +1,0 @@
-﻿<div class="tooltip-container">
-    @ChildContent
-    <div class="tooltip-text">@Text</div>
-</div>
-
-@code {
-    [Parameter] public string Text { get; set; }
-    [Parameter] public RenderFragment ChildContent { get; set; }
-}
