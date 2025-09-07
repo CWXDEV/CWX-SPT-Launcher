@@ -6,8 +6,13 @@
 <MudSnackbarProvider/>
 <MudDialogProvider/>
 <MudFab id="scrollTopBtn" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" Class="fixed z-90" Style="bottom: 10px; right: 10px; display: none;" @onclick="ScrollToTop" Size="Size.Small"/>
+<MudContainer Class="no-select overlay-container unset absolute">
+    <MudImage Src="./side_bear.png" Class="no-select fixed mud-height-full mud-width-full background-image-cover"/>
+    <div class="no-select fixed mud-height-full mud-width-full background-overlay"></div>
+</MudContainer>
+
 <MudLayout>
-    <MudDrawer @bind-Open="_drawerOpen" Width="150px" ClipMode="DrawerClipMode.Never" Elevation="2" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true" Breakpoint="Breakpoint.None" Class="mud-background-gray">
+    <MudDrawer Width="150px" ClipMode="DrawerClipMode.Never" Elevation="5" Variant="@DrawerVariant.Mini" OpenMiniOnHover="false" Breakpoint="Breakpoint.None" Class="mud-background-gray border-r-2 border-solid mud-border-lines-default">
         <NavMenu/>
     </MudDrawer>
     <MudMainContent Class="pt-1 pb-2">
@@ -16,11 +21,16 @@
 </MudLayout>
 
 @code {
-    bool _drawerOpen = true;
+    private bool _backgroundEnabled { get; set; } = false;
 
     private async Task ScrollToTop()
     {
         await _jsRuntime.InvokeVoidAsync("scrollToTopSmooth");
+    }
+
+    private async Task GetBackground()
+    {
+        // get background and pass to MudImage
     }
 
 }
