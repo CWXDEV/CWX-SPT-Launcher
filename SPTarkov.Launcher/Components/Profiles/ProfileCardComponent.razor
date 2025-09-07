@@ -28,27 +28,27 @@
         <MudContainer Class="justify-end d-flex pa-0">
             @if (MiniProfile.HasPassword)
             {
-                <ToolTip Text="Password Protected">
+                <MudTooltip Arrow="true" Placement="Placement.Right" Text="Password Protected">
                     <MudIconButton Color="Color.Tertiary" Icon="@Icons.Material.Filled.Lock" Size="Size.Small"/>
-                </ToolTip>
+                </MudTooltip>
                 <MudSpacer/>
             }
-            <ToolTip Text="@(loggedIn ? "Logout of this profile" : "Login to this profile")">
+            <MudTooltip Arrow="true" Placement="Placement.Left" Text="@(loggedIn ? "Logout of this profile" : "Login to this profile")">
                 <MudIconButton Class="mr-1" Color="Color.Default"
                                Icon="@(!loggedIn ? Icons.Material.Filled.Login : Icons.Material.Filled.Logout)"
                                Size="Size.Small"
                                @onclick="RunLoginTask"/>
-            </ToolTip>
+            </MudTooltip>
 
-            <ToolTip Text="Edit this profile">
+            <MudTooltip Arrow="true" Placement="Placement.Left" Text="Edit this profile">
                 <MudIconButton Color="Color.Default" Icon="@Icons.Material.Filled.Build" Size="Size.Small"
                                @onclick="RunEditTask"/>
-            </ToolTip>
+            </MudTooltip>
 
-            <ToolTip Text="Delete this profile">
+            <MudTooltip Arrow="true" Placement="Placement.Left" Text="Delete this profile">
                 <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Delete" Size="Size.Small"
                                @onclick="RunDeleteTask"/>
-            </ToolTip>
+            </MudTooltip>
 
         </MudContainer>
     </MudPaper>
