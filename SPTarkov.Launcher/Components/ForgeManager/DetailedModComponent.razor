@@ -49,40 +49,33 @@
                         <MudText>@ForgeMod.Teaser</MudText>
                     </MudCardContent>
                 </MudCard>
-                @if (ForgeVersions is null)
-                {
-                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="100px" Class="mb-4"/>
-                }
-                else
-                {
-                    <MudCard Class="mud-background-gray border-2 border-solid mud-border-lines-default mb-4">
-                        <MudCardHeader>
-                            <MudGrid>
-                                <MudItem sm="8">
-                                    <MudText Typo="Typo.h6" Class="no-pointers no-select">
-                                        Version @(_latestVersion.Version)</MudText>
+                <MudCard Class="mud-background-gray border-2 border-solid mud-border-lines-default mb-4">
+                    <MudCardHeader>
+                        <MudGrid>
+                            <MudItem sm="8">
+                                <MudText Typo="Typo.h6" Class="no-pointers no-select">
+                                    Version @(_latestVersion.Version)</MudText>
 
-                                    @if (!string.IsNullOrEmpty(_latestVersion.VirusTotalLink))
-                                    {
-                                        <MudLink
-                                            Href="@(_latestVersion.VirusTotalLink)">
-                                            Virus Total Results
-                                        </MudLink>
-                                    }
-                                </MudItem>
-                                <MudItem sm="4" Class="d-flex flex-column align-end">
-                                    <MudText Typo="Typo.body1" Class="no-pointers no-select">
-                                        Created @(_latestVersion.GetCreatedDateFormatted())</MudText>
-                                    <MudText Typo="Typo.body1" Class="no-pointers no-select">
-                                        Published @(_latestVersion.GetPublishedDateFormatted())</MudText>
-                                </MudItem>
-                            </MudGrid>
-                        </MudCardHeader>
-                        <MudCardContent Class="">
-                            @((MarkupString)_latestVersion.Description)
-                        </MudCardContent>
-                    </MudCard>
-                }
+                                @if (!string.IsNullOrEmpty(_latestVersion.VirusTotalLink))
+                                {
+                                    <MudLink
+                                        Href="@(_latestVersion.VirusTotalLink)">
+                                        Virus Total Results
+                                    </MudLink>
+                                }
+                            </MudItem>
+                            <MudItem sm="4" Class="d-flex flex-column align-end">
+                                <MudText Typo="Typo.body1" Class="no-pointers no-select">
+                                    Created @(_latestVersion.GetCreatedDateFormatted())</MudText>
+                                <MudText Typo="Typo.body1" Class="no-pointers no-select">
+                                    Published @(_latestVersion.GetPublishedDateFormatted())</MudText>
+                            </MudItem>
+                        </MudGrid>
+                    </MudCardHeader>
+                    <MudCardContent Class="">
+                        @((MarkupString)_latestVersion.Description)
+                    </MudCardContent>
+                </MudCard>
                 <MudCard Class="mud-background-gray border-2 border-solid mud-border-lines-default">
                     <MudCardContent Class="user-markdown">
                         @((MarkupString)ForgeMod.Description)
@@ -148,29 +141,13 @@
 </MudItem>
 
 @code {
-    private List<ForgeModVersion> _forgeVersions;
-
     [Parameter] public bool IsSkeleton { get; set; }
     [Parameter] public ForgeBase ForgeMod { get; set; }
 
-    [Parameter]
-    public List<ForgeModVersion> ForgeVersions
+    private ForgeModVersion _latestVersion
     {
-        get => _forgeVersions;
-        set
-        {
-            _forgeVersions = value;
-            if (_forgeVersions is not null)
-            {
-                _latestVersion = _forgeVersions
-                    .FirstOrDefault(x =>
-                        x.Version == ForgeMod.Versions.FirstOrDefault().Version
-                    );
-            }
-        }
+        get { return ForgeMod.Versions.FirstOrDefault(); }
     }
-
-    private ForgeModVersion _latestVersion { get; set; }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {

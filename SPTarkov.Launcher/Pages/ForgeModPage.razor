@@ -13,24 +13,21 @@
         {
             <DetailedModComponent IsSkeleton="true"/>
         }
-        else if (_searchResponse?.Data is not null && _versionResponse?.Data is not null)
+        else if (_searchResponse?.Data is not null)
         {
-            <DetailedModComponent ForgeMod="@_searchResponse?.Data" ForgeVersions="@_versionResponse?.Data"/>
+            <DetailedModComponent ForgeMod="@_searchResponse?.Data"/>
         }
     </MudGrid>
 </MudContainer>
 
 @code {
-    private ForgeModResponse? _searchResponse { get; set; }
+    private ForgeModResponse _searchResponse { get; set; }
     private bool _searchInProgress { get; set; }
-    private ForgeVersionResponse? _versionResponse { get; set; }
-    private bool _versionInProgress { get; set; }
     [Parameter] public string ModId { get; set; }
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
-        SearchForMod();
-        SearchForVersions();
+        await SearchForMod();
         base.OnInitialized();
     }
 
@@ -53,25 +50,4 @@
         _searchInProgress = false;
         StateHasChanged();
     }
-
-    private async Task SearchForVersions()
-    {
-        _versionInProgress = true;
-
-        try
-        {
-            var token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            _versionResponse = await _httpHelper.ForgeGetVersions(ModId, token.Token);
-        }
-        catch (Exception e)
-        {
-            _logHelper.AddLog("Exception thrown from ForgeHelper.SearchForVersions");
-            _logHelper.AddLog(e.ToString());
-            return;
-        }
-
-        _versionInProgress = false;
-        StateHasChanged();
-    }
-
 }
