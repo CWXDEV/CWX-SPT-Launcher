@@ -1,5 +1,4 @@
-﻿@inject ISnackbar _snackbar
-@inject IDialogService _dialogService
+﻿@inject IDialogService _dialogService
 @inject ConfigHelper _configHelper
 @inject StateHelper _stateHelper
 @inject NavigationHelper _navigationHelper
@@ -14,7 +13,6 @@
             {
                 <MudImage Src=@(ImageName()) Elevation="0" Class=@(ImageClassNames())/>
             }
-            <MudPaper Elevation="0" Class="@(GlowClassNames())"/>
         </div>
         <MudText Class="mb-n4 no-pointers no-select" Typo="Typo.caption">Name:</MudText>
         <MudText Typo="Typo.h6">@MiniProfile.Username</MudText>
@@ -61,14 +59,8 @@
     [Parameter] public List<MiniProfile> ProfileList { get; set; }
     [Parameter] public EventCallback<List<MiniProfile>> ProfileListChanged { get; set; }
     private bool sideIsUnknown { get; set; }
-    private string glowClass { get; set; }
-    private string sideClass { get; set; }
+    private string factionCssClass { get; set; }
     private bool loggedIn { get; set; }
-
-    private string GlowClassNames()
-    {
-        return $"card-glow no-pointers {glowClass}";
-    }
 
     private string ImageClassNames()
     {
@@ -88,11 +80,11 @@
         if (MiniProfile.Side.ToLower() == "unknown")
         {
             sideIsUnknown = true;
-            glowClass = "";
+            factionCssClass = "";
             return;
         }
 
-        glowClass = MiniProfile.Edition.ToLower() switch
+        factionCssClass = MiniProfile.Edition.ToLower() switch
         {
             "spt developer" => "glow-green",
             "spt easy start" => "glow-red",
