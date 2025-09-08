@@ -46,7 +46,7 @@ public class ConfigHelper
     {
         lock (_lock)
         {
-            _logHelper.LogInfo("LoadSettingsFromFile...");
+            _logHelper.LogInfo("LoadSettingsFromFile.");
 
             if (!File.Exists(Path.Combine(LauncherAssetsPath, "LauncherSettings.json")))
             {
@@ -61,7 +61,6 @@ public class ConfigHelper
     {
         lock (_lock)
         {
-            _logHelper.LogInfo("GetConfig...");
             return _settings;
         }
     }
@@ -70,7 +69,6 @@ public class ConfigHelper
     {
         lock (_lock)
         {
-            _logHelper.LogInfo("SaveConfig...");
             File.WriteAllText(Path.Combine(LauncherAssetsPath, "LauncherSettings.json"), JsonSerializer.Serialize(_settings, _jsonOptions));
         }
     }
@@ -79,7 +77,7 @@ public class ConfigHelper
     {
         lock (_lock)
         {
-            _logHelper.LogInfo("SetClientSize...");
+            _logHelper.LogInfo($"SetClientSize: {height}, {width}");
             _settings.StartSize.Height = height;
             _settings.StartSize.Width = width;
             SaveConfig();
@@ -90,7 +88,7 @@ public class ConfigHelper
     {
         lock (_lock)
         {
-            _logHelper.LogInfo("SetClientLocation...");
+            _logHelper.LogInfo($"SetClientLocation: {x},{y}");
             _settings.StartLocation.X = x;
             _settings.StartLocation.Y = y;
             SaveConfig();
@@ -101,7 +99,7 @@ public class ConfigHelper
     {
         lock (_lock)
         {
-            _logHelper.LogInfo("SetFirstRun...");
+            _logHelper.LogInfo($"SetFirstRun: {firstRun}");
             _settings.FirstRun = firstRun;
             SaveConfig();
         }
@@ -111,7 +109,7 @@ public class ConfigHelper
     {
         lock (_lock)
         {
-            _logHelper.LogInfo("SetServers...");
+            _logHelper.LogInfo($"SetServers: {servers.Count}");
             _settings.Servers = servers;
             SaveConfig();
         }
@@ -121,7 +119,7 @@ public class ConfigHelper
     {
         lock (_lock)
         {
-            _logHelper.LogInfo("SetCloseToTray...");
+            _logHelper.LogInfo($"SetCloseToTray: {closeToTray}");
             _settings.CloseToTray = closeToTray;
             SaveConfig();
         }
@@ -131,7 +129,7 @@ public class ConfigHelper
     {
         lock (_lock)
         {
-            _logHelper.LogInfo("SetMinimizeOnLaunch...");
+            _logHelper.LogInfo($"SetMinimizeOnLaunch: {minimizeOnLaunch}");
             _settings.MinimizeOnLaunch = minimizeOnLaunch;
             SaveConfig();
         }
@@ -141,7 +139,7 @@ public class ConfigHelper
     {
         lock (_lock)
         {
-            _logHelper.LogInfo("SetAlwaysOnTop...");
+            _logHelper.LogInfo($"SetAlwaysOnTop: {alwaysOnTop}");
             _settings.AlwaysTop = alwaysOnTop;
             SaveConfig();
         }
@@ -151,7 +149,7 @@ public class ConfigHelper
     {
         lock (_lock)
         {
-            _logHelper.LogInfo("SetAdvancedUser...");
+            _logHelper.LogInfo($"SetAdvancedUser: {advancedUser}");
             _settings.AdvancedUser = advancedUser;
             SaveConfig();
         }
@@ -161,7 +159,7 @@ public class ConfigHelper
     {
         lock (_lock)
         {
-            _logHelper.LogInfo("SetDebugUser...");
+            _logHelper.LogInfo($"SetDebugUser: {debugUser}");
             _settings.DebugSettings.DebugUser = debugUser;
             SaveConfig();
         }
@@ -171,7 +169,7 @@ public class ConfigHelper
     {
         lock (_lock)
         {
-            _logHelper.LogInfo("SetDebugLoggingPage...");
+            _logHelper.LogInfo($"SetDebugLoggingPage: {access}");
             _settings.DebugSettings.ShowLoggingPage = access;
             SaveConfig();
         }
@@ -181,7 +179,7 @@ public class ConfigHelper
     {
         lock (_lock)
         {
-            _logHelper.LogInfo("SetApiKey...");
+            _logHelper.LogInfo($"SetApiKey: {apiKey}");
             _settings.ForgeApiKey = apiKey;
             SaveConfig();
         }
@@ -191,7 +189,7 @@ public class ConfigHelper
     {
         lock (_lock)
         {
-            _logHelper.LogInfo($"SetUseBackground... {useBackground}");
+            _logHelper.LogInfo($"SetUseBackground: {useBackground}");
             _settings.UseBackground = useBackground;
             SaveConfig();
         }
@@ -201,7 +199,7 @@ public class ConfigHelper
     {
         lock (_lock)
         {
-            _logHelper.LogInfo("SaveDefaults...");
+            _logHelper.LogInfo("SaveDefaults.");
             Directory.CreateDirectory(LauncherAssetsPath);
             File.WriteAllText(Path.Combine(LauncherAssetsPath, "LauncherSettings.json"), JsonSerializer.Serialize(new LauncherSettings(), _jsonOptions));
         }
