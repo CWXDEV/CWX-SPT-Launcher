@@ -35,8 +35,7 @@
                                           Class="mod-thumbnail" Style="background-color: transparent !important;"/>
                             </MudItem>
                             <MudItem>
-                                <MudLink Href="@($"https://forge.sp-tarkov.com/mod/{ForgeMod.Id}/{ForgeMod.Slug}")"
-                                         Typo="Typo.h6">@ForgeMod.Name</MudLink>
+                                <MudLink Href="@($"https://forge.sp-tarkov.com/mod/{ForgeMod.Id}/{ForgeMod.Slug}/")" Typo="Typo.h6" Target="_blank">@ForgeMod.Name</MudLink>
                                 <MudText Typo="Typo.body1" Class="no-pointers no-select">
                                     By @ForgeMod.GetModdersName()</MudText>
                                 <MudText Typo="Typo.body2" Class="no-pointers no-select">@ForgeMod.Downloads Downloads
