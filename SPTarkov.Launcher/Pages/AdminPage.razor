@@ -1,29 +1,14 @@
 ﻿@page "/AdminPage"
 
-@implements IDisposable
 @inject LogHelper _logHelper
 
 <MudContainer Class="px-8 my-2 pa-0" MaxWidth="MaxWidth.Large">
-    <MudChat ChatPosition="ChatBubblePosition.Start">
+    <MudPaper Class="mud-width-full pa-4 flex-column">
         @foreach (var log in _logHelper.GetLogs())
         {
-            <MudChatBubble>
+            <MudText Typo="Typo.body1">
                 @log
-            </MudChatBubble>
+            </MudText>
         }
-    </MudChat>
+    </MudPaper>
 </MudContainer>
-
-@code
-{
-    protected override void OnInitialized()
-    {
-        _logHelper.OnLogsChanged += StateHasChanged;
-        base.OnInitialized();
-    }
-
-    public void Dispose()
-    {
-        _logHelper.OnLogsChanged -= StateHasChanged;
-    }
-}
