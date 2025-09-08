@@ -76,18 +76,6 @@
     overflow: hidden;
 }
 
-.card-glow {
-    position: absolute;
-    top: -200px;
-    left: -250px;
-    transform: translate(-50%, 0%);
-    width: 800px;
-    height: 800px;
-    border-radius: 50% 22% 40% 80%;
-    filter: blur(100px);
-    opacity: 0.2;
-}
-
 .info-card-height {
     height: 100%
 }
