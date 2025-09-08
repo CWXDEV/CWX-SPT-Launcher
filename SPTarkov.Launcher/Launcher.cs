@@ -78,13 +78,12 @@ public class Launcher
 
     private static void CustomizeComponent()
     {
-        // customize window
         App.MainWindow.SetTitle("SPTarkov Launcher");
         App.MainWindow.DevToolsEnabled = true;
         App.MainWindow.LogVerbosity = 0;
 
         // use this to disable bottom left status bar like in a browser
-        // comment out to gain devtools - this flag disables it.
+        // TODO: comment out to gain devtools - this flag disables it.
         // App.MainWindow.BrowserControlInitParameters = "--kiosk";
 
         App.MainWindow.Topmost = ConfigHelper.GetConfig().AlwaysTop;
