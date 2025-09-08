@@ -59,7 +59,6 @@
     [Parameter] public List<MiniProfile> ProfileList { get; set; }
     [Parameter] public EventCallback<List<MiniProfile>> ProfileListChanged { get; set; }
     private bool sideIsUnknown { get; set; }
-    private string factionCssClass { get; set; }
     private bool loggedIn { get; set; }
 
     private string ImageClassNames()
@@ -80,20 +79,7 @@
         if (MiniProfile.Side.ToLower() == "unknown")
         {
             sideIsUnknown = true;
-            factionCssClass = "";
-            return;
         }
-
-        factionCssClass = MiniProfile.Edition.ToLower() switch
-        {
-            "spt developer" => "glow-green",
-            "spt easy start" => "glow-red",
-            "spt zero to hero" => "glow-purple",
-            "unheard" => "glow-blue",
-            "edge of darkness" => "glow-gold",
-            "standard edition" => "glow-grey",
-            _ => "glow-grey"
-        };
     }
 
     private async Task RunLoginTask()
