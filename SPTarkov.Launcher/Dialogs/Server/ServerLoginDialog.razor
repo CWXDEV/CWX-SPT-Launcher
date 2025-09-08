@@ -111,7 +111,7 @@
         }
 
         _stateHelper.LogoutAndDispose();
-        _navigationHelper.SetBasicPages(false);
+        _navigationHelper.SetProfilesPages(false);
         _navigationHelper.SetProfilePages(false);
         token?.Cancel();
         MudDialog.Cancel();
@@ -119,7 +119,7 @@
 
     private void Submit()
     {
-        _navigationHelper.SetBasicPages(true);
+        _navigationHelper.SetProfilesPages(true);
         MudDialog.Close(DialogResult.Ok(Server));
         _snackbar.Add("Logged In. Visit Profiles Page!", Severity.Success);
     }

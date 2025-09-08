@@ -75,7 +75,7 @@
         if (_stateHelper.SelectedServer?.ServerId == Server.ServerId)
         {
             _stateHelper.LogoutAndDispose();
-            _navigationHelper.SetBasicPages(false);
+            _navigationHelper.SetProfilesPages(false);
             _navigationHelper.SetProfilePages(false);
             IsConnectedServer = false;
         }
@@ -112,14 +112,14 @@
             if (_stateHelper.SelectedServer.ServerId == Server.ServerId)
             {
                 _stateHelper.LogoutAndDispose();
-                _navigationHelper.SetBasicPages(false);
+                _navigationHelper.SetProfilesPages(false);
                 _navigationHelper.SetProfilePages(false);
                 IsConnectedServer = false;
                 return;
             }
 
             _stateHelper.LogoutAndDispose();
-            _navigationHelper.SetBasicPages(false);
+            _navigationHelper.SetProfilesPages(false);
             _navigationHelper.SetProfilePages(false);
             IsConnectedServer = false;
         }
