@@ -2,9 +2,7 @@
 
 public class NavigationHelper
 {
-    public NavigationHelper(
-        ConfigHelper configHelper
-    )
+    public NavigationHelper(ConfigHelper configHelper)
     {
         if (configHelper.GetConfig().DebugSettings.DebugUser && configHelper.GetConfig().DebugSettings.ShowLoggingPage)
         {
@@ -17,16 +15,20 @@ public class NavigationHelper
         }
     }
 
+    public event Action? OnStateChanged;
+    private void NotifyStateChanged()
+    {
+        OnStateChanged?.Invoke();
+    }
+
     public bool ShowProfilesPage { get; set; }
     public bool ShowProfilePage { get; set; }
-    public bool ShowModPage { get; set; }
     public bool ShowLoggingPage { get; set; }
     public bool ShowBackground { get; set; }
 
-    public void SetBasicPages(bool state)
+    public void SetProfilesPages(bool state)
     {
         ShowProfilesPage = state;
-        ShowModPage = state;
         NotifyStateChanged();
     }
 
@@ -40,13 +42,6 @@ public class NavigationHelper
     {
         ShowLoggingPage = state;
         NotifyStateChanged();
-    }
-
-    public event Action? OnStateChanged;
-
-    private void NotifyStateChanged()
-    {
-        OnStateChanged?.Invoke();
     }
 
     public void SetBackground(bool state)

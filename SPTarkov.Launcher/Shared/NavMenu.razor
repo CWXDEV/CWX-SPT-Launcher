@@ -1,4 +1,5 @@
-﻿@inject NavigationHelper _navigationHelper
+﻿@implements IDisposable
+@inject NavigationHelper _navigationHelper
 
 <MudNavMenu Class="mud-typography-nowrap">
     <MudTooltip Arrow="true" Placement="Placement.Right" ShowOnHover="true" Text="Home" Inline="false">
@@ -14,12 +15,6 @@
     {
         <MudTooltip Arrow="true" Placement="Placement.Right" ShowOnHover="true" Text="Profile" Inline="false">
             <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.Person" Match="NavLinkMatch.All" Href="/ProfilePage"/>
-        </MudTooltip>
-    }
-    @if (_navigationHelper.ShowModPage)
-    {
-        <MudTooltip Arrow="true" Placement="Placement.Right" ShowOnHover="true" Text="Mods" Inline="false">
-            <MudNavLink IconColor="Color.Default" Icon="@Icons.Material.Filled.FolderOpen" Match="NavLinkMatch.All" Href="/ActiveModsPage"/>
         </MudTooltip>
     }
 </MudNavMenu>
