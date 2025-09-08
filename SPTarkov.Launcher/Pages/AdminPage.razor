@@ -1,4 +1,6 @@
 ﻿@page "/AdminPage"
+
+@implements IDisposable
 @inject LogHelper _logHelper
 
 <MudContainer Class="px-8 my-2 pa-0" MaxWidth="MaxWidth.Large">
@@ -20,7 +22,7 @@
         base.OnInitialized();
     }
 
-    private void Dispose()
+    public void Dispose()
     {
         _logHelper.OnLogsChanged -= StateHasChanged;
     }
