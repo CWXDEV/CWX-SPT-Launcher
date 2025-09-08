@@ -15,9 +15,8 @@
 
     protected override void OnInitialized()
     {
-        var settings = _configHelper.GetConfig();
-        debugUserSwitch = settings.DebugSettings.DebugUser;
-        showLoggingPageSwitch = settings.DebugSettings.ShowLoggingPage;
+        debugUserSwitch = _configHelper.GetConfig().DebugSettings.DebugUser;
+        showLoggingPageSwitch = _configHelper.GetConfig().DebugSettings.ShowLoggingPage;
 
         base.OnInitialized();
     }

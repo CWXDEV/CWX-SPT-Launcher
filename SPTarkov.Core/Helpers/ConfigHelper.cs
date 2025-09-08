@@ -187,6 +187,16 @@ public class ConfigHelper
         }
     }
 
+    public void SetUseBackground(bool useBackground)
+    {
+        lock (_lock)
+        {
+            _logHelper.LogInfo($"SetUseBackground... {useBackground}");
+            _settings.UseBackground = useBackground;
+            SaveConfig();
+        }
+    }
+
     private void SaveDefaults()
     {
         lock (_lock)

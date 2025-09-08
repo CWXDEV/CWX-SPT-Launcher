@@ -25,4 +25,5 @@ public class LauncherSettings
     public bool AlwaysTop { get; set; } = false;
     public bool AdvancedUser { get; set; } = false;
     public string ForgeApiKey { get; set; } = "";
+    public bool UseBackground { get; set; } = false;
 }

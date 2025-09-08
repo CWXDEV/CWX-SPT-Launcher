@@ -341,8 +341,8 @@ img.background-image-cover {
 }
 
 div.background-overlay {
-    background-color: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(8px);
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
 }
 
 div.overlay-container {
