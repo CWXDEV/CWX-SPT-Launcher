@@ -5,7 +5,7 @@
                           AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" Clearable="true"
                           DebounceInterval="500" OnDebounceIntervalElapsed="SearchFunc"/>
         </MudItem>
-        <MudItem sm="3">
+        <MudItem sm="2">
             <MudSelect @bind-Value="SortValue" Label="Sort" Variant="Variant.Outlined" Dense="true"
                        AdornmentIcon="@Icons.Material.Filled.Sort" AdornmentColor="Color.Primary">
                 <MudSelectItem Value="@("-created_at")">Newest</MudSelectItem>
@@ -13,11 +13,19 @@
                 <MudSelectItem Value="@("-downloads")">Most Downloaded</MudSelectItem>
             </MudSelect>
         </MudItem>
-        <MudItem sm="3">
+        <MudItem sm="2">
             <MudSelect @bind-Value="FilterValue" Label="Featured" Variant="Variant.Outlined" Dense="true"
                        AdornmentIcon="@Icons.Material.Filled.FilterAlt" AdornmentColor="Color.Primary">
                 <MudSelectItem Value="@("Include")">Include</MudSelectItem>
                 <MudSelectItem Value="@("Exclude")">Exclude</MudSelectItem>
+                <MudSelectItem Value="@("Only")">Only</MudSelectItem>
+            </MudSelect>
+        </MudItem>
+        <MudItem sm="2">
+            <MudSelect @bind-Value="AiValue" Label="AI Content" Variant="Variant.Outlined" Dense="true"
+                       AdornmentIcon="@Icons.Material.Filled.FilterAlt" AdornmentColor="Color.Primary">
+                <MudSelectItem Value="@("Exclude")">Exclude</MudSelectItem>
+                <MudSelectItem Value="@("Include")">Include</MudSelectItem>
                 <MudSelectItem Value="@("Only")">Only</MudSelectItem>
             </MudSelect>
         </MudItem>
@@ -27,7 +35,6 @@
 
 @code {
     private string search = "";
-
     [Parameter]
     public string Search
     {
@@ -43,11 +50,10 @@
             SearchChanged.InvokeAsync(search);
         }
     }
-
-    [Parameter] public EventCallback<string> SearchChanged { get; set; }
+    [Parameter]
+    public EventCallback<string> SearchChanged { get; set; }
 
     private string sortValue = "-created_at";
-
     [Parameter]
     public string SortValue
     {
@@ -63,11 +69,10 @@
             SortValueChanged.InvokeAsync(sortValue);
         }
     }
-
-    [Parameter] public EventCallback<string> SortValueChanged { get; set; }
+    [Parameter]
+    public EventCallback<string> SortValueChanged { get; set; }
 
     private string filterValue = "Include";
-
     [Parameter]
     public string FilterValue
     {
@@ -83,7 +88,28 @@
             FilterValueChanged.InvokeAsync(filterValue);
         }
     }
+    [Parameter]
+    public EventCallback<string> FilterValueChanged { get; set; }
 
-    [Parameter] public EventCallback<string> FilterValueChanged { get; set; }
-    [Parameter] public Func<Task> SearchFunc { get; set; }
+    private string aiValue = "Exclude";
+    [Parameter]
+    public string AiValue
+    {
+        get => aiValue;
+        set
+        {
+            if (aiValue == value)
+            {
+                return;
+            }
+
+            aiValue = value;
+            AiValueChanged.InvokeAsync(aiValue);
+        }
+    }
+    [Parameter]
+    public EventCallback<string> AiValueChanged { get; set; }
+
+    [Parameter]
+    public Func<Task> SearchFunc { get; set; }
 }

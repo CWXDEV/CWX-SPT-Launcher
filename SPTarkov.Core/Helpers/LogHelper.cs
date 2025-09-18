@@ -1,5 +1,7 @@
 ﻿namespace SPTarkov.Core.Helpers;
 
+// TODO: change over to Microsoft.Extensions.Logging
+// maybe even see if the servers logger can be used?
 public class LogHelper
 {
     private readonly Lock _lock = new();

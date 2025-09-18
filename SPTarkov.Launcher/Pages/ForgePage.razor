@@ -11,15 +11,19 @@
 <MudContainer Class="px-8 mt-2 mb-6 pa-0" MaxWidth="MaxWidth.Large">
     @if (_netAvailable && _apiKeyAvailable)
     {
-        <SearchComponent @bind-Search="Search" @bind-FilterValue="FilterValue" @bind-SortValue="SortValue" SearchFunc="@SearchUpdate"/>
+        <MudItem sm="12" Class="mb-6">
+            <MudCard Class="mud-background-gray border-2 border-solid mud-border-lines-default px-4 pt-4 pb-2">
+                <SearchComponent @bind-Search="Search" @bind-FilterValue="FilterValue" @bind-SortValue="SortValue" @bind-AiValue="AiValue" SearchFunc="@SearchUpdate"/>
 
-        @if (_searchResponse?.Meta?.LastPage is not null && _searchResponse?.Data?.Count > 0)
-        {
-            <MudItem sm="12" Class="d-flex justify-center">
-                <MudPagination Rectangular="true" Variant="Variant.Text" Count="@((int)_searchResponse.Meta.LastPage)" Class="mb-4"
-                               ShowFirstButton="true" ShowLastButton="true" ShowNextButton="true" ShowPreviousButton="true" @bind-Selected="@_paginationSelected"/>
-            </MudItem>
-        }
+                @if (_searchResponse?.Meta?.LastPage is not null && _searchResponse?.Data?.Count > 0)
+                {
+                    <MudItem sm="12" Class="d-flex justify-center">
+                        <MudPagination Rectangular="true" Variant="Variant.Text" Count="@((int)_searchResponse.Meta.LastPage)" Class="mb-4"
+                                       ShowFirstButton="true" ShowLastButton="true" ShowNextButton="true" ShowPreviousButton="true" @bind-Selected="@_paginationSelected"/>
+                    </MudItem>
+                }
+            </MudCard>
+        </MudItem>
     }
 
     @if (!_netAvailable)
@@ -94,6 +98,7 @@
     private string _search = "";
     private string _sortValue = "-created_at";
     private string _filterValue = "Include";
+    private string _aiValue = "Exclude";
 
     private int _paginationSelected
     {
@@ -139,6 +144,16 @@
         }
     }
 
+    public string AiValue
+    {
+        get => _aiValue;
+        set
+        {
+            _aiValue = value;
+            SearchUpdate();
+        }
+    }
+
     protected override void OnInitialized()
     {
         _netAvailable = _httpHelper.IsInternetAccessAvailable();
@@ -168,7 +183,7 @@
         try
         {
             var token = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            _searchResponse = await _httpHelper.ForgeGetMods(token.Token, Search, SortValue, page ?? 1, FilterValue);
+            _searchResponse = await _httpHelper.ForgeGetMods(token.Token, Search, SortValue, page ?? 1, FilterValue, AiValue);
         }
         catch (Exception e)
         {

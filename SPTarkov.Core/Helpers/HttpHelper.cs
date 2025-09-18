@@ -141,7 +141,8 @@ public class HttpHelper
         string search = "",
         string sort = "-featured,name",
         int page = 1,
-        string? includeFeatured = null
+        string? includeFeatured = null,
+        string? includeAi = null
     )
     {
         _logHelper.LogInfo("forge GetModsFromForge");
@@ -154,7 +155,7 @@ public class HttpHelper
 
         _logHelper.LogInfo($"api key: {_configHelper.GetConfig().ForgeApiKey}");
 
-        var paramsToUse = GetParamsCollection(search, sort, ConvertFeaturedToBool(includeFeatured));
+        var paramsToUse = GetParamsCollection(search, sort, ConvertFeaturedToBool(includeFeatured), ConvertFeaturedToBool(includeAi));
         var message = new HttpRequestMessage(HttpMethod.Get, $"https://forge.sp-tarkov.com/api/v0/mods?page={page}&{paramsToUse}")
         {
             Content = new StringContent("", Encoding.UTF8, "application/json")
@@ -214,7 +215,7 @@ public class HttpHelper
         return JsonSerializer.Deserialize<ForgeLoginResponse>(await task.Content.ReadAsStringAsync(token));
     }
 
-    private NameValueCollection GetParamsCollection(string? search = null, string? sort = null, bool? featured = null)
+    private NameValueCollection GetParamsCollection(string? search = null, string? sort = null, bool? featured = null, bool? ai = null)
     {
         var queryString = HttpUtility.ParseQueryString(string.Empty);
         queryString.Add("include", "versions,owner,authors,license");
@@ -226,6 +227,11 @@ public class HttpHelper
         if (featured is not null)
         {
             queryString.Add("filter[featured]", featured.ToString());
+        }
+
+        if (ai is not null)
+        {
+            queryString.Add("filter[contains_ai_content]", ai.ToString());
         }
 
         // make this dynamic later
